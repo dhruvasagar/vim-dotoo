@@ -26,12 +26,12 @@ endfunction
 
 call s:define('blank', '\v^$')
 call s:define('directive', '\v^#\+(\w+): (.*)$')
-call s:define('headline', '\v^(\*+)\s?([A-Z]+)?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
+call s:define('headline', '\v^(\*+)\s?(<[A-Z]+>)?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
 call s:define('metadata', '\v^(DEADLINE|CLOSED|SCHEDULED): \[(.*)\]$')
 call s:define('properties', '\v^:PROPERTIES:$')
 call s:define('logbook', '\v^:LOGBOOK:$')
 call s:define('properties_content', '\v^:(END)@!([^:]+):\s*(.*)$')
-call s:define('logbook_content', '\v^CLOCK: \[(.*)\]--\[(.*)\] \=\>\s+\d{1,2}:\d{2}')
+call s:define('logbook_content', '\v^CLOCK: \[([^\]]*)\](--\[([^\]]*)\])?( \=\>\s+\d{1,2}:\d{2})?')
 call s:define('drawer_end', '\v^:END:$')
 call s:define('line', '\v^(.*)$')
 
@@ -80,14 +80,33 @@ function! s:parse_directive(token)
 endfunction
 
 function! s:parse_headline(token)
-  return {
+  let headline =  {
         \ 'level': len(a:token.content[0]),
         \ 'todo': a:token.content[1],
         \ 'priority': a:token.content[2],
         \ 'title': a:token.content[3],
         \ 'tags': a:token.content[4],
-        \ 'content': '', 'metadata': {}, 'properties': {}, 'logbook': [], 'children': []
+        \ 'lnum': a:token.lnum,
+        \ 'content': '', 'metadata': {}, 'properties': {}, 'logbook': [], 'headlines': []
         \ }
+
+  func headline.select(string) dict
+    let headlines = []
+    if has_key(self, a:string) | let headlines += [self] | endif
+    for headline in self.headlines
+      let headlines += headline.select(a:string)
+    endfor
+    return headlines
+  endfunc
+
+  func headline.nearest_deadline(end) dict
+    if has_key(self, 'deadline')
+      return self.deadline.nearest_repeat(a:end)
+    endif
+    return ''
+  endfunc
+
+  return headline
 endfunction
 
 function! s:parse_metadata(token)
@@ -115,7 +134,7 @@ function! s:parse_logbook(headline, index, tokens)
   while index < len(a:tokens) && token.type ==# s:syntax.logbook_content.type
     let log = {}
     let log.start = doto#time#new(token.content[0])
-    let log.end = doto#time#new(token.content[1])
+    let log.end = doto#time#new(token.content[2])
     call add(a:headline.logbook, log)
     let index += 1
     if index < len(a:tokens) | let token = a:tokens[index] | endif
@@ -149,40 +168,53 @@ function! doto#parser#parse(file, ...)
   if has_key(s:dotos, key) && !force
     return s:dotos[key]
   else
-    if !has_key(s:dotos, key)
-      let s:dotos[key] = {'directives': {}, 'headlines': []}
-    endif
-    if !has_key(s:parsed_tokens, key)
+    if force || !has_key(s:dotos, key)
+      let root_headline = s:parse_headline({'lnum': 0, 'content': ['','','','','']})
+      let s:dotos[key] = {
+            \ 'key': key,
+            \ 'file': a:file,
+            \ 'directives': {},
+            \ 'blank_lines': [],
+            \ 'root_headline': root_headline
+            \ }
       let s:parsed_tokens[key] = {}
     endif
+    let doto = s:dotos[key]
     if !filereadable(a:file) | return | endif
     let index = 0
     let tree = {}
     let tokens = s:tokenize(a:file)
     while index < len(tokens)
       let token = tokens[index]
-      if has_key(s:parsed_tokens, token.lnum) && s:parsed_tokens[token.lnum] == token
+      if !force && has_key(s:parsed_tokens[key], token.lnum) && s:parsed_tokens[key][token.lnum] == token
         let index += 1
         continue
       else
-        let s:parsed_tokens[token.lnum] = token
+        let s:parsed_tokens[key][token.lnum] = token
       endif
       if token.type ==# s:syntax.directive.type
-        call extend(s:dotos[key].directives, s:parse_directive(token))
+        call extend(doto.directives, s:parse_directive(token))
         let index += 1
       elseif token.type ==# s:syntax.blank.type
-        call add(s:dotos[key].headlines, '')
+        call add(doto.blank_lines, token.lnum)
         let index += 1
       elseif token.type ==# s:syntax.headline.type
         let headline = s:parse_headline(token)
-        let parent = headline.level == 1 ? s:dotos[key].headlines : tree[headline.level - 1].children
+        let parent = headline.level == 1 ? doto.root_headline : tree[headline.level - 1]
         let tree[headline.level] = headline
         let index = s:parse_headline_content(headline, index, tokens)
-        call add(parent, headline)
+        call add(parent.headlines, headline)
       else
         let index += 1
       endif
     endwhile
-    return s:dotos[key]
+
+    if !has_key(doto, 'select')
+      func doto.select(string) dict
+        return self.root_headline.select(a:string)
+      endfunc
+    endif
+
+    return doto
   endif
 endfunction
