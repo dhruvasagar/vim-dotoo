@@ -4,12 +4,20 @@ endif
 let g:autoloaded_dotoo_time = 1
 
 let g:dotoo#time#date_regex = '\v^(\d{4})-(\d{2})-(\d{2})'
+let g:dotoo#time#day_regex = ' (\w{3})'
+
+let g:dotoo#time#date_day_regex = g:dotoo#time#date_regex . g:dotoo#time#day_regex
+
+let g:dotoo#time#time_regex = ' (\d{2}):(\d{2})'
+let g:dotoo#time#datetime_regex = g:dotoo#time#date_day_regex . g:dotoo#time#time_regex
+
+let g:dotoo#time#repeatable_regex = ' (\+?\d+[hdmy])'
+let g:dotoo#time#repeatable_date_regex = g:dotoo#time#date_day_regex . g:dotoo#time#repeatable_regex
+let g:dotoo#time#repeatable_datetime_regex = g:dotoo#time#datetime_regex . g:dotoo#time#repeatable_regex
+
 let g:dotoo#time#date_format = '%Y-%m-%d'
-let g:dotoo#time#date_a_regex = g:dotoo#time#date_regex . ' (\w{3})$'
-let g:dotoo#time#repeatable_date_regex = g:dotoo#time#date_regex . ' (\w{3})(\s?(\d{2}):(\d{2}))? (\+?\d+[hdmy])$'
-let g:dotoo#time#date_a_format = g:dotoo#time#date_format . ' %a'
-let g:dotoo#time#time_regex = g:dotoo#time#date_regex . ' (\w{3}) (\d{2}):(\d{2})$'
-let g:dotoo#time#time_format = g:dotoo#time#date_a_regex . ' %H:%M'
+let g:dotoo#time#date_day_format = g:dotoo#time#date_format . ' %a'
+let g:dotoo#time#datetime_format = g:dotoo#time#date_day_regex . ' %H:%M'
 
 " In Vim, -4 / 3 == -1.  Let's return -2 instead.
 function! s:div(a, b)
@@ -30,11 +38,6 @@ function! s:jd(year, mon, day)
   return jul - s:div(y, 100) + s:div(y, 400) + 38
 endfunction
 let s:epoch_jd = s:jd(1970, 1, 1)
-
-function! s:jd_to_ymd(jd)
-  let dt = s:localtime(s:days_to_seconds(a:jd))
-  return [dt.year, dt.month, dt.day]
-endfunction
 
 function! s:localtime(...)
   let ts  = a:0 ? a:1 : has('unix') ? reltimestr(reltime()) : localtime() . '.0'
@@ -97,11 +100,11 @@ function! s:to_seconds(time)
   elseif type(a:time) == type('')
     if empty(a:time)
       return s:localtime().to_seconds()
-    elseif a:time =~# g:dotoo#time#date_regex || a:time =~# g:dotoo#time#date_a_regex || a:time =~# g:dotoo#time#repeatable_date_regex
+    elseif a:time =~# g:dotoo#time#date_regex.'$' || a:time =~# g:dotoo#time#date_day_regex.'$' || a:time =~# g:dotoo#time#repeatable_date_regex.'$'
       let [y, m, d] = matchlist(a:time, g:dotoo#time#date_regex)[1:3]
       let seconds = s:days_to_seconds(s:jd(y, m, d) - s:epoch_jd)
-    elseif a:time =~# g:dotoo#time#time_regex
-      let [y, m, d, a, H, M] = matchlist(a:time, g:dotoo#time#time_regex)[1:6]
+    elseif a:time =~# g:dotoo#time#datetime_regex.'$' || a:time =~# g:dotoo#time#repeatable_datetime_regex.'$'
+      let [y, m, d, a, H, M] = matchlist(a:time, g:dotoo#time#datetime_regex)[1:6]
       let seconds = 0
       let seconds += s:minutes_to_seconds(M)
       let seconds += s:hours_to_seconds(H)
@@ -127,8 +130,12 @@ function! dotoo#time#new(...)
   func obj.init(...) dict
     let dt = a:0 ? a:1 : ''
     let rp = ''
-    if type(dt) == type('') && dt =~# g:dotoo#time#repeatable_date_regex
-      let rp = matchlist(dt, g:dotoo#time#repeatable_date_regex)[8]
+    if type(dt) == type('')
+      if dt =~# g:dotoo#time#repeatable_date_regex . '$'
+        let rp = matchlist(dt, g:dotoo#time#repeatable_date_regex)[5]
+      elseif dt =~# g:dotoo#time#repeatable_datetime_regex . '$'
+        let rp = matchlist(dt, g:dotoo#time#repeatable_datetime_regex)[7]
+      endif
     endif
     let self.datetime = s:localtime(s:to_seconds(dt), rp)
     return self
@@ -203,7 +210,7 @@ function! dotoo#time#new(...)
   endfunc
 
   func obj.to_string(...) dict
-    let format = a:0 ? a:1 : g:dotoo#time#date_a_format
+    let format = a:0 ? a:1 : g:dotoo#time#date_day_format
     return strftime(format, self.to_seconds())
   endfunc
 
@@ -227,7 +234,7 @@ function! dotoo#time#new(...)
       " e.g.   1y 2m -3d 4h +5M 6s
       " NOTE: 'm' and 'M' are case sensitive, but the others are not
       let seconds = 0
-      let [y, m , d] = s:jd_to_ymd(self.datetime.depoch)
+      let [y, m, d, H, M, S] = [self.datetime.year, self.datetime.month, self.datetime.day, self.datetime.hour, self.datetime.minute, self.datetime.second]
       for amt in split(amount, '\s\+')
         let [n, type] = matchlist(amt, '\c\([-+]\?\d\+\)\([ymwdhs]\)')[1:2]
         if type == 'y'
@@ -248,6 +255,9 @@ function! dotoo#time#new(...)
           throw 'Unknown adjustment type: ' . string(type)
         endif
       endfor
+      let seconds += S
+      let seconds += s:minutes_to_seconds(M)
+      let seconds += s:hours_to_seconds(H)
       let seconds += s:days_to_seconds(s:jd(y, m, d) - s:epoch_jd)
       let datetime = s:localtime(seconds)
       let adjusted = 1
