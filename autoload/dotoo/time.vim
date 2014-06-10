@@ -1,15 +1,15 @@
-if exists('g:autoloaded_doto_time')
+if exists('g:autoloaded_dotoo_time')
   finish
 endif
-let g:autoloaded_doto_time = 1
+let g:autoloaded_dotoo_time = 1
 
-let g:doto#time#date_regex = '\v^(\d{4})-(\d{2})-(\d{2})'
-let g:doto#time#date_format = '%Y-%m-%d'
-let g:doto#time#date_a_regex = g:doto#time#date_regex . ' (\w{3})$'
-let g:doto#time#repeatable_date_regex = g:doto#time#date_regex . ' (\w{3})(\s?(\d{2}):(\d{2}))? (\+?\d+[hdmy])$'
-let g:doto#time#date_a_format = '%Y-%m-%d %a'
-let g:doto#time#time_regex = '\v^(\d{4})-(\d{2})-(\d{2}) (\w{3}) (\d{2}):(\d{2})$'
-let g:doto#time#time_format = '%Y-%m-%d %a %H:%M'
+let g:dotoo#time#date_regex = '\v^(\d{4})-(\d{2})-(\d{2})'
+let g:dotoo#time#date_format = '%Y-%m-%d'
+let g:dotoo#time#date_a_regex = g:dotoo#time#date_regex . ' (\w{3})$'
+let g:dotoo#time#repeatable_date_regex = g:dotoo#time#date_regex . ' (\w{3})(\s?(\d{2}):(\d{2}))? (\+?\d+[hdmy])$'
+let g:dotoo#time#date_a_format = g:dotoo#time#date_format . ' %a'
+let g:dotoo#time#time_regex = g:dotoo#time#date_regex . ' (\w{3}) (\d{2}):(\d{2})$'
+let g:dotoo#time#time_format = g:dotoo#time#date_a_regex . ' %H:%M'
 
 " In Vim, -4 / 3 == -1.  Let's return -2 instead.
 function! s:div(a, b)
@@ -97,11 +97,11 @@ function! s:to_seconds(time)
   elseif type(a:time) == type('')
     if empty(a:time)
       return s:localtime().to_seconds()
-    elseif a:time =~# g:doto#time#date_regex || a:time =~# g:doto#time#date_a_regex || a:time =~# g:doto#time#repeatable_date_regex
-      let [y, m, d] = matchlist(a:time, g:doto#time#date_regex)[1:3]
+    elseif a:time =~# g:dotoo#time#date_regex || a:time =~# g:dotoo#time#date_a_regex || a:time =~# g:dotoo#time#repeatable_date_regex
+      let [y, m, d] = matchlist(a:time, g:dotoo#time#date_regex)[1:3]
       let seconds = s:days_to_seconds(s:jd(y, m, d) - s:epoch_jd)
-    elseif a:time =~# g:doto#time#time_regex
-      let [y, m, d, a, H, M] = matchlist(a:time, g:doto#time#time_regex)[1:6]
+    elseif a:time =~# g:dotoo#time#time_regex
+      let [y, m, d, a, H, M] = matchlist(a:time, g:dotoo#time#time_regex)[1:6]
       let seconds = 0
       let seconds += s:minutes_to_seconds(M)
       let seconds += s:hours_to_seconds(H)
@@ -112,23 +112,23 @@ function! s:to_seconds(time)
   return seconds
 endfunction
 
-function! doto#time#start_of(time)
+function! dotoo#time#start_of(time)
   if a:time ==# 'month'
-    return doto#time#new(strftime('%Y-%m-') . '01')
+    return dotoo#time#new(strftime('%Y-%m-') . '01')
   elseif a:time ==# 'day'
-    return doto#time#new(strftime('%Y-%m-%d'))
+    return dotoo#time#new(strftime('%Y-%m-%d'))
   endif
 endfunction
 
-function! doto#time#new(...)
+function! dotoo#time#new(...)
   let dt = a:0 ? a:1 : ''
   let obj = {}
 
   func obj.init(...) dict
     let dt = a:0 ? a:1 : ''
     let rp = ''
-    if type(dt) == type('') && dt =~# g:doto#time#repeatable_date_regex
-      let rp = matchlist(dt, g:doto#time#repeatable_date_regex)[8]
+    if type(dt) == type('') && dt =~# g:dotoo#time#repeatable_date_regex
+      let rp = matchlist(dt, g:dotoo#time#repeatable_date_regex)[8]
     endif
     let self.datetime = s:localtime(s:to_seconds(dt), rp)
     return self
@@ -203,20 +203,20 @@ function! doto#time#new(...)
   endfunc
 
   func obj.to_string(...) dict
-    let format = a:0 ? a:1 : g:doto#time#date_a_format
+    let format = a:0 ? a:1 : g:dotoo#time#date_a_format
     return strftime(format, self.to_seconds())
   endfunc
 
   func obj.add(other) dict
     let datetime = s:localtime(self.datetime.to_seconds()
           \ + s:to_seconds(a:other))
-    return doto#time#new(datetime)
+    return dotoo#time#new(datetime)
   endfunc
 
   func obj.sub(other) dict
     let datetime = s:localtime(self.datetime.to_seconds()
           \ - s:to_seconds(a:other))
-    return doto#time#new(datetime)
+    return dotoo#time#new(datetime)
   endfunc
 
   func obj.adjust(amount) dict
@@ -257,7 +257,7 @@ function! doto#time#new(...)
     if ! adjusted
       let datetime = s:localtime(self.datetime.to_seconds() + seconds)
     endif
-    return doto#time#new(datetime)
+    return dotoo#time#new(datetime)
   endfunction
 
   func obj.repeat() dict
@@ -270,7 +270,7 @@ function! doto#time#new(...)
     if empty(self.datetime.repeat)
       return self
     else
-      let now = doto#time#new()
+      let now = dotoo#time#new()
       if has_key(self, 'repeated_until') && self.repeated_until.before(now)
         return self.repeated_until
       endif

@@ -1,7 +1,7 @@
-if exists('g:autoloaded_doto_parser')
+if exists('g:autoloaded_dotoo_parser')
   finish
 endif
-let g:autoloaded_doto_parser = 1
+let g:autoloaded_dotoo_parser = 1
 
 " Lexer {{{1
 let s:syntax = {}
@@ -68,7 +68,7 @@ function! s:tokenize(file) abort
 endfunction
 
 " Parser {{{1
-let s:dotos = {}
+let s:dotoos = {}
 function! s:parse_line(token)
   return a:token.content[0]
 endfunction
@@ -111,7 +111,7 @@ endfunction
 
 function! s:parse_metadata(token)
   let metadata = {}
-  let metadata[tolower(a:token.content[0])] = doto#time#new(a:token.content[1])
+  let metadata[tolower(a:token.content[0])] = dotoo#time#new(a:token.content[1])
   return metadata
 endfunction
 
@@ -133,8 +133,8 @@ function! s:parse_logbook(headline, index, tokens)
   if index < len(a:tokens) | let token = a:tokens[index] | endif
   while index < len(a:tokens) && token.type ==# s:syntax.logbook_content.type
     let log = {}
-    let log.start = doto#time#new(token.content[0])
-    let log.end = doto#time#new(token.content[2])
+    let log.start = dotoo#time#new(token.content[0])
+    let log.end = dotoo#time#new(token.content[2])
     call add(a:headline.logbook, log)
     let index += 1
     if index < len(a:tokens) | let token = a:tokens[index] | endif
@@ -162,15 +162,15 @@ function! s:parse_headline_content(headline, index, tokens)
 endfunction
 
 let s:parsed_tokens = {}
-function! doto#parser#parse(file, ...)
+function! dotoo#parser#parse(file, ...)
   let force = a:0 ? a:1 : 0
   let key = fnamemodify(a:file, ':p:t:r')
-  if has_key(s:dotos, key) && !force
-    return s:dotos[key]
+  if has_key(s:dotoos, key) && !force
+    return s:dotoos[key]
   else
-    if force || !has_key(s:dotos, key)
+    if force || !has_key(s:dotoos, key)
       let root_headline = s:parse_headline({'lnum': 0, 'content': ['','','','','']})
-      let s:dotos[key] = {
+      let s:dotoos[key] = {
             \ 'key': key,
             \ 'file': a:file,
             \ 'directives': {},
@@ -179,7 +179,7 @@ function! doto#parser#parse(file, ...)
             \ }
       let s:parsed_tokens[key] = {}
     endif
-    let doto = s:dotos[key]
+    let dotoo = s:dotoos[key]
     if !filereadable(a:file) | return | endif
     let index = 0
     let tree = {}
@@ -193,14 +193,14 @@ function! doto#parser#parse(file, ...)
         let s:parsed_tokens[key][token.lnum] = token
       endif
       if token.type ==# s:syntax.directive.type
-        call extend(doto.directives, s:parse_directive(token))
+        call extend(dotoo.directives, s:parse_directive(token))
         let index += 1
       elseif token.type ==# s:syntax.blank.type
-        call add(doto.blank_lines, token.lnum)
+        call add(dotoo.blank_lines, token.lnum)
         let index += 1
       elseif token.type ==# s:syntax.headline.type
         let headline = s:parse_headline(token)
-        let parent = headline.level == 1 ? doto.root_headline : tree[headline.level - 1]
+        let parent = headline.level == 1 ? dotoo.root_headline : tree[headline.level - 1]
         let tree[headline.level] = headline
         let index = s:parse_headline_content(headline, index, tokens)
         call add(parent.headlines, headline)
@@ -209,12 +209,12 @@ function! doto#parser#parse(file, ...)
       endif
     endwhile
 
-    if !has_key(doto, 'select')
-      func doto.select(string) dict
+    if !has_key(dotoo, 'select')
+      func dotoo.select(string) dict
         return self.root_headline.select(a:string)
       endfunc
     endif
 
-    return doto
+    return dotoo
   endif
 endfunction
