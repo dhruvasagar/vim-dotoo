@@ -68,7 +68,6 @@ function! s:tokenize(file) abort
 endfunction
 
 " Parser {{{1
-let s:dotoos = {}
 function! s:parse_line(token)
   return a:token.content[0]
 endfunction
@@ -77,6 +76,10 @@ function! s:parse_directive(token)
   let directive = {}
   let directive[a:token.content[0]] = a:token.content[1]
   return directive
+endfunction
+
+function! s:sort_deadlines(h1, h2)
+  return a:h2.deadline.diff(a:h1.deadline)
 endfunction
 
 function! s:parse_headline(token)
@@ -96,7 +99,7 @@ function! s:parse_headline(token)
     for headline in self.headlines
       let headlines += headline.select(a:string)
     endfor
-    return headlines
+    return sort(headlines, 's:sort_deadlines')
   endfunc
 
   func headline.nearest_deadline(end) dict
@@ -120,6 +123,7 @@ function! s:parse_properties(headline, index, tokens)
   if index < len(a:tokens) | let token = a:tokens[index] | endif
   while index < len(a:tokens) && token.type ==# s:syntax.properties_content.type
     let content = {}
+    let content.lnum = token.lnum
     let content[token.content[1]] = token.content[2]
     cal extend(a:headline.properties, content)
     let index += 1
@@ -135,6 +139,7 @@ function! s:parse_logbook(headline, index, tokens)
     let log = {}
     let log.start = dotoo#time#new(token.content[0])
     let log.end = dotoo#time#new(token.content[2])
+    let log.lnum = token.lnum
     call add(a:headline.logbook, log)
     let index += 1
     if index < len(a:tokens) | let token = a:tokens[index] | endif
@@ -161,8 +166,10 @@ function! s:parse_headline_content(headline, index, tokens)
   return index
 endfunction
 
+let s:dotoos = {}
 let s:parsed_tokens = {}
 function! dotoo#parser#parse(file, ...)
+  if !filereadable(a:file) | return | endif
   let force = a:0 ? a:1 : 0
   let key = fnamemodify(a:file, ':p:t:r')
   if has_key(s:dotoos, key) && !force
@@ -170,17 +177,11 @@ function! dotoo#parser#parse(file, ...)
   else
     if force || !has_key(s:dotoos, key)
       let root_headline = s:parse_headline({'lnum': 0, 'content': ['','','','','']})
-      let s:dotoos[key] = {
-            \ 'key': key,
-            \ 'file': a:file,
-            \ 'directives': {},
-            \ 'blank_lines': [],
-            \ 'root_headline': root_headline
-            \ }
+      let s:dotoos[key] = { 'key': key, 'file': a:file, 'directives': {},
+                          \ 'blank_lines': [], 'root_headline': root_headline }
       let s:parsed_tokens[key] = {}
     endif
     let dotoo = s:dotoos[key]
-    if !filereadable(a:file) | return | endif
     let index = 0
     let tree = {}
     let tokens = s:tokenize(a:file)
@@ -209,11 +210,9 @@ function! dotoo#parser#parse(file, ...)
       endif
     endwhile
 
-    if !has_key(dotoo, 'select')
-      func dotoo.select(string) dict
-        return self.root_headline.select(a:string)
-      endfunc
-    endif
+    func dotoo.select(string) dict
+      return self.root_headline.select(a:string)
+    endfunc
 
     return dotoo
   endif

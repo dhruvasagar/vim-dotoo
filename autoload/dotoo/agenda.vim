@@ -21,7 +21,16 @@ let s:tmpfile = tempname()
 function! s:Edit(cmd)
   exe a:cmd s:tmpfile
   if a:cmd =~# 'pedit' | wincmd P | endif
-  setl buftype=nofile bufhidden=wipe nobuflisted ft=dotoo_agenda
+  setl buftype=nofile bufhidden=wipe nobuflisted readonly ft=dotoo_agenda
+endfunction
+
+function! s:agenda_view(agendas)
+  call s:Edit('pedit')
+  nnoremap <buffer> <silent> q :<C-U>bdelete<CR>
+  nnoremap <buffer> <silent> R :<C-U>call dotoo#agenda#agenda(1)<CR>
+  setl modifiable
+  silent call setline(1, a:agendas)
+  setl nomodifiable
 endfunction
 
 function! dotoo#agenda#agenda(...)
@@ -46,8 +55,5 @@ function! dotoo#agenda#agenda(...)
     endfor
   endfor
 
-  call s:Edit('pedit')
-  nnoremap <buffer> <silent> q :<C-U>bdelete<CR>
-  nnoremap <buffer> <silent> R :<C-U>call <SID>agenda(1)<CR>
-  call setline(1, agendas)
+  call s:agenda_view(agendas)
 endfunction
