@@ -204,7 +204,7 @@ function! dotoo#parser#parse(file, ...)
     let tokens = s:tokenize(a:file)
     while index < len(tokens)
       let token = tokens[index]
-      if !force && has_key(s:parsed_tokens[key], token.lnum) && s:parsed_tokens[key][token.lnum] == token
+      if has_key(s:parsed_tokens[key], token.lnum) && s:parsed_tokens[key][token.lnum] == token
         let index += 1
         continue
       else
