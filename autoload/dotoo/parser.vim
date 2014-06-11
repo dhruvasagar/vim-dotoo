@@ -107,6 +107,17 @@ function! s:parse_headline(token)
     return self.todo =~? join(g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords, '|'):], '\|')
   endfunc
 
+  func headline.change_todo(index) dict
+    if type(a:index) == type(0)
+      let self.todo = g:dotoo#parser#todo_keywords[a:index]
+    elseif type(a:index) == type('')
+      let todo = get(filter(copy(g:dotoo#parser#todo_keywords), 'v:val =~? "^".a:index'), 0)
+      if todo || !empty(todo)
+        let self.todo = g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords, todo)]
+      endif
+    endif
+  endfunc
+
   func headline.select(string) dict
     let headlines = []
     if has_key(self, a:string) && !self.done() | let headlines += [self] | endif

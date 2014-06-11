@@ -31,6 +31,7 @@ endfunction
 function! s:agenda_setup()
   nnoremap <buffer> <silent> q :<C-U>bdelete<CR>
   nnoremap <buffer> <silent> r :<C-U>call dotoo#agenda#agenda(1)<CR>
+  nnoremap <buffer> <silent> <nowait> c :<C-U>call <SID>change_headline_todo()<CR>
   nnoremap <buffer> <silent> <CR> :<C-U>call <SID>goto_headline('buffer')<CR>
   nnoremap <buffer> <silent> <C-S> :<C-U>call <SID>goto_headline('split')<CR>
   nnoremap <buffer> <silent> <C-V> :<C-U>call <SID>goto_headline('vsplit')<CR>
@@ -51,6 +52,16 @@ function! s:goto_headline(cmd)
   let headline = s:agenda_headlines[line('.')-2]
   exec a:cmd headline.file
   exec 'normal!' headline.lnum . 'G'
+endfunction
+
+function! s:change_headline_todo()
+  let headline = s:agenda_headlines[line('.')-2]
+  let todo_keywords = filter(copy(g:dotoo#parser#todo_keywords), 'v:val !~# "|"')
+  let todo_keywords = map(todo_keywords, '"[" . v:val[0] . "]" . v:val')
+  let selected = input("Enter a char to change todo state: \n" . join(todo_keywords, ' ') . "\n:")
+  if !empty(selected)
+    call headline.change_todo(selected)
+  end
 endfunction
 
 let s:agendas = []
