@@ -92,14 +92,15 @@ function! s:sort_deadlines(h1, h2)
   return a:h1.next_deadline().diff(a:h2.next_deadline())
 endfunction
 
-function! s:parse_headline(token)
+function! dotoo#parser#create_headline(...)
+  let token = a:0 ? a:1 : {'lnum': 0, 'content': map(range(5),'""')}
   let headline =  {
-        \ 'level': len(a:token.content[0]),
-        \ 'todo': a:token.content[1],
-        \ 'priority': a:token.content[2],
-        \ 'title': a:token.content[3],
-        \ 'tags': a:token.content[4],
-        \ 'lnum': a:token.lnum,
+        \ 'level': len(token.content[0]),
+        \ 'todo': token.content[1],
+        \ 'priority': token.content[2],
+        \ 'title': token.content[3],
+        \ 'tags': token.content[4],
+        \ 'lnum': token.lnum,
         \ 'content': '', 'metadata': {}, 'properties': {}, 'logbook': [], 'headlines': []
         \ }
 
@@ -118,11 +119,17 @@ function! s:parse_headline(token)
     endif
   endfunc
 
-  func headline.select(string) dict
+  func headline.select(keys) dict
     let headlines = []
-    if has_key(self, a:string) && !self.done() | let headlines += [self] | endif
+    for key in a:keys
+      if has_key(self, key)
+        if self.done() | break | endif
+        call add(headlines, self)
+        break
+      endif
+    endfor
     for headline in self.headlines
-      let headlines += headline.select(a:string)
+      let headlines += headline.select(a:keys)
     endfor
     return sort(headlines, 's:sort_deadlines')
   endfunc
@@ -131,6 +138,8 @@ function! s:parse_headline(token)
     let force = a:0 ? a:1 : 0
     if has_key(self, 'deadline')
       return self.deadline.next_repeat(force)
+    elseif has_key(self, 'scheduled')
+      return self.scheduled.next_repeat(force)
     endif
     return ''
   endfunc
@@ -143,6 +152,10 @@ function! s:parse_headline(token)
     endif
   endfunc
 
+  func headline.save() dict
+  endfunc
+
+  let headline.id = sha256(string(headline))
   return headline
 endfunction
 
@@ -210,7 +223,7 @@ function! dotoo#parser#parse(file, ...)
     return s:dotoos[key]
   else
     if force || !has_key(s:dotoos, key)
-      let root_headline = s:parse_headline({'lnum': 0, 'content': ['','','','','']})
+      let root_headline = dotoo#parser#create_headline()
       let s:dotoos[key] = { 'key': key, 'file': a:file, 'directives': {},
                           \ 'blank_lines': [], 'root_headline': root_headline }
       let s:parsed_tokens[key] = {}
@@ -234,7 +247,7 @@ function! dotoo#parser#parse(file, ...)
         call add(dotoo.blank_lines, token.lnum)
         let index += 1
       elseif token.type ==# s:syntax.headline.type
-        let headline = s:parse_headline(token)
+        let headline = dotoo#parser#create_headline(token)
         let headline.file = dotoo.file
         let parent = headline.level == 1 ? dotoo.root_headline : tree[headline.level - 1]
         let tree[headline.level] = headline
@@ -245,8 +258,8 @@ function! dotoo#parser#parse(file, ...)
       endif
     endwhile
 
-    func dotoo.select(string) dict
-      return self.root_headline.select(a:string)
+    func dotoo.select(keys) dict
+      return self.root_headline.select(a:keys)
     endfunc
 
     return dotoo

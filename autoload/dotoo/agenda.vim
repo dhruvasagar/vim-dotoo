@@ -74,7 +74,7 @@ function! dotoo#agenda#agenda(...)
   call s:load_agenda_files(force)
 
   for dotoos in s:agenda_dotoos
-    let _deadlines = dotoos.select('deadline')
+    let _deadlines = dotoos.select(['deadline', 'scheduled'])
     let deadlines[dotoos.key] = filter(_deadlines, 'v:val.next_deadline(force).before(warning_limit)')
   endfor
 
