@@ -3,9 +3,17 @@ if exists('g:autoloaded_dotoo_parser')
 endif
 let g:autoloaded_dotoo_parser = 1
 
+let g:dotoo#parser#todo_keywords = ['WAITING',
+      \ 'HOLD',
+      \ 'TODO',
+      \ 'NEXT',
+      \ 'PHONE',
+      \ 'MEETING',
+      \ 'CANCELLED',
+      \ 'DONE']
+
 " Lexer {{{1
 let s:syntax = {}
-
 function! s:define(name, pattern)
   let obj = {
         \ 'type': a:name,
@@ -26,7 +34,7 @@ endfunction
 
 call s:define('blank', '\v^$')
 call s:define('directive', '\v^#\+(\w+): (.*)$')
-call s:define('headline', '\v^(\*+)\s?(<[A-Z]+>)?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
+call s:define('headline', '\v^(\*+)\s?('.join(g:dotoo#parser#todo_keywords,'|').')?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
 call s:define('metadata', '\v^(DEADLINE|CLOSED|SCHEDULED): \[(.*)\]$')
 call s:define('properties', '\v^:PROPERTIES:$')
 call s:define('logbook', '\v^:LOGBOOK:$')
@@ -108,6 +116,14 @@ function! s:parse_headline(token)
       return self.deadline.next_repeat(force)
     endif
     return ''
+  endfunc
+
+  func headline.todo_title() dict
+    if empty(self.todo)
+      return self.title
+    else
+      return self.todo . ' ' . self.title
+    endif
   endfunc
 
   return headline
