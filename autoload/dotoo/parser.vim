@@ -224,6 +224,7 @@ function! dotoo#parser#parse(file, ...)
         let index += 1
       elseif token.type ==# s:syntax.headline.type
         let headline = s:parse_headline(token)
+        let headline.file = dotoo.file
         let parent = headline.level == 1 ? dotoo.root_headline : tree[headline.level - 1]
         let tree[headline.level] = headline
         let index = s:parse_headline_content(headline, index, tokens)

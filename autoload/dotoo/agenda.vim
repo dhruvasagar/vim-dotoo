@@ -22,6 +22,7 @@ let s:tmpfile = tempname()
 function! s:Edit(cmd)
   exe a:cmd s:tmpfile
   if a:cmd =~# 'pedit' | wincmd P | endif
+  setl winheight=20
   setl buftype=nofile bufhidden=wipe nobuflisted
   setl readonly nofoldenable nolist
   setf dotoo_agenda
@@ -30,6 +31,11 @@ endfunction
 function! s:agenda_setup()
   nnoremap <buffer> <silent> q :<C-U>bdelete<CR>
   nnoremap <buffer> <silent> r :<C-U>call dotoo#agenda#agenda(1)<CR>
+  nnoremap <buffer> <silent> <CR> :<C-U>call <SID>goto_headline('buffer')<CR>
+  nnoremap <buffer> <silent> <C-S> :<C-U>call <SID>goto_headline('split')<CR>
+  nnoremap <buffer> <silent> <C-V> :<C-U>call <SID>goto_headline('vsplit')<CR>
+  nnoremap <buffer> <silent> <C-T> :<C-U>call <SID>goto_headline('tabe')<CR>
+  nmap <buffer> <silent> <Tab> <C-V>
 endfunction
 
 function! s:agenda_view(agendas)
@@ -41,7 +47,14 @@ function! s:agenda_view(agendas)
   setl nomodifiable
 endfunction
 
+function! s:goto_headline(cmd)
+  let headline = s:agenda_headlines[line('.')-2]
+  exec a:cmd headline.file
+  exec 'normal!' headline.lnum . 'G'
+endfunction
+
 let s:agendas = []
+let s:agenda_headlines = []
 function! dotoo#agenda#agenda(...)
   let force = a:0 ? a:1 : 0
   let deadlines = {}
@@ -62,6 +75,7 @@ function! dotoo#agenda#agenda(...)
         let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
         let agenda = printf('%s %10s:' . time_pf . '%-60s%s', '', key, headline.next_deadline(force).time_ago(), headline.todo_title(), headline.tags)
         call add(s:agendas, agenda)
+        call add(s:agenda_headlines, headline)
       endfor
     endfor
   endif
