@@ -47,7 +47,7 @@ endif
 unlet! s:i s:j s:contains
 let s:i = 1
 let s:j = len(g:org_heading_highlight_colors)
-let s:contains = ' contains=org_timestamp,org_timestamp_inactive,org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt,org_bold,org_italic,org_underline,org_code,org_verbatim'
+let s:contains = ' contains=org_timestamp,org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt,org_bold,org_italic,org_underline,org_code,org_verbatim'
 if g:org_heading_shade_leading_stars == 1
 	let s:contains = s:contains . ',org_shade_stars'
 	syntax match org_shade_stars /^\*\{2,\}/me=e-1 contained
@@ -208,34 +208,25 @@ unlet! s:todo_headings
 " }}}
 " }}}
 " Timestamps: {{{
-"<2003-09-16 Tue>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
-"<2003-09-16 Tue 12:00>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>\)/
-"<2003-09-16 Tue 12:00-12:30>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d-\d\d:\d\d>\)/
-
-"<2003-09-16 Tue>--<2003-09-16 Tue>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>--<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
-"<2003-09-16 Tue 12:00>--<2003-09-16 Tue 12:00>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>--<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>\)/
-
-syn match org_timestamp /\(<%%(diary-float.\+>\)/
-
 "[2003-09-16 Tue]
-syn match org_timestamp_inactive /\(\[\d\d\d\d-\d\d-\d\d \a\a\a\]\)/
+syn match org_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a\]\)/
 "[2003-09-16 Tue 12:00]
-syn match org_timestamp_inactive /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]\)/
+syn match org_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]\)/
+
+"[2003-09-16 Tue +1m]
+syn match org_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a +\d\+[ymwdhs]\]\)/
+
+"[2003-09-15 Tue 12:00 +1m]
+syn match org_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d +\d\+[ymwdhs]\]\)/
 
 "[2003-09-16 Tue]--[2003-09-16 Tue]
-syn match org_timestamp_inactive /\(\[\d\d\d\d-\d\d-\d\d \a\a\a\]--\[\d\d\d\d-\d\d-\d\d \a\a\a\]\)/
+syn match org_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a\]--\[\d\d\d\d-\d\d-\d\d \a\a\a\]\)/
 "[2003-09-16 Tue 12:00]--[2003-09-16 Tue 12:00]
-syn match org_timestamp_inactive /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]--\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]\)/
+syn match org_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]--\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]\)/
 
-syn match org_timestamp_inactive /\(\[%%(diary-float.\+\]\)/
+syn match org_timestamp /\(\[%%(diary-float.\+\]\)/
 
 hi def link org_timestamp PreProc
-hi def link org_timestamp_inactive Comment
 " }}}
 " Lists: {{{
 
@@ -271,7 +262,7 @@ syn match org_deadline_scheduled /^\s*\(DEADLINE\|SCHEDULED\):/
 hi def link org_deadline_scheduled PreProc
 " }}}
 " Tables: {{{
-syn match org_table /^\s*|.*/ contains=org_timestamp,org_timestamp_inactive,hyperlink,org_table_separator,org_table_horizontal_line
+syn match org_table /^\s*|.*/ contains=org_timestamp,hyperlink,org_table_separator,org_table_horizontal_line
 syn match org_table_separator /\(^\s*|[-+]\+|\?\||\)/ contained
 hi def link org_table_separator Type
 " }}}
@@ -295,7 +286,7 @@ syntax match  org_list_bullet   /^\s*[+-]\s/ nextgroup=org_list_item
 " 1) list item
 " 2. list item
 syntax match org_list_bullet /^\s*\w\+[.)]\s/ nextgroup=org_list_item
-syntax match org_list_item     /.*$/ contained contains=org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt,org_bold,org_italic,org_underline,org_code,org_verbatim,org_timestamp,org_timestamp_inactive
+syntax match org_list_item     /.*$/ contained contains=org_subtask_percent,org_subtask_number,org_subtask_percent_100,org_subtask_number_all,org_list_checkbox,org_list_dt,org_bold,org_italic,org_underline,org_code,org_verbatim,org_timestamp
 syntax match org_list_checkbox /\[[ X-]]/ contained
 syntax match org_list_dt /.*\s\+::/ contained
 hi def link org_list_bullet Identifier
