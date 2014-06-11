@@ -3,4 +3,4 @@ if exists('g:loaded_dotoo')
 endif
 let g:loaded_dotoo = 1
 
-nnoremap gA :<C-U>call dotoo#agenda#agenda()<CR>
+nnoremap <silent> gA :<C-U>call dotoo#agenda#agenda()<CR>
