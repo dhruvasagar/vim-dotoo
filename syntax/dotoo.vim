@@ -66,8 +66,8 @@ unlet! s:i s:j s:contains
 " }}}
 " Todo Keywords: {{{
 "" Load Settings: {{{
-if !exists('g:org_todo_keywords')
-	let g:org_todo_keywords = ['TODO', '|', 'DONE']
+if !exists('g:dotoo#parser#todo_keywords')
+	let g:dotoo#parser#todo_keywords = ['TODO', '|', 'DONE']
 endif
 
 if !exists('g:org_todo_keyword_faces')
@@ -90,7 +90,7 @@ unlet! s:i
 if !exists('g:loaded_org_syntax')
 	let g:loaded_org_syntax = 1
 
-	function! OrgExtendHighlightingGroup(base_group, new_group, settings)
+	function! s:OrgExtendHighlightingGroup(base_group, new_group, settings)
 		let l:base_hi = ''
 		redir => l:base_hi
 		silent execute 'highlight ' . a:base_group
@@ -99,7 +99,7 @@ if !exists('g:loaded_org_syntax')
 		execute 'highlight ' . a:new_group . l:group_hi . ' ' . a:settings
 	endfunction
 
-	function! OrgInterpretFaces(faces)
+	function! s:OrgInterpretFaces(faces)
 		let l:res_faces = ''
 		if type(a:faces) == 3
 			let l:style = []
@@ -193,7 +193,7 @@ if !exists('g:loaded_org_syntax')
 			for l:j in g:org_todo_keyword_faces
 				if l:j[0] == l:_i
 					let l:group = 'org_todo_keyword_face_' . l:_i
-					call OrgExtendHighlightingGroup(l:default_group, l:group, OrgInterpretFaces(l:j[1]))
+					call s:OrgExtendHighlightingGroup(l:default_group, l:group, s:OrgInterpretFaces(l:j[1]))
 					break
 				endif
 			endfor
@@ -203,7 +203,7 @@ if !exists('g:loaded_org_syntax')
 	endfunction
 endif
 
-call s:ReadTodoKeywords(g:org_todo_keywords, s:todo_headings)
+call s:ReadTodoKeywords(g:dotoo#parser#todo_keywords, s:todo_headings)
 unlet! s:todo_headings
 " }}}
 " }}}

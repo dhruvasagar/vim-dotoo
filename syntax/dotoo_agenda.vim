@@ -35,6 +35,92 @@ unlet! s:i
 
 if !exists('g:loaded_orgagenda_syntax')
 	let g:loaded_orgagenda_syntax = 1
+
+	function! s:OrgExtendHighlightingGroup(base_group, new_group, settings)
+		let l:base_hi = ''
+		redir => l:base_hi
+		silent execute 'highlight ' . a:base_group
+		redir END
+		let l:group_hi = substitute(split(l:base_hi, '\n')[0], '^' . a:base_group . '\s\+xxx', '', '')
+		execute 'highlight ' . a:new_group . l:group_hi . ' ' . a:settings
+	endfunction
+
+	function! s:OrgInterpretFaces(faces)
+		let l:res_faces = ''
+		if type(a:faces) == 3
+			let l:style = []
+			for l:f in a:faces
+				let l:_f = [l:f]
+				if type(l:f) == 3
+					let l:_f = l:f
+				endif
+				for l:g in l:_f
+					if type(l:g) == 1 && l:g =~ '^:'
+						if l:g !~ '[\t ]'
+							continue
+						endif
+						let l:k_v = split(l:g)
+						if l:k_v[0] == ':foreground'
+							let l:gui_color = ''
+							let l:found_gui_color = 0
+							for l:color in split(l:k_v[1], ',')
+								if l:color =~ '^#'
+									let l:found_gui_color = 1
+									let l:res_faces = l:res_faces . ' guifg=' . l:color
+								elseif l:color != ''
+									let l:gui_color = l:color
+									let l:res_faces = l:res_faces . ' ctermfg=' . l:color
+								endif
+							endfor
+							if ! l:found_gui_color && l:gui_color != ''
+								let l:res_faces = l:res_faces . ' guifg=' . l:gui_color
+							endif
+						elseif l:k_v[0] == ':background'
+							let l:gui_color = ''
+							let l:found_gui_color = 0
+							for l:color in split(l:k_v[1], ',')
+								if l:color =~ '^#'
+									let l:found_gui_color = 1
+									let l:res_faces = l:res_faces . ' guibg=' . l:color
+								elseif l:color != ''
+									let l:gui_color = l:color
+									let l:res_faces = l:res_faces . ' ctermbg=' . l:color
+								endif
+							endfor
+							if ! l:found_gui_color && l:gui_color != ''
+								let l:res_faces = l:res_faces . ' guibg=' . l:gui_color
+							endif
+						elseif l:k_v[0] == ':weight' || l:k_v[0] == ':slant' || l:k_v[0] == ':decoration'
+							if index(l:style, l:k_v[1]) == -1
+								call add(l:style, l:k_v[1])
+							endif
+						endif
+					elseif type(l:g) == 1
+						" TODO emacs interprets the color and automatically determines
+						" whether it should be set as foreground or background color
+						let l:res_faces = l:res_faces . ' ctermfg=' . l:k_v[1] . ' guifg=' . l:k_v[1]
+					endif
+				endfor
+			endfor
+			let l:s = ''
+			for l:i in l:style
+				if l:s == ''
+					let l:s = l:i
+				else
+					let l:s = l:s . ','. l:i
+				endif
+			endfor
+			if l:s != ''
+				let l:res_faces = l:res_faces . ' term=' . l:s . ' cterm=' . l:s . ' gui=' . l:s
+			endif
+		elseif type(a:faces) == 1
+			" TODO emacs interprets the color and automatically determines
+			" whether it should be set as foreground or background color
+			let l:res_faces = l:res_faces . ' ctermfg=' . a:faces . ' guifg=' . a:faces
+		endif
+		return l:res_faces
+	endfunction
+
 	function! s:ReadTodoKeywords(keywords, todo_headings)
 		let l:default_group = 'Todo'
 		for l:i in a:keywords
@@ -53,7 +139,7 @@ if !exists('g:loaded_orgagenda_syntax')
 			for l:j in g:org_todo_keyword_faces
 				if l:j[0] == l:_i
 					let l:group = 'orgtodo_todo_keyword_face_' . l:_i
-					call OrgExtendHighlightingGroup(l:default_group, l:group, OrgInterpretFaces(l:j[1]))
+					call s:OrgExtendHighlightingGroup(l:default_group, l:group, s:OrgInterpretFaces(l:j[1]))
 					break
 				endif
 			endfor
@@ -64,15 +150,15 @@ if !exists('g:loaded_orgagenda_syntax')
 endif
 
 "" Load Settings: {{{
-if !exists('g:org_todo_keywords')
-	let g:org_todo_keywords = ['TODO', '|', 'DONE']
+if !exists('g:dotoo#parser#todo_keywords')
+	let g:dotoo#parser#todo_keywords = ['TODO', '|', 'DONE']
 endif
 
 if !exists('g:org_todo_keyword_faces')
 	let g:org_todo_keyword_faces = []
 endif
 " }}}
-call s:ReadTodoKeywords(g:org_todo_keywords, s:todo_headings)
+call s:ReadTodoKeywords(g:dotoo#parser#todo_keywords, s:todo_headings)
 unlet! s:todo_headings
 
 " Timestamps
