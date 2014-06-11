@@ -43,14 +43,14 @@ function! dotoo#agenda#agenda(...)
 
   for dotoos in s:agenda_dotoos
     let _deadlines = dotoos.select('deadline')
-    let deadlines[dotoos.key] = filter(_deadlines, 'v:val.nearest_deadline(end).between(start, end)')
+    let deadlines[dotoos.key] = filter(_deadlines, 'v:val.next_deadline(force).between(start, end)')
   endfor
 
   let agendas = []
   for key in keys(deadlines)
     let headlines = deadlines[key]
     for headline in headlines
-      let agenda = printf('%10s: %20s:  %-30s%s', key, headline.nearest_deadline(end).time_ago(), headline.todo.' '.headline.title, empty(headline.tags) ? '' : headline.tags)
+      let agenda = printf('%10s: %20s:  %-30s%s', key, headline.next_deadline(force).time_ago(), headline.todo.' '.headline.title, empty(headline.tags) ? '' : headline.tags)
       call add(agendas, agenda)
     endfor
   endfor

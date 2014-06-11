@@ -270,27 +270,26 @@ function! dotoo#time#new(...)
     return dotoo#time#new(datetime)
   endfunction
 
-  func obj.repeat() dict
-    if !empty(self.datetime.repeat)
-      return self.adjust(self.datetime.repeat)
-    endif
-  endfunc
-
-  func obj.nearest_repeat(end) dict
+  func obj.next_repeat(...) dict
+    let force = a:0 ? a:1 : 0
     if empty(self.datetime.repeat)
       return self
     else
       let now = dotoo#time#new()
-      if has_key(self, 'repeated_until') && self.repeated_until.before(now)
+      if has_key(self, 'repeated_until') && !force
         return self.repeated_until
       endif
       let [time, u_time] = [self, self]
       " TODO: Optimize this.
-      while time.before(a:end)
+      while time.before(now)
         let u_time = time
         let time = time.adjust(self.datetime.repeat)
       endwhile
-      let self.repeated_until = u_time
+      if now.diff(u_time) <= time.diff(now)
+        let self.repeated_until = u_time
+      else
+        let self.repeated_until = time
+      endif
       return self.repeated_until
     endif
   endfunc

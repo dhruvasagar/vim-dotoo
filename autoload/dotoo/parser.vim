@@ -79,7 +79,7 @@ function! s:parse_directive(token)
 endfunction
 
 function! s:sort_deadlines(h1, h2)
-  return a:h2.deadline.diff(a:h1.deadline)
+  return a:h1.next_deadline().diff(a:h2.next_deadline())
 endfunction
 
 function! s:parse_headline(token)
@@ -102,9 +102,10 @@ function! s:parse_headline(token)
     return sort(headlines, 's:sort_deadlines')
   endfunc
 
-  func headline.nearest_deadline(end) dict
+  func headline.next_deadline(...) dict
+    let force = a:0 ? a:1 : 0
     if has_key(self, 'deadline')
-      return self.deadline.nearest_repeat(a:end)
+      return self.deadline.next_repeat(force)
     endif
     return ''
   endfunc
