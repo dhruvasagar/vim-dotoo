@@ -3,6 +3,7 @@ if exists('g:autoloaded_dotoo_agenda')
 endif
 let g:autoloaded_dotoo_agenda = 1
 
+let g:dotoo#agenda#warning_days = '30d'
 let g:dotoo#agenda#files = ['~/org-files/*.dotoo']
 
 let s:agenda_dotoos = []
@@ -28,7 +29,7 @@ endfunction
 
 function! s:agenda_setup()
   nnoremap <buffer> <silent> q :<C-U>bdelete<CR>
-  nnoremap <buffer> <silent> R :<C-U>call dotoo#agenda#agenda(1)<CR>
+  nnoremap <buffer> <silent> r :<C-U>call dotoo#agenda#agenda(1)<CR>
 endfunction
 
 function! s:agenda_view(agendas)
@@ -43,15 +44,14 @@ endfunction
 let s:agendas = []
 function! dotoo#agenda#agenda(...)
   let force = a:0 ? a:1 : 0
-  let start = dotoo#time#start_of('month')
-  let end = start.adjust('1m -1d')
   let deadlines = {}
+  let warning_limit = dotoo#time#new().adjust(g:dotoo#agenda#warning_days)
 
   call s:load_agenda_files(force)
 
   for dotoos in s:agenda_dotoos
     let _deadlines = dotoos.select('deadline')
-    let deadlines[dotoos.key] = filter(_deadlines, 'v:val.next_deadline(force).between(start, end)')
+    let deadlines[dotoos.key] = filter(_deadlines, 'v:val.next_deadline(force).before(warning_limit)')
   endfor
 
   if force || empty(s:agendas)

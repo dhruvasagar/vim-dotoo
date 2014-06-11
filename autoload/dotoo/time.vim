@@ -3,6 +3,8 @@ if exists('g:autoloaded_dotoo_time')
 endif
 let g:autoloaded_dotoo_time = 1
 
+let g:dotoo#time#time_ago_short = 0
+
 let g:dotoo#time#date_regex = '\v^(\d{4})-(\d{2})-(\d{2})'
 let g:dotoo#time#day_regex = ' (\w{3})'
 
@@ -117,9 +119,26 @@ endfunction
 
 function! dotoo#time#start_of(time)
   if a:time ==# 'month'
-    return dotoo#time#new(strftime('%Y-%m-') . '01')
+    return dotoo#time#new(printf('%s-%02s-%02s', strftime('%Y'), strftime('%m'), '1'))
+  elseif a:time ==# 'week'
+    let now = dotoo#time#new()
+    while now.to_string('%a') !=# 'Mon'
+      let now = now.adjust('-1d')
+    endwhile
+    return now
   elseif a:time ==# 'day'
     return dotoo#time#new(strftime('%Y-%m-%d'))
+  endif
+endfunction
+
+function! dotoo#time#end_of(time)
+  let start_of = dotoo#time#start_of(a:time)
+  if a:time ==# 'month'
+    return dotoo#time#new(printf('%s-%02s-%02s', strftime('%Y'), strftime('%m')+1, '1')).adjust('-1d')
+  elseif a:time ==# 'week'
+    return start_of.adjust('+1w -1d')
+  elseif a:time ==# 'day'
+    return start_of.adjust('+1d')
   endif
 endfunction
 
@@ -170,7 +189,8 @@ function! dotoo#time#new(...)
     return self.to_seconds() - a:other.to_seconds()
   endfunc
 
-  func obj.diff_in_words(other) dict
+  func obj.diff_in_words(other, ...) dict
+    let short = a:0 ? a:1 : 0
     let diff = self.diff(a:other)
     let adiff = abs(diff)
     let diffs = []
@@ -186,11 +206,17 @@ function! dotoo#time#new(...)
     let hours = hours % 24
     let days = days % 365
 
+    if short && diff > 0
+      let mins = secs && mins ? mins + 1 : mins
+      let hours = mins && hours ? hours + 1 : hours
+      let days = hours && days ? days + 1 : days
+    endif
+
     if years | call add(diffs, years.'y') | endif
-    if days | call add(diffs, days.'d') | endif
-    if hours | call add(diffs, hours.'h') | endif
-    if mins | call add(diffs, mins.'m') | endif
-    if secs | call add(diffs, secs.'s') | endif
+    if days && (!short || empty(diffs)) | call add(diffs, days.'d') | endif
+    if hours && (!short || empty(diffs)) | call add(diffs, hours.'h') | endif
+    if mins && (!short || empty(diffs)) | call add(diffs, mins.'m') | endif
+    if secs && (!short || empty(diffs)) | call add(diffs, secs.'s') | endif
 
     if empty(diffs)
       call add(diffs, 'now')
@@ -205,8 +231,9 @@ function! dotoo#time#new(...)
     return join(diffs, ' ')
   endfunc
 
-  func obj.time_ago() dict
-    return self.diff_in_words(s:localtime())
+  func obj.time_ago(...) dict
+    let short = a:0 ? a:1 : g:dotoo#time#time_ago_short
+    return self.diff_in_words(s:localtime(), short)
   endfunc
 
   func obj.to_string(...) dict
