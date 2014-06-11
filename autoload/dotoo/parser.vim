@@ -9,6 +9,7 @@ let g:dotoo#parser#todo_keywords = ['WAITING',
       \ 'NEXT',
       \ 'PHONE',
       \ 'MEETING',
+      \ '|',
       \ 'CANCELLED',
       \ 'DONE']
 
@@ -32,9 +33,10 @@ function! s:define(name, pattern)
   let s:syntax[a:name] = obj
 endfunction
 
+let s:todo_keywords = join(filter(g:dotoo#parser#todo_keywords, 'v:val !~# "|"'), '|')
 call s:define('blank', '\v^$')
 call s:define('directive', '\v^#\+(\w+): (.*)$')
-call s:define('headline', '\v^(\*+)\s?('.join(g:dotoo#parser#todo_keywords,'|').')?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
+call s:define('headline', '\v^(\*+)\s?('.s:todo_keywords.')?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
 call s:define('metadata', '\v^(DEADLINE|CLOSED|SCHEDULED): \[(.*)\]$')
 call s:define('properties', '\v^:PROPERTIES:$')
 call s:define('logbook', '\v^:LOGBOOK:$')
@@ -101,9 +103,13 @@ function! s:parse_headline(token)
         \ 'content': '', 'metadata': {}, 'properties': {}, 'logbook': [], 'headlines': []
         \ }
 
+  func headline.done() dict
+    return self.todo =~? join(g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords, '|'):], '\|')
+  endfunc
+
   func headline.select(string) dict
     let headlines = []
-    if has_key(self, a:string) | let headlines += [self] | endif
+    if has_key(self, a:string) && !self.done() | let headlines += [self] | endif
     for headline in self.headlines
       let headlines += headline.select(a:string)
     endfor

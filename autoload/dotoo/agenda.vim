@@ -59,7 +59,8 @@ function! dotoo#agenda#agenda(...)
     for key in keys(deadlines)
       let headlines = deadlines[key]
       for headline in headlines
-        let agenda = printf('%s %10s: %20s:  %-60s%s', '', key, headline.next_deadline(force).time_ago(), headline.todo_title(), headline.tags)
+        let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
+        let agenda = printf('%s %10s:' . time_pf . '%-60s%s', '', key, headline.next_deadline(force).time_ago(), headline.todo_title(), headline.tags)
         call add(s:agendas, agenda)
       endfor
     endfor
