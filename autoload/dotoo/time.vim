@@ -149,7 +149,6 @@ function! s:time_methods.init(...) dict
   let dt = a:0 ? a:1 : ''
   let rp = ''
   if type(dt) == type('')
-    let self.original = dt
     if dt =~# g:dotoo#time#repeatable_date_regex . '$'
       let rp = matchlist(dt, g:dotoo#time#repeatable_date_regex)[5]
     elseif dt =~# g:dotoo#time#repeatable_datetime_regex . '$'
@@ -253,6 +252,9 @@ function! s:time_methods.to_string(...) dict
   if empty(self.datetime.repeat)
     return strftime(format, self.to_seconds())
   else
+    if strftime('%H:%M', self.to_seconds()) !=# '00:00'
+      let format = g:dotoo#time#datetime_format
+    endif
     return strftime(format, self.to_seconds()).' '.self.datetime.repeat
   endif
 endfunction

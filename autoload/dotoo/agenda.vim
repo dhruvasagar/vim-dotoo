@@ -151,7 +151,7 @@ function! dotoo#agenda#agenda(...)
   if force || empty(s:agenda_deadlines)
     let s:agenda_deadlines = {}
     for dotoos in s:agenda_dotoos
-      let _deadlines = dotoos.select(['deadline', 'scheduled'])
+      let _deadlines = dotoos.filter('!v:val.done() && (has_key(v:val, "deadline") || has_key(v:val, "scheduled"))')
       let s:agenda_deadlines[dotoos.key] = filter(_deadlines, 'v:val.next_deadline(force).before(warning_limit)')
     endfor
     if s:current_date.is_today() | let s:current_date = dotoo#time#new() | endif

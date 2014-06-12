@@ -24,10 +24,12 @@ function! s:define(name, pattern)
   let s:syntax[a:name] = obj
 endfunction
 
-let s:todo_keywords = join(filter(g:dotoo#parser#todo_keywords, 'v:val !~# "|"'), '|')
+let s:todo_keywords_todo = g:dotoo#parser#todo_keywords[:index(g:dotoo#parser#todo_keywords,'|')-1]
+let s:todo_keywords_done = g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords,'|'):]
+let s:todo_keywords_regex = join(s:todo_keywords_todo+s:todo_keywords_done, '|')
 call s:define('blank', '\v^$')
 call s:define('directive', '\v^#\+(\w+): (.*)$')
-call s:define('headline', '\v^(\*+)\s?('.s:todo_keywords.')?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
+call s:define('headline', '\v^(\*+)\s?('.s:todo_keywords_regex.')?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
 call s:define('metadata', '\v^(DEADLINE|CLOSED|SCHEDULED): \[(.*)\]$')
 call s:define('properties', '\v^:PROPERTIES:$')
 call s:define('logbook', '\v^:LOGBOOK:$')
@@ -89,6 +91,32 @@ function! s:headline_methods.done() dict
   return self.todo =~? join(g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords, '|'):], '\|')
 endfunction
 
+function! s:headline_methods.log_state_change() dict
+  if self.done() && get(self.properties, 'STYLE', '') == 'habit'
+    let self.properties['LAST_REPEAT'] = '['.dotoo#time#new().to_string(g:dotoo#time#datetime_format).']'
+    let repeat_to_state = get(self.properties, 'REPEAT_TO_STATE', '')
+    let todo = self.todo
+    if !empty(repeat_to_state)
+      let self.todo = repeat_to_state
+    endif
+    let log = {
+          \ 'type': s:syntax.logbook_state_change.type,
+          \ 'to': todo, 'from': self.todo,
+          \ 'time': dotoo#time#new()
+          \ }
+    call insert(self.logbook, log)
+    if has_key(self, 'deadline')
+      let repeat = get(self.deadline.datetime, 'repeat', '')
+      let self.deadline = self.deadline.next_repeat()
+      let self.deadline.datetime.repeat = repeat
+    elseif has_key(self, 'scheduled')
+      let repeat = get(self.scheduled.datetime, 'repeat', '')
+      let self.scheduled = self.scheduled.next_repeat()
+      let self.scheduled.datetime.repeat = repeat
+    endif
+  endif
+endfunction
+
 function! s:headline_methods.change_todo(index) dict
   if type(a:index) == type(0)
     let self.todo = g:dotoo#parser#todo_keywords[a:index]
@@ -98,19 +126,17 @@ function! s:headline_methods.change_todo(index) dict
       let self.todo = g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords, todo)]
     endif
   endif
+  call self.log_state_change()
 endfunction
 
-function! s:headline_methods.select(keys) dict
+function! s:headline_methods.filter(expr) dict
   let headlines = []
-  for key in a:keys
-    if has_key(self, key)
-      if self.done() | break | endif
-      call add(headlines, self)
-      break
-    endif
-  endfor
+  let expr = substitute(a:expr, 'v:val', 'self', 'g')
+  if eval(expr)
+    call add(headlines, self)
+  endif
   for headline in self.headlines
-    let headlines += headline.select(a:keys)
+    let headlines += headline.filter(a:expr)
   endfor
   return sort(headlines, 's:sort_deadlines')
 endfunction
@@ -145,9 +171,12 @@ function! s:headline_methods.serialize() dict
   if !empty(self.content)
     call add(lines, self.content)
   endif
-  if !empty(self.metadata)
-    let metadata = items(self.metadata)[0]
-    call add(lines, toupper(metadata[0]).': ['.metadata[1].original.']')
+  if has_key(self, 'deadline')
+    call add(lines, 'DEADLINE: ['.self.deadline.to_string().']')
+  elseif has_key(self, 'scheduled')
+    call add(lines, 'SCHEDULED: ['.self.deadline.to_string().']')
+  elseif has_key(self, 'closed')
+    call add(lines, 'CLOSED: ['.self.deadline.to_string().']')
   endif
   if !empty(self.properties)
     let properties = []
@@ -259,7 +288,6 @@ function! s:parse_headline_content(headline, index, tokens)
       let a:headline.content .= s:parse_line(token)
     elseif token.type ==# s:syntax.metadata.type
       let metadata = s:parse_metadata(token)
-      call extend(a:headline.metadata, metadata)
       call extend(a:headline, metadata)
     elseif token.type ==# s:syntax.properties.type
       let index = s:parse_properties(a:headline, index, a:tokens)
@@ -273,8 +301,8 @@ function! s:parse_headline_content(headline, index, tokens)
 endfunction
 
 let s:dotoo_methods = {}
-function! s:dotoo_methods.select(keys) dict
-  return self.root_headline.select(a:keys)
+function! s:dotoo_methods.filter(expr) dict
+  return self.root_headline.filter(a:expr)
 endfunction
 
 let s:dotoos = {}
