@@ -4,39 +4,39 @@
 "      - Most of the stuff here is also in syntax.org
 "      - DRY!
 
-syn match org_todo_key /\[\zs[^]]*\ze\]/
-hi def link org_todo_key Identifier
+syn match dotoo_todo_key /\[\zs[^]]*\ze\]/
+hi def link dotoo_todo_key Identifier
 
 "" Load Settings: {{{
-if !exists('g:org_heading_highlight_colors')
-	let g:org_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
+if !exists('g:dotoo_heading_highlight_colors')
+	let g:dotoo_heading_highlight_colors = ['Title', 'Constant', 'Identifier', 'Statement', 'PreProc', 'Type', 'Special']
 endif
 
-if !exists('g:org_heading_highlight_levels')
-	let g:org_heading_highlight_levels = len(g:org_heading_highlight_colors)
+if !exists('g:dotoo_heading_highlight_levels')
+	let g:dotoo_heading_highlight_levels = len(g:dotoo_heading_highlight_colors)
 endif
 
-if !exists('g:org_heading_shade_leading_stars')
-	let g:org_heading_shade_leading_stars = 1
+if !exists('g:dotoo_heading_shade_leading_stars')
+	let g:dotoo_heading_shade_leading_stars = 1
 endif
 "}}}
 
 let s:todo_headings = ''
 let s:i = 1
-while s:i <= g:org_heading_highlight_levels
+while s:i <= g:dotoo_heading_highlight_levels
 	if s:todo_headings == ''
-		let s:todo_headings = 'containedin=org_heading' . s:i
+		let s:todo_headings = 'containedin=dotoo_heading' . s:i
 	else
-		let s:todo_headings = s:todo_headings . ',org_heading' . s:i
+		let s:todo_headings = s:todo_headings . ',dotoo_heading' . s:i
 	endif
 	let s:i += 1
 endwhile
 unlet! s:i
 
-if !exists('g:loaded_orgagenda_syntax')
-	let g:loaded_orgagenda_syntax = 1
+if !exists('g:loaded_dotooagenda_syntax')
+	let g:loaded_dotooagenda_syntax = 1
 
-	function! s:OrgExtendHighlightingGroup(base_group, new_group, settings)
+	function! s:ExtendHighlightingGroup(base_group, new_group, settings)
 		let l:base_hi = ''
 		redir => l:base_hi
 		silent execute 'highlight ' . a:base_group
@@ -45,7 +45,7 @@ if !exists('g:loaded_orgagenda_syntax')
 		execute 'highlight ' . a:new_group . l:group_hi . ' ' . a:settings
 	endfunction
 
-	function! s:OrgInterpretFaces(faces)
+	function! s:InterpretFaces(faces)
 		let l:res_faces = ''
 		if type(a:faces) == 3
 			let l:style = []
@@ -136,15 +136,15 @@ if !exists('g:loaded_orgagenda_syntax')
 			let l:_i = substitute(l:i, "\(.*$", "", "")
 
 			let l:group = l:default_group
-			for l:j in g:org_todo_keyword_faces
+			for l:j in g:dotoo_todo_keyword_faces
 				if l:j[0] == l:_i
-					let l:group = 'orgtodo_todo_keyword_face_' . l:_i
-					call s:OrgExtendHighlightingGroup(l:default_group, l:group, s:OrgInterpretFaces(l:j[1]))
+					let l:group = 'dotootodo_todo_keyword_face_' . l:_i
+					call s:ExtendHighlightingGroup(l:default_group, l:group, s:InterpretFaces(l:j[1]))
 					break
 				endif
 			endfor
-			exec 'syntax match orgtodo_todo_keyword_' . l:_i . ' /' . l:_i .'/ ' . a:todo_headings
-			exec 'hi def link orgtodo_todo_keyword_' . l:_i . ' ' . l:group
+			exec 'syntax match dotootodo_todo_keyword_' . l:_i . ' /' . l:_i .'/ ' . a:todo_headings
+			exec 'hi def link dotootodo_todo_keyword_' . l:_i . ' ' . l:group
 		endfor
 	endfunction
 endif
@@ -154,26 +154,31 @@ if !exists('g:dotoo#parser#todo_keywords')
 	let g:dotoo#parser#todo_keywords = ['TODO', '|', 'DONE']
 endif
 
-if !exists('g:org_todo_keyword_faces')
-	let g:org_todo_keyword_faces = []
+if !exists('g:dotoo_todo_keyword_faces')
+	let g:dotoo_todo_keyword_faces = []
 endif
 " }}}
 call s:ReadTodoKeywords(g:dotoo#parser#todo_keywords, s:todo_headings)
 unlet! s:todo_headings
 
 " Timestamps
-"<2003-09-16 Tue>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
-"<2003-09-16 Tue 12:00>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>\)/
-"<2003-09-16 Tue 12:00-12:30>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d-\d\d:\d\d>\)/
-"<2003-09-16 Tue>--<2003-09-16 Tue>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a>--<\d\d\d\d-\d\d-\d\d \a\a\a>\)/
-"<2003-09-16 Tue 12:00>--<2003-09-16 Tue 12:00>
-syn match org_timestamp /\(<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>--<\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d>\)/
-syn match org_timestamp /\(<%%(diary-float.\+>\)/
-hi def link org_timestamp PreProc
+"[2003-09-16 Tue]
+syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a\]\)/
+"[2003-09-16 Tue 12:00]
+syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]\)/
+"\[2003-09-16 Tue 12:00-12:30\]
+syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d-\d\d:\d\d\]\)/
+"\[2003-09-16 Tue\]--[2003-09-16 Tue]
+syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a\]--\[\d\d\d\d-\d\d-\d\d \a\a\a\]\)/
+"\[2003-09-16 Tue 12:00\]--[2003-09-16 Tue 12:00]
+syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]--\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]\)/
+"[2003-09-16 Tue +1m]
+syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a +\d\+[ymwdhs]\]\)/
+"[2003-09-15 Tue 12:00 +1m]
+syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d +\d\+[ymwdhs]\]\)/
+
+syn match dotoo_timestamp /\(\[%%(diary-float.\+\]\)/
+hi def link dotoo_timestamp SpecialKey
 
 " special words
 syn match today /TODAY$/
