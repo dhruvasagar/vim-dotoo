@@ -19,7 +19,7 @@ let g:dotoo#time#repeatable_datetime_regex = g:dotoo#time#datetime_regex . g:dot
 
 let g:dotoo#time#date_format = '%Y-%m-%d'
 let g:dotoo#time#date_day_format = g:dotoo#time#date_format . ' %a'
-let g:dotoo#time#datetime_format = g:dotoo#time#date_day_regex . ' %H:%M'
+let g:dotoo#time#datetime_format = g:dotoo#time#date_day_format . ' %H:%M'
 
 " In Vim, -4 / 3 == -1.  Let's return -2 instead.
 function! s:div(a, b)
@@ -189,6 +189,10 @@ function! dotoo#time#new(...)
     return self.to_seconds() - a:other.to_seconds()
   endfunc
 
+  func obj.diff_time(other) dict
+    return dotoo#time#new(self.diff(a:other))
+  endfunc
+
   func obj.diff_in_words(other, ...) dict
     let short = a:0 ? a:1 : 0
     let diff = self.diff(a:other)
@@ -232,8 +236,16 @@ function! dotoo#time#new(...)
   endfunc
 
   func obj.time_ago(...) dict
-    let short = a:0 ? a:1 : g:dotoo#time#time_ago_short
-    return self.diff_in_words(s:localtime(), short)
+    let from = s:localtime()
+    let short = g:dotoo#time#time_ago_short
+    if a:0
+      if type(a:1) == type(0)
+        let short = a:1
+      elseif type(a:1) == type({}) && has_key(a:1, 'to_seconds')
+        let from = s:localtime(a:1.to_seconds())
+      endif
+    endif
+    return self.diff_in_words(from, short)
   endfunc
 
   func obj.to_string(...) dict
@@ -319,6 +331,10 @@ function! dotoo#time#new(...)
       endif
       return self.repeated_until
     endif
+  endfunc
+
+  func obj.is_today() dict
+    return self.to_string(g:dotoo#time#date_format) ==# dotoo#time#new().to_string(g:dotoo#time#date_format)
   endfunc
 
   return obj.init(dt)
