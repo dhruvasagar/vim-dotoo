@@ -48,14 +48,14 @@ function! s:agenda_setup()
 endfunction
 
 function! s:agenda_view(agendas)
-  let old_cursor = [line('.'), col('.')]
+  let old_view = winsaveview()
   call s:Edit('pedit')
   call s:agenda_setup()
   setl modifiable
   silent call setline(1, s:current_date.to_string('%A %d %B %Y'))
   silent call setline(2, a:agendas)
   setl nomodifiable
-  call cursor(old_cursor)
+  call winrestview(old_view)
 endfunction
 
 function! s:input(prompt, accept)
@@ -83,19 +83,19 @@ function! s:change_headline_todo()
   let selected = s:input(join(todo_keywords, ' '), acceptable_input)
   if !empty(selected)
     call headline.change_todo(selected)
-    let old_cursor = [line('.'), col('.')]
+    let old_view = winsaveview()
     call headline.save()
     call dotoo#agenda#agenda()
-    call cursor(old_cursor)
+    call winrestview(old_view)
   endif
 endfunction
 
 function! s:undo_headline_change()
   let headline = s:agenda_headlines[line('.')-2]
-  let old_cursor = [line('.'), col('.')]
+  let old_view = winsaveview()
   call headline.undo_save()
   call dotoo#agenda#agenda(1)
-  call cursor(old_cursor)
+  call winrestview(old_view)
 endfunction
 
 let s:current_date = dotoo#time#new()
@@ -109,13 +109,13 @@ function! s:adjust_current_date(amount)
 endfunction
 
 function! s:save_files()
-  let old_cursor = [line('.'), col('.')]
+  let old_view = winsaveview()
   for _file in s:dotoo_files
     exec 'buffer' _file
     write
   endfor
   call dotoo#agenda#agenda()
-  call cursor(old_cursor)
+  call winrestview(old_view)
 endfunction
 
 let s:agenda_deadlines = {}
