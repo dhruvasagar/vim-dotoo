@@ -107,11 +107,11 @@ function! s:headline_methods.log_state_change() dict
     call insert(self.logbook, log)
     if has_key(self, 'deadline')
       let repeat = get(self.deadline.datetime, 'repeat', '')
-      let self.deadline = self.deadline.next_repeat()
+      let self.deadline = self.deadline.future_repeat()
       let self.deadline.datetime.repeat = repeat
     elseif has_key(self, 'scheduled')
       let repeat = get(self.scheduled.datetime, 'repeat', '')
-      let self.scheduled = self.scheduled.next_repeat()
+      let self.scheduled = self.scheduled.future_repeat()
       let self.scheduled.datetime.repeat = repeat
     endif
   endif
@@ -142,11 +142,12 @@ function! s:headline_methods.filter(expr) dict
 endfunction
 
 function! s:headline_methods.next_deadline(...) dict
-  let force = a:0 ? a:1 : 0
+  let date = a:0 ? a:1 : dotoo#time#new()
+  let force = a:0 == 2 ? a:2 : 0
   if has_key(self, 'deadline')
-    return self.deadline.next_repeat(force)
+    return self.deadline.next_repeat(date, force)
   elseif has_key(self, 'scheduled')
-    return self.scheduled.next_repeat(force)
+    return self.scheduled.next_repeat(date, force)
   endif
   return ''
 endfunction
@@ -172,9 +173,9 @@ function! s:headline_methods.serialize() dict
     call add(lines, self.content)
   endif
   if has_key(self, 'deadline')
-    call add(lines, 'DEADLINE: ['.self.deadline.to_string().']')
+    call add(lines, 'DEADLINE: ['.self.deadline.to_string(1).']')
   elseif has_key(self, 'scheduled')
-    call add(lines, 'SCHEDULED: ['.self.deadline.to_string().']')
+    call add(lines, 'SCHEDULED: ['.self.deadline.to_string(1).']')
   elseif has_key(self, 'closed')
     call add(lines, 'CLOSED: ['.self.deadline.to_string().']')
   endif

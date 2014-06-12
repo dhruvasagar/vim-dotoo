@@ -85,7 +85,7 @@ function! s:change_headline_todo()
     call headline.change_todo(selected)
     let old_view = winsaveview()
     call headline.save()
-    call dotoo#agenda#agenda()
+    call dotoo#agenda#agenda(1)
     call winrestview(old_view)
   endif
 endfunction
@@ -129,7 +129,7 @@ function! s:build_agendas(...)
     let headlines = s:agenda_deadlines[key]
     for headline in headlines
       let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
-      let agenda = printf('%s %10s:' . time_pf . '%-60s%s', '',
+      let agenda = printf('%s %10s:' . time_pf . '%-70s%s', '',
             \ key,
             \ headline.next_deadline(force).time_ago(s:current_date),
             \ headline.todo_title(),
@@ -152,9 +152,13 @@ function! dotoo#agenda#agenda(...)
     let s:agenda_deadlines = {}
     for dotoos in s:agenda_dotoos
       let _deadlines = dotoos.filter('!v:val.done() && (has_key(v:val, "deadline") || has_key(v:val, "scheduled"))')
-      let s:agenda_deadlines[dotoos.key] = filter(_deadlines, 'v:val.next_deadline(force).before(warning_limit)')
+      if s:current_date.is_today()
+        let s:current_date = dotoo#time#new()
+        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.next_deadline(s:current_date, force).before(warning_limit)')
+      else
+        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.next_deadline(s:current_date, force).eq_date(s:current_date)')
+      endif
     endfor
-    if s:current_date.is_today() | let s:current_date = dotoo#time#new() | endif
   endif
   let agendas = s:build_agendas(force)
   call s:agenda_view(agendas)

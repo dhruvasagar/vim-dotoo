@@ -172,6 +172,10 @@ function! s:time_methods.eq(other) dict
   return self.compare(a:other) == 0
 endfunction
 
+function! s:time_methods.eq_date(other) dict
+  return self.to_string(g:dotoo#time#date_format) ==# a:other.to_string(g:dotoo#time#date_format)
+endfunction
+
 function! s:time_methods.before(other) dict
   return self.compare(a:other) == -1
 endfunction
@@ -248,14 +252,25 @@ function! s:time_methods.time_ago(...) dict
 endfunction
 
 function! s:time_methods.to_string(...) dict
-  let format = a:0 ? a:1 : g:dotoo#time#date_day_format
+  let rp = 0
+  let format = g:dotoo#time#date_day_format
+  if a:0
+    if type(a:1) == type(0)
+      let rp = a:1
+    elseif type(a:1) == type('')
+      let format = a:1
+    endif
+  endif
   if empty(self.datetime.repeat)
     return strftime(format, self.to_seconds())
   else
-    if strftime('%H:%M', self.to_seconds()) !=# '00:00'
+    if format ==# g:dotoo#time#date_day_format && strftime('%H:%M', self.to_seconds()) !=# '00:00'
       let format = g:dotoo#time#datetime_format
     endif
-    return strftime(format, self.to_seconds()).' '.self.datetime.repeat
+    let str = strftime(format, self.to_seconds())
+    if rp | let str .= ' ' . self.datetime.repeat | endif
+    return str
+  endif
   endif
 endfunction
 
@@ -316,26 +331,48 @@ function! s:time_methods.adjust(amount) dict
 endfunction
 
 function! s:time_methods.next_repeat(...) dict
-  let force = a:0 ? a:1 : 0
+  let date = a:0 ? a:1 : dotoo#time#new()
+  let force = a:0 == 2 ? a:2 : 0
   if empty(self.datetime.repeat)
     return self
   else
-    let now = dotoo#time#new()
     if has_key(self, 'repeated_until') && !force
       return self.repeated_until
     endif
     let [time, u_time] = [self, self]
     " TODO: Optimize this.
-    while time.before(now)
+    while time.before(date)
       let u_time = time
       let time = time.adjust(self.datetime.repeat)
     endwhile
-    if now.diff(u_time) <= time.diff(now)
+    if date.diff(u_time) <= time.diff(date)
       let self.repeated_until = u_time
     else
       let self.repeated_until = time
     endif
     return self.repeated_until
+  endif
+endfunction
+
+function! s:time_methods.future_repeat(...) dict
+  let date = a:0 ? a:1 : dotoo#time#new()
+  let force = a:0 == 2 ? a:2 : 0
+  if empty(self.datetime.repeat)
+    return self
+  else
+    if has_key(self, 'repeated_future') && !force
+      return self.repeated_future
+    endif
+    let time = self
+    if time.before(date)
+      while time.before(date)
+        let time = time.adjust(self.datetime.repeat)
+      endwhile
+    else
+      let time = time.adjust(self.datetime.repeat)
+    endif
+    let self.repeated_future = time
+    return self.repeated_future
   endif
 endfunction
 
