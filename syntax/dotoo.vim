@@ -49,15 +49,6 @@ endfor
 " }}}
 " }}}
 " Todo Keywords: {{{
-"" Load Settings: {{{
-if !exists('g:dotoo#parser#todo_keywords')
-  let g:dotoo#parser#todo_keywords = ['TODO', '|', 'DONE']
-endif
-
-if !exists('g:dotoo_todo_keyword_faces')
-  let g:dotoo_todo_keyword_faces = []
-endif
-" }}}
 "" Enable Syntax HL: {{{
 let s:todo_headings = ''
 for ind in range(1, g:dotoo_heading_highlight_levels)

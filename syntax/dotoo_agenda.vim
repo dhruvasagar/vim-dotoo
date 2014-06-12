@@ -149,15 +149,6 @@ if !exists('g:loaded_dotooagenda_syntax')
 	endfunction
 endif
 
-"" Load Settings: {{{
-if !exists('g:dotoo#parser#todo_keywords')
-	let g:dotoo#parser#todo_keywords = ['TODO', '|', 'DONE']
-endif
-
-if !exists('g:dotoo_todo_keyword_faces')
-	let g:dotoo_todo_keyword_faces = []
-endif
-" }}}
 call s:ReadTodoKeywords(g:dotoo#parser#todo_keywords, s:todo_headings)
 unlet! s:todo_headings
 
@@ -180,7 +171,23 @@ syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d +\d\+[ymwdhs]
 syn match dotoo_timestamp /\(\[%%(diary-float.\+\]\)/
 hi def link dotoo_timestamp SpecialKey
 
-" special words
+" ... ago, In ... "
+syn match dotoo_time_ago /:\zs\s*[^:]*ago\ze:/
+hi def link dotoo_time_ago Comment
+
+syn match dotoo_time_in /:\zs\s*In[^:]*\ze:/
+hi def link dotoo_time_in Statement
+
+syn match dotoo_file_name /^\s*[^:]*\ze:/
+hi def link dotoo_file_name Function
+
+syn match dotoo_date /^\a\+ \d\{2} \a\+ \d\{4}/
+hi def link dotoo_date Constant
+
+syn match dotoo_tags /\s\+:.*:$/
+hi def link dotoo_tags Delimiter
+
+" special wordk
 syn match today /TODAY$/
 hi def link today PreProc
 
