@@ -41,6 +41,11 @@ function! s:jd(year, mon, day)
 endfunction
 let s:epoch_jd = s:jd(1970, 1, 1)
 
+let s:datetime_methods = {}
+function! s:datetime_methods.to_seconds() dict
+  return self.sepoch
+endfunction
+
 function! s:localtime(...)
   let ts  = a:0 ? a:1 : has('unix') ? reltimestr(reltime()) : localtime() . '.0'
   let rp = a:0 > 1 ? a:2 : ''
@@ -71,10 +76,7 @@ function! s:localtime(...)
   let datetime.mtzoffset = (real_ts - ts) / 60
   let datetime.htzoffset = datetime.mtzoffset / 60
 
-  func datetime.to_seconds() dict
-    return self.sepoch
-  endfunc
-
+  call extend(datetime, s:datetime_methods)
   return datetime
 endfunction
 
@@ -142,200 +144,206 @@ function! dotoo#time#end_of(time)
   endif
 endfunction
 
+let s:time_methods = {}
+function! s:time_methods.init(...) dict
+  let dt = a:0 ? a:1 : ''
+  let rp = ''
+  if type(dt) == type('')
+    let self.original = dt
+    if dt =~# g:dotoo#time#repeatable_date_regex . '$'
+      let rp = matchlist(dt, g:dotoo#time#repeatable_date_regex)[5]
+    elseif dt =~# g:dotoo#time#repeatable_datetime_regex . '$'
+      let rp = matchlist(dt, g:dotoo#time#repeatable_datetime_regex)[7]
+    endif
+  endif
+  let self.datetime = s:localtime(s:to_seconds(dt), rp)
+  return self
+endfunction
+
+function! s:time_methods.to_seconds() dict
+  return self.datetime.to_seconds()
+endfunction
+
+function! s:time_methods.compare(other) dict
+  let [ss1, ss2] = [self.to_seconds(), a:other.to_seconds()]
+  return ss1 == ss2 ? 0 : (ss1 > ss2) ? 1 : -1
+endfunction
+
+function! s:time_methods.eq(other) dict
+  return self.compare(a:other) == 0
+endfunction
+
+function! s:time_methods.before(other) dict
+  return self.compare(a:other) == -1
+endfunction
+
+function! s:time_methods.after(other) dict
+  return self.compare(a:other) == 1
+endfunction
+
+function! s:time_methods.between(start, end) dict
+  return self.after(a:start) && self.before(a:end)
+endfunction
+
+function! s:time_methods.diff(other) dict
+  return self.to_seconds() - a:other.to_seconds()
+endfunction
+
+function! s:time_methods.diff_time(other) dict
+  return dotoo#time#new(self.diff(a:other))
+endfunction
+
+function! s:time_methods.diff_in_words(other, ...) dict
+  let short = a:0 ? a:1 : 0
+  let diff = self.diff(a:other)
+  let adiff = abs(diff)
+  let diffs = []
+
+  let secs = adiff
+  let mins = secs / 60
+  let hours = mins / 60
+  let days = hours / 24
+  let years = days / 365
+
+  let secs = secs % 60
+  let mins = mins % 60
+  let hours = hours % 24
+  let days = days % 365
+
+  if short && diff > 0
+    let mins = secs && mins ? mins + 1 : mins
+    let hours = mins && hours ? hours + 1 : hours
+    let days = hours && days ? days + 1 : days
+  endif
+
+  if years | call add(diffs, years.'y') | endif
+  if days && (!short || empty(diffs)) | call add(diffs, days.'d') | endif
+  if hours && (!short || empty(diffs)) | call add(diffs, hours.'h') | endif
+  if mins && (!short || empty(diffs)) | call add(diffs, mins.'m') | endif
+  if secs && (!short || empty(diffs)) | call add(diffs, secs.'s') | endif
+
+  if empty(diffs)
+    call add(diffs, 'now')
+  else
+    if diff > 0
+      call insert(diffs, 'In')
+    elseif diff < 0
+      call add(diffs, 'ago')
+    endif
+  endif
+
+  return join(diffs, ' ')
+endfunction
+
+function! s:time_methods.time_ago(...) dict
+  let from = s:localtime()
+  let short = g:dotoo#time#time_ago_short
+  if a:0
+    if type(a:1) == type(0)
+      let short = a:1
+    elseif type(a:1) == type({}) && has_key(a:1, 'to_seconds')
+      let from = s:localtime(a:1.to_seconds())
+    endif
+  endif
+  return self.diff_in_words(from, short)
+endfunction
+
+function! s:time_methods.to_string(...) dict
+  let format = a:0 ? a:1 : g:dotoo#time#date_day_format
+  if empty(self.datetime.repeat)
+    return strftime(format, self.to_seconds())
+  else
+    return strftime(format, self.to_seconds()).' '.self.datetime.repeat
+  endif
+endfunction
+
+function! s:time_methods.add(other) dict
+  let datetime = s:localtime(self.datetime.to_seconds()
+        \ + s:to_seconds(a:other))
+  return dotoo#time#new(datetime)
+endfunction
+
+function! s:time_methods.sub(other) dict
+  let datetime = s:localtime(self.datetime.to_seconds()
+        \ - s:to_seconds(a:other))
+  return dotoo#time#new(datetime)
+endfunction
+
+function! s:time_methods.adjust(amount) dict
+  let amount = a:amount
+  let adjusted = 0
+  if type(amount) == type('')
+    " space separated entries
+    " e.g.   1y 2m -3d 4h +5M 6s
+    " NOTE: 'm' and 'M' are case sensitive, but the others are not
+    let seconds = 0
+    let [y, m, d, H, M, S] = [self.datetime.year, self.datetime.month, self.datetime.day, self.datetime.hour, self.datetime.minute, self.datetime.second]
+    for amt in split(amount, '\s\+')
+      let [n, type] = matchlist(amt, '\c\([-+]\?\d\+\)\([ymwdhs]\)')[1:2]
+      if type == 'y'
+        let y += str2nr(n)
+      elseif type ==# 'm'
+        let m += str2nr(n)
+      elseif type ==# 'w'
+        let d += str2nr(n) * 7
+      elseif type == 'd'
+        let d += str2nr(n)
+      elseif type == 'h'
+        let seconds += s:hours_to_seconds(str2nr(n))
+      elseif type ==# 'M'
+        let seconds += s:minutes_to_seconds(str2nr(n))
+      elseif type == 's'
+        let seconds += str2nr(n)
+      else
+        throw 'Unknown adjustment type: ' . string(type)
+      endif
+    endfor
+    let seconds += S
+    let seconds += s:minutes_to_seconds(M)
+    let seconds += s:hours_to_seconds(H)
+    let seconds += s:days_to_seconds(s:jd(y, m, d) - s:epoch_jd)
+    let datetime = s:localtime(seconds)
+    let adjusted = 1
+  else
+    let seconds = s:to_seconds(amount)
+  endif
+  if ! adjusted
+    let datetime = s:localtime(self.datetime.to_seconds() + seconds)
+  endif
+  return dotoo#time#new(datetime)
+endfunction
+
+function! s:time_methods.next_repeat(...) dict
+  let force = a:0 ? a:1 : 0
+  if empty(self.datetime.repeat)
+    return self
+  else
+    let now = dotoo#time#new()
+    if has_key(self, 'repeated_until') && !force
+      return self.repeated_until
+    endif
+    let [time, u_time] = [self, self]
+    " TODO: Optimize this.
+    while time.before(now)
+      let u_time = time
+      let time = time.adjust(self.datetime.repeat)
+    endwhile
+    if now.diff(u_time) <= time.diff(now)
+      let self.repeated_until = u_time
+    else
+      let self.repeated_until = time
+    endif
+    return self.repeated_until
+  endif
+endfunction
+
+function! s:time_methods.is_today() dict
+  return self.to_string(g:dotoo#time#date_format) ==# dotoo#time#new().to_string(g:dotoo#time#date_format)
+endfunction
+
 function! dotoo#time#new(...)
   let dt = a:0 ? a:1 : ''
   let obj = {}
-
-  func obj.init(...) dict
-    let dt = a:0 ? a:1 : ''
-    let rp = ''
-    if type(dt) == type('')
-      if dt =~# g:dotoo#time#repeatable_date_regex . '$'
-        let rp = matchlist(dt, g:dotoo#time#repeatable_date_regex)[5]
-      elseif dt =~# g:dotoo#time#repeatable_datetime_regex . '$'
-        let rp = matchlist(dt, g:dotoo#time#repeatable_datetime_regex)[7]
-      endif
-    endif
-    let self.datetime = s:localtime(s:to_seconds(dt), rp)
-    return self
-  endfunc
-
-  func obj.to_seconds() dict
-    return self.datetime.to_seconds()
-  endfunc
-
-  func obj.compare(other) dict
-    let [ss1, ss2] = [self.to_seconds(), a:other.to_seconds()]
-    return ss1 == ss2 ? 0 : (ss1 > ss2) ? 1 : -1
-  endfunc
-
-  func obj.eq(other) dict
-    return self.compare(a:other) == 0
-  endfunc
-
-  func obj.before(other) dict
-    return self.compare(a:other) == -1
-  endfunc
-
-  func obj.after(other) dict
-    return self.compare(a:other) == 1
-  endfunc
-
-  func obj.between(start, end) dict
-    return self.after(a:start) && self.before(a:end)
-  endfunc
-
-  func obj.diff(other) dict
-    return self.to_seconds() - a:other.to_seconds()
-  endfunc
-
-  func obj.diff_time(other) dict
-    return dotoo#time#new(self.diff(a:other))
-  endfunc
-
-  func obj.diff_in_words(other, ...) dict
-    let short = a:0 ? a:1 : 0
-    let diff = self.diff(a:other)
-    let adiff = abs(diff)
-    let diffs = []
-
-    let secs = adiff
-    let mins = secs / 60
-    let hours = mins / 60
-    let days = hours / 24
-    let years = days / 365
-
-    let secs = secs % 60
-    let mins = mins % 60
-    let hours = hours % 24
-    let days = days % 365
-
-    if short && diff > 0
-      let mins = secs && mins ? mins + 1 : mins
-      let hours = mins && hours ? hours + 1 : hours
-      let days = hours && days ? days + 1 : days
-    endif
-
-    if years | call add(diffs, years.'y') | endif
-    if days && (!short || empty(diffs)) | call add(diffs, days.'d') | endif
-    if hours && (!short || empty(diffs)) | call add(diffs, hours.'h') | endif
-    if mins && (!short || empty(diffs)) | call add(diffs, mins.'m') | endif
-    if secs && (!short || empty(diffs)) | call add(diffs, secs.'s') | endif
-
-    if empty(diffs)
-      call add(diffs, 'now')
-    else
-      if diff > 0
-        call insert(diffs, 'In')
-      elseif diff < 0
-        call add(diffs, 'ago')
-      endif
-    endif
-
-    return join(diffs, ' ')
-  endfunc
-
-  func obj.time_ago(...) dict
-    let from = s:localtime()
-    let short = g:dotoo#time#time_ago_short
-    if a:0
-      if type(a:1) == type(0)
-        let short = a:1
-      elseif type(a:1) == type({}) && has_key(a:1, 'to_seconds')
-        let from = s:localtime(a:1.to_seconds())
-      endif
-    endif
-    return self.diff_in_words(from, short)
-  endfunc
-
-  func obj.to_string(...) dict
-    let format = a:0 ? a:1 : g:dotoo#time#date_day_format
-    return strftime(format, self.to_seconds())
-  endfunc
-
-  func obj.add(other) dict
-    let datetime = s:localtime(self.datetime.to_seconds()
-          \ + s:to_seconds(a:other))
-    return dotoo#time#new(datetime)
-  endfunc
-
-  func obj.sub(other) dict
-    let datetime = s:localtime(self.datetime.to_seconds()
-          \ - s:to_seconds(a:other))
-    return dotoo#time#new(datetime)
-  endfunc
-
-  func obj.adjust(amount) dict
-    let amount = a:amount
-    let adjusted = 0
-    if type(amount) == type('')
-      " space separated entries
-      " e.g.   1y 2m -3d 4h +5M 6s
-      " NOTE: 'm' and 'M' are case sensitive, but the others are not
-      let seconds = 0
-      let [y, m, d, H, M, S] = [self.datetime.year, self.datetime.month, self.datetime.day, self.datetime.hour, self.datetime.minute, self.datetime.second]
-      for amt in split(amount, '\s\+')
-        let [n, type] = matchlist(amt, '\c\([-+]\?\d\+\)\([ymwdhs]\)')[1:2]
-        if type == 'y'
-          let y += str2nr(n)
-        elseif type ==# 'm'
-          let m += str2nr(n)
-        elseif type ==# 'w'
-          let d += str2nr(n) * 7
-        elseif type == 'd'
-          let d += str2nr(n)
-        elseif type == 'h'
-          let seconds += s:hours_to_seconds(str2nr(n))
-        elseif type ==# 'M'
-          let seconds += s:minutes_to_seconds(str2nr(n))
-        elseif type == 's'
-          let seconds += str2nr(n)
-        else
-          throw 'Unknown adjustment type: ' . string(type)
-        endif
-      endfor
-      let seconds += S
-      let seconds += s:minutes_to_seconds(M)
-      let seconds += s:hours_to_seconds(H)
-      let seconds += s:days_to_seconds(s:jd(y, m, d) - s:epoch_jd)
-      let datetime = s:localtime(seconds)
-      let adjusted = 1
-    else
-      let seconds = s:to_seconds(amount)
-    endif
-    if ! adjusted
-      let datetime = s:localtime(self.datetime.to_seconds() + seconds)
-    endif
-    return dotoo#time#new(datetime)
-  endfunction
-
-  func obj.next_repeat(...) dict
-    let force = a:0 ? a:1 : 0
-    if empty(self.datetime.repeat)
-      return self
-    else
-      let now = dotoo#time#new()
-      if has_key(self, 'repeated_until') && !force
-        return self.repeated_until
-      endif
-      let [time, u_time] = [self, self]
-      " TODO: Optimize this.
-      while time.before(now)
-        let u_time = time
-        let time = time.adjust(self.datetime.repeat)
-      endwhile
-      if now.diff(u_time) <= time.diff(now)
-        let self.repeated_until = u_time
-      else
-        let self.repeated_until = time
-      endif
-      return self.repeated_until
-    endif
-  endfunc
-
-  func obj.is_today() dict
-    return self.to_string(g:dotoo#time#date_format) ==# dotoo#time#new().to_string(g:dotoo#time#date_format)
-  endfunc
-
+  call extend(obj, s:time_methods)
   return obj.init(dt)
 endfunction
