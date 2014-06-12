@@ -34,7 +34,7 @@ function! s:agenda_setup()
   nnoremap <buffer> <silent> <nowait> . :<C-U>call <SID>adjust_current_date('.') <Bar> call dotoo#agenda#agenda(1)<CR>
   nnoremap <buffer> <silent> <nowait> f :<C-U>call <SID>adjust_current_date('+1d') <Bar> call dotoo#agenda#agenda(1)<CR>
   nnoremap <buffer> <silent> <nowait> b :<C-U>call <SID>adjust_current_date('-1d') <Bar> call dotoo#agenda#agenda(1)<CR>
-  nnoremap <buffer> <silent> <nowait> c :<C-U>call <SID>change_headline_todo()<CR>
+  nnoremap <buffer> <silent> <nowait> t :<C-U>call <SID>change_headline_todo()<CR>
   nnoremap <buffer> <silent> <CR> :<C-U>call <SID>goto_headline('buffer')<CR>
   nnoremap <buffer> <silent> <C-S> :<C-U>call <SID>goto_headline('split')<CR>
   nnoremap <buffer> <silent> <C-V> :<C-U>call <SID>goto_headline('vsplit')<CR>
@@ -43,12 +43,14 @@ function! s:agenda_setup()
 endfunction
 
 function! s:agenda_view(agendas)
+  let old_cursor = [line('.'), col('.')]
   call s:Edit('pedit')
   call s:agenda_setup()
   setl modifiable
   silent call setline(1, s:current_date.to_string('%A %d %B %Y'))
   silent call setline(2, a:agendas)
   setl nomodifiable
+  call cursor(old_cursor)
 endfunction
 
 function! s:input(prompt, accept)
@@ -120,6 +122,5 @@ function! dotoo#agenda#agenda(...)
       endfor
     endfor
   endif
-
   call s:agenda_view(s:agendas)
 endfunction
