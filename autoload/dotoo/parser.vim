@@ -170,9 +170,9 @@ function! s:headline_methods.serialize() dict
               \ ' => ' . diff_time)
       elseif log.type == s:syntax.logbook_state_change.type
         call add(lines, '- State ' .
-              \ log['to'] .
+              \ '"'.log['to'].'"' .
               \ ' from ' .
-              \ log['from'] .
+              \ '"'.log['from'].'"' .
               \ ' [' . log['time'].to_string(g:dotoo#time#datetime_format) . ']')
       endif
     endfor
