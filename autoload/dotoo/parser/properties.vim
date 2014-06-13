@@ -6,13 +6,15 @@ let g:autoloaded_dotoo_parser_properties = 1
 let s:properties_methods = {}
 function! s:properties_methods.serialize() dict
   let properties = []
-  call add(properties, ':PROPERTIES:')
   for property in items(self)
     if type(property[1]) != type(function('tr')) " Skip FuncRef
       call add(properties, ':' . property[0] . ': ' . property[1])
     endif
   endfor
-  call add(properties, ':END:')
+  if !empty(properties)
+    call insert(properties, ':PROPERTIES:')
+    call add(properties, ':END:')
+  endif
   return properties
 endfunction
 

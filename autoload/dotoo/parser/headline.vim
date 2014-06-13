@@ -47,25 +47,11 @@ function! s:headline_methods.change_todo(index) dict
   call self.log_state_change()
 endfunction
 
-function! s:headline_methods.filter(expr) dict
-  let headlines = []
-  let expr = substitute(a:expr, 'v:val', 'self', 'g')
-  if eval(expr)
-    call add(headlines, self)
-  endif
-  for headline in self.headlines
-    let headlines += headline.filter(a:expr)
-  endfor
-  return sort(headlines, 's:sort_deadlines')
-endfunction
-
 function! s:headline_methods.metadate(...) dict
   let date = a:0 ? a:1 : dotoo#time#new()
   let force = a:0 == 2 ? a:2 : 0
   let metadate = self.next_deadline(date, force)
-  if empty(metadate)
-    let metadate = self.metadata.closed
-  endif
+  if empty(metadate) | return self.metadata.closed | endif
   return metadate
 endfunction
 
@@ -91,10 +77,11 @@ endfunction
 function! s:headline_methods.line() dict
   let headline = []
   call add(headline, repeat('*', self.level))
-  if !empty(self.todo) | call add(headline, self.todo) | endif
-  if !empty(self.priority) | call add(headline, self.priority) | endif
+  call add(headline, self.todo)
+  call add(headline, self.priority)
   call add(headline, self.title)
-  if !empty(self.tags) | call add(headline, self.tags) | endif
+  call add(headline, self.tags)
+  call filter(headline, '!empty(v:val)')
   return join(headline)
 endfunction
 
@@ -137,7 +124,11 @@ function! dotoo#parser#headline#new(...) abort
         \ 'title': token.content[3],
         \ 'tags': token.content[4],
         \ 'lnum': token.lnum,
-        \ 'content': '', 'metadata': {}, 'properties': {}, 'logbook': {}, 'headlines': []
+        \ 'content': '',
+        \ 'metadata': dotoo#parser#metadata#new(),
+        \ 'properties': dotoo#parser#properties#new(),
+        \ 'logbook': dotoo#parser#logbook#new(),
+        \ 'headlines': []
         \ }
 
   if has_key(token, 'type')
@@ -146,11 +137,9 @@ function! dotoo#parser#headline#new(...) abort
       if token.type ==# s:syntax.line.type
         let headline.content .= token.content[0]
       elseif token.type == s:syntax.metadata.type
-        let metadata = dotoo#parser#metadata#new(token)
-        call extend(headline, metadata)
-        call extend(headline.metadata, metadata)
+        call extend(headline.metadata, dotoo#parser#metadata#new(token))
       elseif token.type == s:syntax.properties.type
-        call extend(headline.properties,  dotoo#parser#properties#new(tokens))
+        call extend(headline.properties, dotoo#parser#properties#new(tokens))
       elseif token.type == s:syntax.logbook.type
         call extend(headline.logbook, dotoo#parser#logbook#new(tokens))
       elseif token.type == s:syntax.headline.type

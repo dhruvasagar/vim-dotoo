@@ -6,6 +6,7 @@ let g:autoloaded_dotoo_parser_logbook = 1
 let s:syntax = dotoo#parser#lexer#syntax()
 let s:logbook_methods = {}
 function! s:logbook_methods.serialize() dict
+  if empty(self.logs) | return [] | endif
   let logs = []
   call add(logs, ':LOGBOOK:')
   for log in self.logs

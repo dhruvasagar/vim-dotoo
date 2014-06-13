@@ -23,6 +23,15 @@ function! s:metadata_methods.set_future_date() dict
   endif
 endfunction
 
+function! s:metadata_methods.close() dict
+  if has_key(self, 'deadline')
+    call remove(self, 'deadline')
+  elseif has_key(self, 'scheduled')
+    call remove(self, 'scheduled')
+  endif
+  let self.closed = dotoo#time#new()
+endfunction
+
 function! dotoo#parser#metadata#new(...)
   let token = a:0 ? a:1 : 0
   let metadata = {}
