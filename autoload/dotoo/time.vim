@@ -119,27 +119,32 @@ function! s:to_seconds(time)
   return seconds
 endfunction
 
-function! dotoo#time#start_of(time)
-  if a:time ==# 'month'
-    return dotoo#time#new(printf('%s-%02s-%02s', strftime('%Y'), strftime('%m'), '1'))
-  elseif a:time ==# 'week'
-    let now = dotoo#time#new()
+function! dotoo#time#start_of(time, span)
+  if type(a:time) == type(1) || type(a:time) == type('')
+    let time = a:time
+  elseif type(a:time) == type({})
+    let time = a:time.to_seconds()
+  endif
+  if a:span ==# 'month'
+    return dotoo#time#new(printf('%s-%02s-%02s', strftime('%Y', time), strftime('%m', time), '1'))
+  elseif a:span ==# 'week'
+    let now = dotoo#time#new(time)
     while now.to_string('%a') !=# 'Mon'
       let now = now.adjust('-1d')
     endwhile
     return now
-  elseif a:time ==# 'day'
-    return dotoo#time#new(strftime('%Y-%m-%d'))
+  elseif a:span ==# 'day'
+    return dotoo#time#new(strftime('%Y-%m-%d', time))
   endif
 endfunction
 
-function! dotoo#time#end_of(time)
-  let start_of = dotoo#time#start_of(a:time)
-  if a:time ==# 'month'
+function! dotoo#time#end_of(time, span) abort
+  let start_of = dotoo#time#start_of(time, a:span)
+  if a:span ==# 'month'
     return dotoo#time#new(printf('%s-%02s-%02s', strftime('%Y'), strftime('%m')+1, '1')).adjust('-1d')
-  elseif a:time ==# 'week'
+  elseif a:span ==# 'week'
     return start_of.adjust('+1w -1d')
-  elseif a:time ==# 'day'
+  elseif a:span ==# 'day'
     return start_of.adjust('+1d')
   endif
 endfunction
@@ -383,6 +388,14 @@ endfunction
 
 function! s:time_methods.is_today() dict
   return self.to_string(g:dotoo#time#date_format) ==# dotoo#time#new().to_string(g:dotoo#time#date_format)
+endfunction
+
+function! s:time_methods.start_of(span)
+  return dotoo#time#start_of(self, a:span)
+endfunction
+
+function! s:time_methods.end_of(span)
+  return dotoo#time#end_of(self, a:span)
 endfunction
 
 function! dotoo#time#new(...)

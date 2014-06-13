@@ -104,7 +104,7 @@ function! s:adjust_current_date(amount)
   if a:amount ==# '.'
     let s:current_date = dotoo#time#new()
   else
-    let s:current_date = s:current_date.adjust(a:amount)
+    let s:current_date = s:current_date.adjust(a:amount).start_of('day')
   endif
   call dotoo#agenda#agenda(1)
 endfunction
@@ -152,7 +152,7 @@ function! dotoo#agenda#agenda(...)
   if force || empty(s:agenda_deadlines)
     let s:agenda_deadlines = {}
     for dotoos in s:agenda_dotoos
-      let _deadlines = dotoos.filter('!v:val.done() && (has_key(v:val, "deadline") || has_key(v:val, "scheduled"))')
+      let _deadlines = dotoos.filter('!v:val.done() && (has_key(v:val.metadata, "deadline") || has_key(v:val.metadata, "scheduled"))')
       if s:current_date.is_today()
         let s:current_date = dotoo#time#new()
         let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.next_deadline(s:current_date, force).before(warning_limit)')

@@ -188,6 +188,9 @@ syn match dotoo_tags /\s\+:.*:$/
 hi def link dotoo_tags Delimiter
 
 " special wordk
+syn match now /now\ze:/
+hi def link now Error
+
 syn match today /TODAY$/
 hi def link today PreProc
 
