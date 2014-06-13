@@ -86,6 +86,7 @@ function! s:change_headline_todo()
     let old_view = winsaveview()
     call headline.save()
     call dotoo#agenda#agenda()
+    let &modified = getbufvar(bufnr('#'), '&modified')
     call winrestview(old_view)
   endif
 endfunction
@@ -118,7 +119,6 @@ function! s:save_files()
   call winrestview(old_view)
 endfunction
 
-let s:agendas = []
 let s:agenda_deadlines = {}
 let s:agenda_headlines = []
 function! s:build_agendas(...)
@@ -132,7 +132,7 @@ function! s:build_agendas(...)
       let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
       let agenda = printf('%s %10s:' . time_pf . '%-70s%s', '',
             \ key,
-            \ has_key(headline, 'deadline') || has_key(headline, 'scheduled') ? headline.next_deadline(s:current_date, force).time_ago(s:current_date) : has_key(headline, 'closed') ? headline.closed.time_ago(s:current_date) : '',
+            \ headline.metadate(s:current_date, force).time_ago(s:current_date),
             \ headline.todo_title(),
             \ headline.tags)
       call add(agendas, agenda)

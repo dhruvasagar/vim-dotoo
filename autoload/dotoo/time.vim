@@ -159,6 +159,10 @@ function! s:time_methods.init(...) dict
   return self
 endfunction
 
+function! s:time_methods.repeat() dict
+  return self.datetime.repeat
+endfunction
+
 function! s:time_methods.to_seconds() dict
   return self.datetime.to_seconds()
 endfunction
@@ -372,6 +376,7 @@ function! s:time_methods.future_repeat(...) dict
       let time = time.adjust(self.datetime.repeat)
     endif
     let self.repeated_future = time
+    let self.repeated_future.datetime.repeat = self.datetime.repeat
     return self.repeated_future
   endif
 endfunction
