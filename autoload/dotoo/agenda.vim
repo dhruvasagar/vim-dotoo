@@ -31,26 +31,9 @@ function! s:Edit(cmd)
   setf dotoo_agenda
 endfunction
 
-function! s:agenda_setup()
-  nnoremap <buffer> <silent> <nowait> q :<C-U>bdelete<CR>
-  nnoremap <buffer> <silent> <nowait> r :<C-U>call dotoo#agenda#agenda(1)<CR>
-  nnoremap <buffer> <silent> <nowait> . :<C-U>call <SID>adjust_current_date('.')<CR>
-  nnoremap <buffer> <silent> <nowait> f :<C-U>call <SID>adjust_current_date('+1d')<CR>
-  nnoremap <buffer> <silent> <nowait> b :<C-U>call <SID>adjust_current_date('-1d')<CR>
-  nnoremap <buffer> <silent> <nowait> c :<C-U>call <SID>change_headline_todo()<CR>
-  nnoremap <buffer> <silent> <nowait> u :<C-U>call <SID>undo_headline_change()<CR>
-  nnoremap <buffer> <silent> <nowait> s :<C-U>call <SID>save_files()<CR>
-  nnoremap <buffer> <silent> <CR> :<C-U>call <SID>goto_headline('buffer')<CR>
-  nnoremap <buffer> <silent> <C-S> :<C-U>call <SID>goto_headline('split')<CR>
-  nnoremap <buffer> <silent> <C-V> :<C-U>call <SID>goto_headline('vsplit')<CR>
-  nnoremap <buffer> <silent> <C-T> :<C-U>call <SID>goto_headline('tabe')<CR>
-  nmap <buffer> <silent> <Tab> <C-V>
-endfunction
-
 function! s:agenda_view(agendas)
   let old_view = winsaveview()
   call s:Edit('pedit')
-  call s:agenda_setup()
   setl modifiable
   silent call setline(1, s:current_date.to_string('%A %d %B %Y'))
   silent call setline(2, a:agendas)
@@ -66,57 +49,6 @@ function! s:input(prompt, accept)
     return char
   endif
   return ''
-endfunction
-
-function! s:goto_headline(cmd)
-  let headline = s:agenda_headlines[line('.')-2]
-  exec a:cmd headline.file
-  exec 'normal!' headline.lnum . 'G'
-endfunction
-
-function! s:change_headline_todo()
-  let headline = s:agenda_headlines[line('.')-2]
-  let todo_keywords = filter(copy(g:dotoo#parser#todo_keywords), 'v:val !~# "|"')
-  let acceptable_input = '[' . join(map(copy(todo_keywords), 'v:val[0]'),'') . ']'
-  let todo_keywords = map(todo_keywords, '"(".v:val[0].") ".v:val')
-  call add(todo_keywords, "\nEnter: ")
-  let selected = s:input(join(todo_keywords, ' '), acceptable_input)
-  if !empty(selected)
-    call headline.change_todo(selected)
-    let old_view = winsaveview()
-    call headline.save()
-    call dotoo#agenda#agenda()
-    let &modified = getbufvar(bufnr('#'), '&modified')
-    call winrestview(old_view)
-  endif
-endfunction
-
-function! s:undo_headline_change()
-  let headline = s:agenda_headlines[line('.')-2]
-  let old_view = winsaveview()
-  call headline.undo_save()
-  call dotoo#agenda#agenda(1)
-  call winrestview(old_view)
-endfunction
-
-let s:current_date = dotoo#time#new()
-function! s:adjust_current_date(amount)
-  if a:amount ==# '.'
-    let s:current_date = dotoo#time#new()
-  else
-    let s:current_date = s:current_date.adjust(a:amount).start_of('day')
-  endif
-  call dotoo#agenda#agenda(1)
-endfunction
-
-function! s:save_files()
-  let old_view = winsaveview()
-  for _file in s:dotoo_files
-    exec 'buffer' _file
-    write
-  endfor
-  call dotoo#agenda#agenda()
-  call winrestview(old_view)
 endfunction
 
 let s:agenda_deadlines = {}
@@ -142,6 +74,57 @@ function! s:build_agendas(...)
     endfor
   endfor
   return agendas
+endfunction
+
+function! dotoo#agenda#goto_headline(cmd)
+  let headline = s:agenda_headlines[line('.')-2]
+  exec a:cmd headline.file
+  exec 'normal!' headline.lnum . 'G'
+endfunction
+
+function! dotoo#agenda#change_headline_todo()
+  let headline = s:agenda_headlines[line('.')-2]
+  let todo_keywords = filter(copy(g:dotoo#parser#todo_keywords), 'v:val !~# "|"')
+  let acceptable_input = '[' . join(map(copy(todo_keywords), 'v:val[0]'),'') . ']'
+  let todo_keywords = map(todo_keywords, '"(".v:val[0].") ".v:val')
+  call add(todo_keywords, "\nEnter: ")
+  let selected = s:input(join(todo_keywords, ' '), acceptable_input)
+  if !empty(selected)
+    call headline.change_todo(selected)
+    let old_view = winsaveview()
+    call headline.save()
+    call dotoo#agenda#agenda()
+    let &modified = getbufvar(bufnr('#'), '&modified')
+    call winrestview(old_view)
+  endif
+endfunction
+
+function! dotoo#agenda#undo_headline_change()
+  let headline = s:agenda_headlines[line('.')-2]
+  let old_view = winsaveview()
+  call headline.undo_save()
+  call dotoo#agenda#agenda(1)
+  call winrestview(old_view)
+endfunction
+
+let s:current_date = dotoo#time#new()
+function! dotoo#agenda#shift_current_date(amount)
+  if a:amount ==# '.'
+    let s:current_date = dotoo#time#new()
+  else
+    let s:current_date = s:current_date.adjust(a:amount).start_of('day')
+  endif
+  call dotoo#agenda#agenda(1)
+endfunction
+
+function! dotoo#agenda#save_files()
+  let old_view = winsaveview()
+  for _file in s:dotoo_files
+    exec 'buffer' _file
+    write
+  endfor
+  call dotoo#agenda#agenda()
+  call winrestview(old_view)
 endfunction
 
 function! dotoo#agenda#agenda(...)
