@@ -100,7 +100,6 @@ endfunction
 
 function! s:headline_methods.serialize() dict
   let lines = []
-
   call add(lines, self.line())
   call add(lines, self.content)
   call add(lines, self.metadata.serialize())
