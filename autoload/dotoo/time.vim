@@ -261,12 +261,12 @@ function! s:time_methods.to_string(...) dict
       let format = a:1
     endif
   endif
+  if format ==# g:dotoo#time#date_day_format && strftime('%H:%M', self.to_seconds()) !=# '00:00'
+    let format = g:dotoo#time#datetime_format
+  endif
   if empty(self.datetime.repeat)
     return strftime(format, self.to_seconds())
   else
-    if format ==# g:dotoo#time#date_day_format && strftime('%H:%M', self.to_seconds()) !=# '00:00'
-      let format = g:dotoo#time#datetime_format
-    endif
     let str = strftime(format, self.to_seconds())
     if rp | let str .= ' ' . self.datetime.repeat | endif
     return str

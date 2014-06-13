@@ -91,28 +91,49 @@ function! s:headline_methods.done() dict
   return self.todo =~? join(g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords, '|'):], '\|')
 endfunction
 
+function! s:headline_methods.repeatable() dict
+  if has_key(self, 'deadline')
+    return !empty(get(self.deadline.datetime, 'repeat', ''))
+  elseif has_key(self, 'scheduled')
+    return !empty(get(self.scheduled.datetime, 'repeat', ''))
+  endif
+  return 0
+endfunction
+
 function! s:headline_methods.log_state_change() dict
-  if self.done() && get(self.properties, 'STYLE', '') == 'habit'
-    let self.properties['LAST_REPEAT'] = '['.dotoo#time#new().to_string(g:dotoo#time#datetime_format).']'
-    let repeat_to_state = get(self.properties, 'REPEAT_TO_STATE', '')
-    let todo = self.todo
-    if !empty(repeat_to_state)
-      let self.todo = repeat_to_state
-    endif
-    let log = {
-          \ 'type': s:syntax.logbook_state_change.type,
-          \ 'to': todo, 'from': self.todo,
-          \ 'time': dotoo#time#new()
-          \ }
-    call insert(self.logbook, log)
-    if has_key(self, 'deadline')
-      let repeat = get(self.deadline.datetime, 'repeat', '')
-      let self.deadline = self.deadline.future_repeat()
-      let self.deadline.datetime.repeat = repeat
-    elseif has_key(self, 'scheduled')
-      let repeat = get(self.scheduled.datetime, 'repeat', '')
-      let self.scheduled = self.scheduled.future_repeat()
-      let self.scheduled.datetime.repeat = repeat
+  if self.done() 
+    if self.repeatable()
+      let prev_todo = self.todo
+      let repeat_to_state = get(self.properties, 'REPEAT_TO_STATE', '')
+      if empty(repeat_to_state)
+        let self.todo = g:dotoo#parser#todo_keywords[0]
+      else
+        let self.todo = repeat_to_state
+      endif
+      let self.properties['LAST_REPEAT'] = '['.dotoo#time#new().to_string(g:dotoo#time#datetime_format).']'
+
+      let log = {
+            \ 'type': s:syntax.logbook_state_change.type,
+            \ 'to': prev_todo, 'from': self.todo,
+            \ 'time': dotoo#time#new()
+            \ }
+      call insert(self.logbook, log)
+      if has_key(self, 'deadline')
+        let repeat = get(self.deadline.datetime, 'repeat', '')
+        let self.deadline = self.deadline.future_repeat()
+        let self.deadline.datetime.repeat = repeat
+      elseif has_key(self, 'scheduled')
+        let repeat = get(self.scheduled.datetime, 'repeat', '')
+        let self.scheduled = self.scheduled.future_repeat()
+        let self.scheduled.datetime.repeat = repeat
+      endif
+    else
+      if has_key(self, 'deadline')
+        call remove(self, 'deadline')
+      elseif has_key(self, 'scheduled')
+        call remove(self, 'scheduled')
+      endif
+      let self.closed = dotoo#time#new()
     endif
   endif
 endfunction
@@ -175,9 +196,9 @@ function! s:headline_methods.serialize() dict
   if has_key(self, 'deadline')
     call add(lines, 'DEADLINE: ['.self.deadline.to_string(1).']')
   elseif has_key(self, 'scheduled')
-    call add(lines, 'SCHEDULED: ['.self.deadline.to_string(1).']')
+    call add(lines, 'SCHEDULED: ['.self.scheduled.to_string(1).']')
   elseif has_key(self, 'closed')
-    call add(lines, 'CLOSED: ['.self.deadline.to_string().']')
+    call add(lines, 'CLOSED: ['.self.closed.to_string().']')
   endif
   if !empty(self.properties)
     let properties = []
