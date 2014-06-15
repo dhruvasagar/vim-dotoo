@@ -73,6 +73,9 @@ function! s:build_agendas(...)
       endif
     endfor
   endfor
+  if empty(agendas)
+    call add(agendas, printf('%2s %s', '', 'No pending tasks!'))
+  endif
   return agendas
 endfunction
 

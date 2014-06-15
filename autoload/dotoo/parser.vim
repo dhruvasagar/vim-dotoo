@@ -3,15 +3,15 @@ if exists('g:autoloaded_dotoo_parser')
 endif
 let g:autoloaded_dotoo_parser = 1
 
+function! s:sort_by_deadline(d1, d2)
+  return a:d1.next_deadline().diff(a:d2.next_deadline())
+endfunction
+
 let s:dotoo_methods = {}
 function! s:dotoo_methods.filter(expr) dict
   let headlines = deepcopy(self.headlines)
   call filter(headlines, a:expr)
   return sort(headlines, 's:sort_by_deadline')
-endfunction
-
-function! s:sort_by_deadline(d1, d2)
-  return a:d1.next_deadline().diff(a:d2.next_deadline())
 endfunction
 
 let s:dotoos = {}
