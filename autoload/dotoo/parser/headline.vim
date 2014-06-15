@@ -99,7 +99,8 @@ endfunction
 
 function! s:headline_methods.save() dict
   exec 'buffer' self.file
-  call setline(self.lnum, self.serialize())
+  exec self.lnum.','.self.last_lnum.':delete'
+  call append(self.lnum-1, self.serialize())
 endfunction
 
 function! s:headline_methods.undo_save() dict
@@ -143,6 +144,7 @@ function! dotoo#parser#headline#new(...) abort
       elseif token.type == s:syntax.logbook.type
         call extend(headline.logbook, dotoo#parser#logbook#new(tokens))
       elseif token.type == s:syntax.headline.type
+        let headline.last_lnum = token.lnum - 1
         call insert(tokens, token)
         break
       endif
