@@ -4,7 +4,7 @@ endif
 let g:autoloaded_dotoo_agenda = 1
 
 let g:dotoo#agenda#warning_days = '30d'
-let g:dotoo#agenda#files = ['~/org-files/*.dotoo']
+let g:dotoo#agenda#files = ['~/Documents/org-files/*.dotoo']
 
 let s:dotoo_files = []
 let s:agenda_dotoos = []
@@ -28,7 +28,7 @@ function! s:Edit(cmd)
   setl winheight=20
   setl buftype=nofile bufhidden=wipe nobuflisted
   setl readonly nofoldenable nolist
-  setf dotoo_agenda
+  setf dotooagenda
 endfunction
 
 function! s:agenda_view(agendas)
