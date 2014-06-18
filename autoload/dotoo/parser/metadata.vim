@@ -19,7 +19,7 @@ function! s:metadata_methods.set_future_date() dict
   if has_key(self, 'deadline')
     let self.deadline = self.deadline.future_repeat()
   elseif has_key(self, 'scheduled')
-    let self.scheduled = self.deadline.future_repeat()
+    let self.scheduled = self.scheduled.future_repeat()
   endif
 endfunction
 
