@@ -76,7 +76,7 @@ function! dotoo#parser#lexer#tokenize(file) abort
   exec 'hide edit' a:file
   let lines = getline(1,'$')
   for line in lines
-    call add(tokens, s:tokenize_line(line))
+    call add(tokens, s:tokenize_line(lnum, line))
     let lnum += 1
   endfor
   return tokens
