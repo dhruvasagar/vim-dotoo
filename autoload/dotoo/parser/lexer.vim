@@ -79,5 +79,6 @@ function! dotoo#parser#lexer#tokenize(file) abort
     call add(tokens, s:tokenize_line(lnum, line))
     let lnum += 1
   endfor
+  exec "normal! \<C-^>"
   return tokens
 endfunction

@@ -26,7 +26,7 @@ function! s:Edit(cmd)
   silent exe a:cmd s:tmpfile
   if a:cmd =~# 'pedit' | wincmd P | endif
   setl winheight=20
-  setl buftype=nofile bufhidden=wipe nobuflisted
+  setl buftype=acwrite nobuflisted
   setl readonly nofoldenable nolist
   setf dotooagenda
 endfunction
@@ -37,6 +37,7 @@ function! s:agenda_view(agendas)
   setl modifiable
   silent call setline(1, s:current_date.to_string('%A %d %B %Y'))
   silent call setline(2, a:agendas)
+  setl nomodified
   setl nomodifiable
   call winrestview(old_view)
 endfunction
@@ -97,7 +98,7 @@ function! dotoo#agenda#change_headline_todo()
     let old_view = winsaveview()
     call headline.save()
     call dotoo#agenda#agenda()
-    let &modified = getbufvar(bufnr('#'), '&modified')
+    let &l:modified = getbufvar(bufnr('#'), '&modified')
     call winrestview(old_view)
   endif
 endfunction
@@ -126,6 +127,7 @@ function! dotoo#agenda#save_files()
     exec 'buffer' _file
     write
   endfor
+  setl nomodified
   call dotoo#agenda#agenda()
   call winrestview(old_view)
 endfunction
