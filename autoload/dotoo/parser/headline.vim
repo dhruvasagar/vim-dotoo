@@ -97,15 +97,31 @@ function! s:headline_methods.serialize() dict
   return lines
 endfunction
 
-function! s:headline_methods.save() dict
+function! s:headline_methods.open() dict
   exec 'buffer' self.file
-  exec self.lnum.','.self.last_lnum.':delete'
+endfunction
+
+function! s:headline_methods.close() dict
+  if !empty(expand('#')) | buffer # | endif
+endfunction
+
+function! s:headline_methods.save() dict
+  call self.open()
+  call self.delete()
   call append(self.lnum-1, self.serialize())
+  call self.close()
+endfunction
+
+function! s:headline_methods.delete() dict
+  call self.open()
+  exec self.lnum.','.self.last_lnum.':delete'
+  call self.close()
 endfunction
 
 function! s:headline_methods.undo_save() dict
-  exec 'buffer' self.file
+  call self.open()
   normal! u
+  call self.close()
 endfunction
 
 function! s:sort_deadlines(h1, h2)

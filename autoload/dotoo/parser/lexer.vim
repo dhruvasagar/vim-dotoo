@@ -56,6 +56,14 @@ function! s:type(line)
   endfor
 endfunction
 
+function! s:tokenize_line(lnum, line)
+  let token = {}
+  let token.lnum = a:lnum
+  let token.type = s:type(a:line)
+  let token.content = s:syntax[token.type].matchlist(a:line)
+  return token
+endfunction
+
 " Public Api {{{1
 function! dotoo#parser#lexer#syntax()
   return s:syntax
@@ -65,13 +73,10 @@ function! dotoo#parser#lexer#tokenize(file) abort
   if !filereadable(a:file) | return | endif
   let lnum = 1
   let tokens = []
-  let lines = readfile(a:file)
+  exec 'hide edit' a:file
+  let lines = getline(1,'$')
   for line in lines
-    let token = {}
-    let token.type = s:type(line)
-    let token.lnum = lnum
-    let token.content = s:syntax[token.type].matchlist(line)
-    cal add(tokens, token)
+    call add(tokens, s:tokenize_line(line))
     let lnum += 1
   endfor
   return tokens
