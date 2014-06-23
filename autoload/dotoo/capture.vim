@@ -5,17 +5,18 @@ let g:autoloaded_dotoo_capture = 1
 
 call dotoo#utils#set('dotoo#capture#refile', expand('~/Documents/org-files/refile.dotoo'))
 call dotoo#utils#set('dotoo#capture#templates', [
-      \ ['t', 'Todo', '* TODO %?'],
       \ ['n', 'Note', '* %? :NOTE:'],
       \ ['m', 'Meeting', '* MEETING with %? :MEETING:'],
       \ ['p', 'Phone call', '* PHONE %? :PHONE:'],
+      \ ['t', 'Todo', ['* TODO %?',
+      \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
       \ ['h', 'Habit', ['* NEXT %?',
       \                'SCHEDULED: [%(strftime(g:dotoo#time#datetime_format)) +1m]',
       \                ':PROPERTIES:',
       \                ':STYLE: habit',
       \                ':REPEAT_TO_STATE: NEXT',
-      \                ':END:']
-      \ ]])
+      \                ':END:']]
+      \ ])
 
 function! s:get_selected_template(short_key)
   for template in deepcopy(g:dotoo#capture#templates)
@@ -52,8 +53,10 @@ function! s:save_capture_template(template)
     call s:capture_edit('split')
   endif
   call append(line('$') == 1 ? 0 : '$', tmpl)
+  let old_search = @/
   call search('%?', 'b')
   exe "normal! \<esc>viw\<c-g>"
+  let @/ = old_search
 endfunction
 
 function! s:capture_menu()
