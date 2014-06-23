@@ -17,14 +17,14 @@ call dotoo#utils#set('dotoo#capture#templates', [
       \                ':END:']
       \ ]])
 
-function! s:capture_template(short_key)
+function! s:get_selected_template(short_key)
   for template in deepcopy(g:dotoo#capture#templates)
     if template[0] ==# a:short_key | return template | endif
   endfor
   return []
 endfunction
 
-function! s:eval_template(template)
+function! s:eval_template_item(template)
   if a:template =~# '%(.*)'
     return substitute(a:template, '%(\(.*\))', '\=eval(submatch(1))', 'g')
   endif
@@ -33,9 +33,9 @@ endfunction
 
 function! s:capture_eval(template)
   if type(a:template) == type('')
-    return s:eval_template(a:template)
+    return s:eval_template_item(a:template)
   elseif type(a:template) == type([])
-    return map(a:template, 's:eval_template(v:val)')
+    return map(a:template, 's:eval_template_item(v:val)')
   endif
   return a:template
 endfunction
@@ -65,7 +65,7 @@ endfunction
 
 function! dotoo#capture#capture()
   let selected = s:capture_menu()
-  let template = s:capture_template(selected)
+  let template = s:get_selected_template(selected)
   if !empty(template)
     call s:save_capture_template(template[2])
   endif
