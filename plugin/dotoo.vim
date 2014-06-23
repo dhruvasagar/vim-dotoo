@@ -43,3 +43,4 @@ let g:dotoo_todo_keyword_faces = [
       \ ]
 
 nnoremap <silent> gA :<C-U>call dotoo#agenda#agenda()<CR>
+nnoremap <silent> gC :<C-U>call dotoo#capture#capture()<CR>

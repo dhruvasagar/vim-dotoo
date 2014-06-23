@@ -3,8 +3,8 @@ if exists('g:autoloaded_dotoo_agenda')
 endif
 let g:autoloaded_dotoo_agenda = 1
 
-let g:dotoo#agenda#warning_days = '30d'
-let g:dotoo#agenda#files = ['~/Documents/org-files/*.dotoo']
+call dotoo#utils#set('dotoo#agenda#warning_days', '30d')
+call dotoo#utils#set('dotoo#agenda#files', ['~/Documents/org-files/*.dotoo'])
 
 let s:dotoo_files = []
 let s:agenda_dotoos = []
@@ -42,16 +42,6 @@ function! s:agenda_view(agendas)
   call winrestview(old_view)
 endfunction
 
-function! s:input(prompt, accept)
-  echon a:prompt
-  let char = nr2char(getchar())
-  call feedkeys('<CR>')
-  if char =~? a:accept
-    return char
-  endif
-  return ''
-endfunction
-
 let s:agenda_deadlines = {}
 let s:agenda_headlines = []
 function! s:build_agendas(...)
@@ -69,15 +59,21 @@ function! s:build_agendas(...)
             \ headline.todo_title(),
             \ headline.tags)
       call add(agendas, agenda)
-      if add_agenda_headlines
-        call add(s:agenda_headlines, headline)
-      endif
+      if add_agenda_headlines | call add(s:agenda_headlines, headline) | endif
     endfor
   endfor
   if empty(agendas)
     call add(agendas, printf('%2s %s', '', 'No pending tasks!'))
   endif
   return agendas
+endfunction
+
+function! s:change_todo_menu()
+  let todo_keywords = filter(copy(g:dotoo#parser#todo_keywords), 'v:val !~# "|"')
+  let acceptable_input = '[' . join(map(copy(todo_keywords), 'v:val[0]'),'') . ']'
+  let todo_keywords = map(todo_keywords, '"(".tolower(v:val[0]).") ".v:val')
+  call add(todo_keywords, 'Select todo state: ')
+  return dotoo#utils#getchar(join(todo_keywords, "\n"), acceptable_input)
 endfunction
 
 function! dotoo#agenda#goto_headline(cmd)
@@ -88,11 +84,7 @@ endfunction
 
 function! dotoo#agenda#change_headline_todo()
   let headline = s:agenda_headlines[line('.')-2]
-  let todo_keywords = filter(copy(g:dotoo#parser#todo_keywords), 'v:val !~# "|"')
-  let acceptable_input = '[' . join(map(copy(todo_keywords), 'v:val[0]'),'') . ']'
-  let todo_keywords = map(todo_keywords, '"(".v:val[0].") ".v:val')
-  call add(todo_keywords, "\nEnter: ")
-  let selected = s:input(join(todo_keywords, ' '), acceptable_input)
+  let selected = s:change_todo_menu()
   if !empty(selected)
     call headline.change_todo(selected)
     let old_view = winsaveview()

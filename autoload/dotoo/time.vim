@@ -3,23 +3,23 @@ if exists('g:autoloaded_dotoo_time')
 endif
 let g:autoloaded_dotoo_time = 1
 
-let g:dotoo#time#time_ago_short = 0
+call dotoo#utils#set('dotoo#time#time_ago_short', 0)
 
-let g:dotoo#time#date_regex = '\v^(\d{4})-(\d{2})-(\d{2})'
-let g:dotoo#time#day_regex = ' (\w{3})'
+call dotoo#utils#set('dotoo#time#date_regex', '\v^(\d{4})-(\d{2})-(\d{2})')
+call dotoo#utils#set('dotoo#time#day_regex', '(\w{3})')
 
-let g:dotoo#time#date_day_regex = g:dotoo#time#date_regex . g:dotoo#time#day_regex
+call dotoo#utils#set('dotoo#time#date_day_regex', g:dotoo#time#date_regex . ' ' .g:dotoo#time#day_regex)
 
-let g:dotoo#time#time_regex = ' (\d{2}):(\d{2})'
-let g:dotoo#time#datetime_regex = g:dotoo#time#date_day_regex . g:dotoo#time#time_regex
+call dotoo#utils#set('dotoo#time#time_regex', '(\d{2}):(\d{2})')
+call dotoo#utils#set('dotoo#time#datetime_regex', g:dotoo#time#date_day_regex . ' ' . g:dotoo#time#time_regex)
 
-let g:dotoo#time#repeatable_regex = ' (\+?\d+[hdmy])'
-let g:dotoo#time#repeatable_date_regex = g:dotoo#time#date_day_regex . g:dotoo#time#repeatable_regex
-let g:dotoo#time#repeatable_datetime_regex = g:dotoo#time#datetime_regex . g:dotoo#time#repeatable_regex
+call dotoo#utils#set('dotoo#time#repeatable_regex', '(\+?\d+[hdmy])')
+call dotoo#utils#set('dotoo#time#repeatable_date_regex', g:dotoo#time#date_day_regex . ' ' . g:dotoo#time#repeatable_regex)
+call dotoo#utils#set('dotoo#time#repeatable_datetime_regex', g:dotoo#time#datetime_regex . ' ' . g:dotoo#time#repeatable_regex)
 
-let g:dotoo#time#date_format = '%Y-%m-%d'
-let g:dotoo#time#date_day_format = g:dotoo#time#date_format . ' %a'
-let g:dotoo#time#datetime_format = g:dotoo#time#date_day_format . ' %H:%M'
+call dotoo#utils#set('dotoo#time#date_format', '%Y-%m-%d')
+call dotoo#utils#set('dotoo#time#date_day_format', g:dotoo#time#date_format . ' %a')
+call dotoo#utils#set('dotoo#time#datetime_format', g:dotoo#time#date_day_format . ' %H:%M')
 
 " In Vim, -4 / 3 == -1.  Let's return -2 instead.
 function! s:div(a, b)
