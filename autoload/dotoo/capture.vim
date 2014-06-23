@@ -5,11 +5,11 @@ let g:autoloaded_dotoo_capture = 1
 
 call dotoo#utils#set('dotoo#capture#refile', expand('~/Documents/org-files/refile.dotoo'))
 call dotoo#utils#set('dotoo#capture#templates', [
+      \ ['t', 'Todo', ['* TODO %?',
+      \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
       \ ['n', 'Note', '* %? :NOTE:'],
       \ ['m', 'Meeting', '* MEETING with %? :MEETING:'],
       \ ['p', 'Phone call', '* PHONE %? :PHONE:'],
-      \ ['t', 'Todo', ['* TODO %?',
-      \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
       \ ['h', 'Habit', ['* NEXT %?',
       \                'SCHEDULED: [%(strftime(g:dotoo#time#datetime_format)) +1m]',
       \                ':PROPERTIES:',
