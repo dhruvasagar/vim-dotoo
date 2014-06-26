@@ -73,12 +73,12 @@ function! dotoo#parser#lexer#tokenize(file) abort
   if !filereadable(a:file) | return | endif
   let lnum = 1
   let tokens = []
-  exec 'hide edit' a:file
+  exec 'hide split' a:file
   let lines = getline(1,'$')
   for line in lines
     call add(tokens, s:tokenize_line(lnum, line))
     let lnum += 1
   endfor
-  exec "normal! \<C-^>"
+  quit
   return tokens
 endfunction
