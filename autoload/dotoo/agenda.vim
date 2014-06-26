@@ -8,15 +8,24 @@ call dotoo#utils#set('dotoo#agenda#files', ['~/Documents/org-files/*.dotoo'])
 
 let s:dotoo_files = []
 let s:agenda_dotoos = []
+function! s:parse_dotoos(file,...)
+  let force = a:0 ? a:1 : 0
+  call add(s:dotoo_files, a:file)
+  let dotoos = dotoo#parser#parse(a:file, force)
+  call add(s:agenda_dotoos, dotoos)
+endfunction
+
 function! s:load_agenda_files(...)
   let force = a:0 ? a:1 : 0
   if force | let s:dotoo_files = [] | endif
   if force | let s:agenda_dotoos = [] | endif
+  if expand('%:e') ==# 'dotoo' || expand('#:e') ==# 'dotoo'
+    let file = expand('%:e') ==# 'dotoo' ? expand('%:p') : expand('#:p')
+    call s:parse_dotoos(file, force)
+  endif
   for agenda_file in g:dotoo#agenda#files
     for orgfile in glob(agenda_file, 1, 1)
-      call add(s:dotoo_files, orgfile)
-      let dotoos = dotoo#parser#parse(orgfile, force)
-      call add(s:agenda_dotoos, dotoos)
+      call s:parse_dotoos(orgfile, force)
     endfor
   endfor
 endfunction
@@ -33,7 +42,7 @@ endfunction
 
 function! s:agenda_view(agendas)
   let old_view = winsaveview()
-  call s:Edit('pedit')
+  call s:Edit('pedit!')
   setl modifiable
   silent call setline(1, s:current_date.to_string('%A %d %B %Y'))
   silent call setline(2, a:agendas)
@@ -98,13 +107,13 @@ endfunction
 function! dotoo#agenda#undo_headline_change()
   let headline = s:agenda_headlines[line('.')-2]
   let old_view = winsaveview()
-  call headline.undo_save()
+  call headline.undo()
   call dotoo#agenda#agenda(1)
   call winrestview(old_view)
 endfunction
 
 let s:current_date = dotoo#time#new()
-function! dotoo#agenda#shift_current_date(amount)
+function! dotoo#agenda#adjust_current_date(amount)
   if a:amount ==# '.'
     let s:current_date = dotoo#time#new()
   else
@@ -128,7 +137,10 @@ function! dotoo#agenda#agenda(...)
   let force = a:0 ? a:1 : 0
   let warning_limit = s:current_date.adjust(g:dotoo#agenda#warning_days)
 
+  let old_view = winsaveview()
   call s:load_agenda_files(force)
+  call winrestview(old_view)
+
   if force || empty(s:agenda_deadlines)
     let s:agenda_deadlines = {}
     for dotoos in s:agenda_dotoos

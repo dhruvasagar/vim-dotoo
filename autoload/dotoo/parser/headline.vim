@@ -98,11 +98,11 @@ function! s:headline_methods.serialize() dict
 endfunction
 
 function! s:headline_methods.open() dict
-  exec 'buffer' self.file
+  exe 'split' self.file
 endfunction
 
 function! s:headline_methods.close() dict
-  if !empty(expand('#')) | buffer # | endif
+  quit
 endfunction
 
 function! s:headline_methods.save() dict
@@ -118,7 +118,7 @@ function! s:headline_methods.delete() dict
   call self.close()
 endfunction
 
-function! s:headline_methods.undo_save() dict
+function! s:headline_methods.undo() dict
   call self.open()
   normal! u
   call self.close()
@@ -128,6 +128,7 @@ function! s:sort_deadlines(h1, h2)
   return a:h1.next_deadline().diff(a:h2.next_deadline())
 endfunction
 
+let s:headlines = {}
 function! dotoo#parser#headline#new(...) abort
   let file = a:0 ? a:1 : ''
   let tokens = a:0 == 2 ? a:2 : []
@@ -165,9 +166,22 @@ function! dotoo#parser#headline#new(...) abort
         break
       endif
     endwhile
+
+    if !has_key(headline, 'last_lnum') | let headline.last_lnum = '$' | endif
   endif
 
   call extend(headline, s:headline_methods)
   let headline.id = sha256(string(headline))
+
+  " Cache headlines for lookup
+  if !has_key(s:headlines, file) | let s:headlines[file] = {} | endif
+  let s:headlines[file][headline.lnum] = headline
+
   return headline
+endfunction
+
+function! dotoo#parser#headline#get(file, lnum)
+  if get(s:headlines, a:file)
+    return get(s:headlines[a:file], a:lnum)
+  endif
 endfunction
