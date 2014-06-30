@@ -44,3 +44,9 @@ let g:dotoo_todo_keyword_faces = [
 
 nnoremap <silent> gA :<C-U>call dotoo#agenda#agenda()<CR>
 nnoremap <silent> gC :<C-U>call dotoo#capture#capture()<CR>
+
+augroup dotoo
+  au!
+
+  autocmd BufNewFile,BufRead *.dotoo call dotoo#parser#parse(expand('%:p'),1)
+augroup END

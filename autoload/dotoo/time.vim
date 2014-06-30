@@ -19,7 +19,8 @@ call dotoo#utils#set('dotoo#time#repeatable_datetime_regex', g:dotoo#time#dateti
 
 call dotoo#utils#set('dotoo#time#date_format', '%Y-%m-%d')
 call dotoo#utils#set('dotoo#time#date_day_format', g:dotoo#time#date_format . ' %a')
-call dotoo#utils#set('dotoo#time#datetime_format', g:dotoo#time#date_day_format . ' %H:%M')
+call dotoo#utils#set('dotoo#time#time_format', '%H:%M')
+call dotoo#utils#set('dotoo#time#datetime_format', g:dotoo#time#date_day_format . ' ' . g:dotoo#time#time_format)
 
 " In Vim, -4 / 3 == -1.  Let's return -2 instead.
 function! s:div(a, b)
@@ -270,7 +271,7 @@ function! s:time_methods.to_string(...) dict
       let format = a:1
     endif
   endif
-  if format ==# g:dotoo#time#date_day_format && strftime('%H:%M', self.to_seconds()) !=# '00:00'
+  if format ==# g:dotoo#time#date_day_format && strftime(g:dotoo#time#time_format, self.to_seconds()) !=# '00:00'
     let format = g:dotoo#time#datetime_format
   endif
   if empty(self.datetime.repeat)

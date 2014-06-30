@@ -24,3 +24,5 @@ function! DotooFoldExpr()
     return '='
   endif
 endfunction
+
+autocmd! BufRead,TextChanged,TextChangedI <buffer> call dotoo#parser#parse(expand('%:p'),1)

@@ -98,7 +98,7 @@ function! s:headline_methods.serialize() dict
 endfunction
 
 function! s:headline_methods.open() dict
-  silent exe 'split' self.file
+  silent exe 'noauto split' self.file
 endfunction
 
 function! s:headline_methods.close() dict
@@ -106,10 +106,12 @@ function! s:headline_methods.close() dict
 endfunction
 
 function! s:headline_methods.save() dict
+  let old_view = winsaveview()
   call self.open()
   call self.delete()
   call append(self.lnum-1, self.serialize())
   call self.close()
+  call winrestview(old_view)
 endfunction
 
 function! s:headline_methods.delete() dict
@@ -126,6 +128,13 @@ endfunction
 
 function! s:sort_deadlines(h1, h2)
   return a:h1.next_deadline().diff(a:h2.next_deadline())
+endfunction
+
+function! s:cache_headline(headline)
+  if !has_key(s:headlines, a:headline.file)
+    let s:headlines[a:headline.file] = {}
+  endif
+  let s:headlines[a:headline.file][a:headline.lnum] = a:headline
 endfunction
 
 let s:headlines = {}
@@ -174,14 +183,15 @@ function! dotoo#parser#headline#new(...) abort
   let headline.id = sha256(string(headline))
 
   " Cache headlines for lookup
-  if !has_key(s:headlines, file) | let s:headlines[file] = {} | endif
-  let s:headlines[file][headline.lnum] = headline
+  call s:cache_headline(headline)
 
   return headline
 endfunction
 
-function! dotoo#parser#headline#get(file, lnum)
-  if has_key(s:headlines, a:file)
-    return get(s:headlines[a:file], a:lnum)
+function! dotoo#parser#headline#get(...)
+  let file = a:0 ? a:1 : expand('%:p')
+  let lnum = a:0 == 2 ? a:2 : line('.')
+  if has_key(s:headlines, file)
+    return get(s:headlines[file], lnum)
   endif
 endfunction

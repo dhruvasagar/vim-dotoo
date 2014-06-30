@@ -73,7 +73,7 @@ function! dotoo#parser#lexer#tokenize(file) abort
   if !filereadable(a:file) | return | endif
   let lnum = 1
   let tokens = []
-  silent exec 'hide split' a:file
+  silent exec 'noauto split' a:file
   let lines = getline(1,'$')
   for line in lines
     call add(tokens, s:tokenize_line(lnum, line))

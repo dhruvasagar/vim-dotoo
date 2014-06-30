@@ -4,6 +4,6 @@ endif
 let g:autoloaded_dotoo = 1
 
 " Helper Functions
-function! dotoo#get_headline(file, lnum)
-  return dotoo#parser#headline#get(a:file, a:lnum)
+function! dotoo#get_headline(...)
+  return call('dotoo#parser#headline#get', a:000)
 endfunction
