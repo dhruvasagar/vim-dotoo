@@ -6,6 +6,21 @@ let g:autoloaded_dotoo_agenda = 1
 call dotoo#utils#set('dotoo#agenda#warning_days', '30d')
 call dotoo#utils#set('dotoo#agenda#files', ['~/Documents/org-files/*.dotoo'])
 
+" Private API {{{1
+function! s:has_agenda_file(...)
+  let afile = a:0 ? a:1 : expand('%:p')
+  for agenda_file in g:dotoo#agenda#files
+    for orgfile in glob(agenda_file, 1, 1)
+      if orgfile ==# afile | return 1 | endif
+    endfor
+  endfor
+endfunction
+
+function! s:add_agenda_file(...)
+  let file = a:0 ? a:1 : expand('%:p')
+  call add(g:dotoo#agenda#files, file)
+endfunction
+
 let s:dotoo_files = []
 let s:agenda_dotoos = []
 function! s:parse_dotoos(file,...)
@@ -19,10 +34,6 @@ function! s:load_agenda_files(...)
   let force = a:0 ? a:1 : 0
   if force | let s:dotoo_files = [] | endif
   if force | let s:agenda_dotoos = [] | endif
-  if expand('%:e') ==# 'dotoo' || expand('#:e') ==# 'dotoo'
-    let file = expand('%:e') ==# 'dotoo' ? expand('%:p') : expand('#:p')
-    call s:parse_dotoos(file, force)
-  endif
   for agenda_file in g:dotoo#agenda#files
     for orgfile in glob(agenda_file, 1, 1)
       call s:parse_dotoos(orgfile, force)
@@ -85,6 +96,7 @@ function! s:change_todo_menu()
   return dotoo#utils#getchar(join(todo_keywords, "\n"), acceptable_input)
 endfunction
 
+" Public API {{{1
 function! dotoo#agenda#goto_headline(cmd)
   let headline = s:agenda_headlines[line('.')-2]
   exec a:cmd headline.file
@@ -136,6 +148,13 @@ endfunction
 function! dotoo#agenda#agenda(...)
   let force = a:0 ? a:1 : 0
   let warning_limit = s:current_date.adjust(g:dotoo#agenda#warning_days)
+
+  if expand('%:e') ==# 'dotoo' && !s:has_agenda_file()
+    if dotoo#utils#getchar('Do you wish to add the current file in agenda files? (y/n): ', '[yn]') == 'y'
+      let force = 1
+      call s:add_agenda_file()
+    endif
+  endif
 
   let old_view = winsaveview()
   call s:load_agenda_files(force)
