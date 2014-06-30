@@ -136,6 +136,14 @@ function! s:headline_methods.stop_clock() dict
   call self.save()
 endfunction
 
+function! s:headline_methods.equal(other) dict
+  if empty(a:other) | return 0 | endif
+  if !has_key(a:other, 'todo_title') || !has_key(a:other, 'level') || !has_key(a:other, 'lnum') || !has_key(a:other, 'file')
+    return 0
+  endif
+  return self.todo_title() == a:other.todo_title() && self.level == a:other.level && self.lnum == a:other.lnum && self.file == a:other.file
+endfunction
+
 function! s:sort_deadlines(h1, h2)
   return a:h1.next_deadline().diff(a:h2.next_deadline())
 endfunction

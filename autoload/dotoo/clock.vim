@@ -18,7 +18,7 @@ endfunction
 function! dotoo#clock#stop()
   if s:syntax.headline.matches(getline('.'))
     let headline = dotoo#get_headline()
-    if headline == s:current_clocking_headline
+    if headline.equal(s:current_clocking_headline)
       if !empty(s:clocking_headlines)
         call remove(s:clocking_headlines, 0)
         let s:current_clocking_headline = get(s:clocking_headlines, 0, {})
