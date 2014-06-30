@@ -35,7 +35,7 @@ call s:define('metadata', '\v^(DEADLINE|CLOSED|SCHEDULED): \[(.*)\]$')
 call s:define('properties', '\v^:PROPERTIES:$')
 call s:define('logbook', '\v^:LOGBOOK:$')
 call s:define('properties_content', '\v^:(END)@!([^:]+):\s*(.*)$')
-call s:define('logbook_clock', '\v^CLOCK: \[([^\]]*)\](--\[([^\]]*)\])?( \=\>\s+\d{1,2}:\d{2})?')
+call s:define('logbook_clock', '\v^CLOCK: \[([^\]]*)\](--\[([^\]]*)\])?( \=\>\s+(\d{1,2}:\d{2}))?')
 call s:define('logbook_state_change', '\v^- State "([^"]*)"\s+from "([^"]*)"\s+\[([^\]]*)\]')
 call s:define('drawer_end', '\v^:END:$')
 call s:define('line', '\v^(.*)$')
@@ -73,7 +73,7 @@ function! dotoo#parser#lexer#tokenize(file) abort
   if !filereadable(a:file) | return | endif
   let lnum = 1
   let tokens = []
-  exec 'hide split' a:file
+  silent exec 'hide split' a:file
   let lines = getline(1,'$')
   for line in lines
     call add(tokens, s:tokenize_line(lnum, line))

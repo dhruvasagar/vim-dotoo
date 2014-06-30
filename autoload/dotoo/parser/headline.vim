@@ -98,7 +98,7 @@ function! s:headline_methods.serialize() dict
 endfunction
 
 function! s:headline_methods.open() dict
-  exe 'split' self.file
+  silent exe 'split' self.file
 endfunction
 
 function! s:headline_methods.close() dict
@@ -114,7 +114,7 @@ endfunction
 
 function! s:headline_methods.delete() dict
   call self.open()
-  exec self.lnum.','.self.last_lnum.':delete'
+  silent exec self.lnum.','.self.last_lnum.':delete'
   call self.close()
 endfunction
 
@@ -181,7 +181,7 @@ function! dotoo#parser#headline#new(...) abort
 endfunction
 
 function! dotoo#parser#headline#get(file, lnum)
-  if get(s:headlines, a:file)
+  if has_key(s:headlines, a:file)
     return get(s:headlines[a:file], a:lnum)
   endif
 endfunction
