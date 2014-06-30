@@ -126,6 +126,16 @@ function! s:headline_methods.undo() dict
   call self.close()
 endfunction
 
+function! s:headline_methods.start_clock() dict
+  call self.logbook.start_clock()
+  call self.save()
+endfunction
+
+function! s:headline_methods.stop_clock() dict
+  call self.logbook.stop_clock()
+  call self.save()
+endfunction
+
 function! s:sort_deadlines(h1, h2)
   return a:h1.next_deadline().diff(a:h2.next_deadline())
 endfunction

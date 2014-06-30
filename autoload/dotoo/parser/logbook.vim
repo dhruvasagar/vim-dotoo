@@ -48,9 +48,9 @@ function! s:logbook_methods.stop_clock() dict
 endfunction
 
 function! s:logbook_methods.clocking_summary() dict
-  let log = self.logs[0]
-  if !has_key(log, 'end')
-    return log['start'].diff_time(dotoo#time#new()).to_string(g:dotoo#time#time_format)
+  let log = get(self.logs, 0)
+  if !empty(log) && !has_key(log, 'end')
+    return dotoo#time#new().diff_time(log['start']).to_string(g:dotoo#time#time_format)
   endif
 endfunction
 

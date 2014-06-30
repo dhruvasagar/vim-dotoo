@@ -26,3 +26,6 @@ function! DotooFoldExpr()
 endfunction
 
 autocmd! BufRead,TextChanged,TextChangedI <buffer> call dotoo#parser#parse(expand('%:p'),1)
+
+nnoremap <buffer> <silent> gI :<C-U>call dotoo#clock#start()<CR>
+nnoremap <buffer> <silent> gO :<C-U>call dotoo#clock#stop()<CR>

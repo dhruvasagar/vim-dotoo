@@ -88,6 +88,10 @@ function! s:build_agendas(...)
   return agendas
 endfunction
 
+function! s:set_agenda_modified(mod)
+  let &l:modified = a:mod
+endfunction
+
 function! s:change_todo_menu()
   let todo_keywords = filter(copy(g:dotoo#parser#todo_keywords), 'v:val !~# "|"')
   let acceptable_input = '[' . join(map(copy(todo_keywords), 'v:val[0]'),'') . ']'
@@ -103,6 +107,24 @@ function! dotoo#agenda#goto_headline(cmd)
   exec 'normal!' headline.lnum . 'G'
 endfunction
 
+function! dotoo#agenda#start_headline_clock()
+  let old_view = winsaveview()
+  call dotoo#agenda#goto_headline('edit')
+  call dotoo#clock#start()
+  call dotoo#agenda#agenda(1)
+  call s:set_agenda_modified(1)
+  call winrestview(old_view)
+endfunction
+
+function! dotoo#agenda#stop_headline_clock()
+  let old_view = winsaveview()
+  call dotoo#agenda#goto_headline('edit')
+  call dotoo#clock#stop()
+  call dotoo#agenda#agenda(1)
+  call s:set_agenda_modified(1)
+  call winrestview(old_view)
+endfunction
+
 function! dotoo#agenda#change_headline_todo()
   let headline = s:agenda_headlines[line('.')-2]
   let selected = s:change_todo_menu()
@@ -111,7 +133,7 @@ function! dotoo#agenda#change_headline_todo()
     let old_view = winsaveview()
     call headline.save()
     call dotoo#agenda#agenda()
-    let &l:modified = getbufvar(bufnr('#'), '&modified')
+    call s:set_agenda_modified(getbufvar(bufnr('#'), '&modified'))
     call winrestview(old_view)
   endif
 endfunction

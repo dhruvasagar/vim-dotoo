@@ -9,8 +9,7 @@ let s:current_clocking_headline = {}
 function! dotoo#clock#start()
   if s:syntax.headline.matches(getline('.'))
     let headline = dotoo#get_headline()
-    call headline.logbook.start_clock()
-    call headline.save()
+    call headline.start_clock()
     let s:current_clocking_headline = headline
     call insert(s:clocking_headlines, headline)
   endif
@@ -28,13 +27,14 @@ function! dotoo#clock#stop()
       endif
     endif
   endif
-  call headline.logbook.stop_clock()
-  call headline.save()
+  call headline.stop_clock()
 endfunction
 
 function! dotoo#clock#summary()
   if !empty(s:current_clocking_headline)
-    return s:current_clocking_headline.logbook.clocking_summary()
+    return s:current_clocking_headline.logbook.clocking_summary() .
+          \ ' ' .
+          \ s:current_clocking_headline.title[:10]
   endif
   return ''
 endfunction
