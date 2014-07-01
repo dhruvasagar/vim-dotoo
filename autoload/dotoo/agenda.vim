@@ -95,8 +95,10 @@ endfunction
 " Public API {{{1
 function! dotoo#agenda#goto_headline(cmd)
   let headline = s:agenda_headlines[line('.')-2]
-  exec a:cmd headline.file
-  exec 'normal!' headline.lnum . 'G'
+  if a:cmd ==# 'edit' | quit | split | endif
+  exec a:cmd '+'.headline.lnum headline.file
+  if empty(&filetype) | edit | endif
+  normal! zv
 endfunction
 
 function! dotoo#agenda#start_headline_clock()
