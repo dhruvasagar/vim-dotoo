@@ -92,14 +92,6 @@ function! s:set_agenda_modified(mod)
   let &l:modified = a:mod
 endfunction
 
-function! s:change_todo_menu()
-  let todo_keywords = filter(copy(g:dotoo#parser#todo_keywords), 'v:val !~# "|"')
-  let acceptable_input = '[' . join(map(copy(todo_keywords), 'v:val[0]'),'') . ']'
-  let todo_keywords = map(todo_keywords, '"(".tolower(v:val[0]).") ".v:val')
-  call add(todo_keywords, 'Select todo state: ')
-  return dotoo#utils#getchar(join(todo_keywords, "\n"), acceptable_input)
-endfunction
-
 " Public API {{{1
 function! dotoo#agenda#goto_headline(cmd)
   let headline = s:agenda_headlines[line('.')-2]
@@ -127,7 +119,7 @@ endfunction
 
 function! dotoo#agenda#change_headline_todo()
   let headline = s:agenda_headlines[line('.')-2]
-  let selected = s:change_todo_menu()
+  let selected = dotoo#utils#change_todo_menu()
   if !empty(selected)
     call headline.change_todo(selected)
     let old_view = winsaveview()

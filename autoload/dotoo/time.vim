@@ -153,7 +153,7 @@ endfunction
 let s:time_methods = {}
 function! s:time_methods.init(...) dict
   let dt = a:0 ? a:1 : ''
-  let rp = ''
+  let rp = a:0 == 2 ? a:2 : ''
   if type(dt) == type('')
     if dt =~# g:dotoo#time#repeatable_date_regex . '$'
       let rp = matchlist(dt, g:dotoo#time#repeatable_date_regex)[5]
@@ -262,15 +262,7 @@ function! s:time_methods.time_ago(...) dict
 endfunction
 
 function! s:time_methods.to_string(...) dict
-  let rp = 0
-  let format = g:dotoo#time#date_day_format
-  if a:0
-    if type(a:1) == type(0)
-      let rp = a:1
-    elseif type(a:1) == type('')
-      let format = a:1
-    endif
-  endif
+  let format = a:0 ? a:1 : g:dotoo#time#date_day_format
   if format ==# g:dotoo#time#date_day_format && strftime(g:dotoo#time#time_format, self.to_seconds()) !=# '00:00'
     let format = g:dotoo#time#datetime_format
   endif
@@ -278,22 +270,21 @@ function! s:time_methods.to_string(...) dict
     return strftime(format, self.to_seconds())
   else
     let str = strftime(format, self.to_seconds())
-    if rp | let str .= ' ' . self.datetime.repeat | endif
+    if !empty(self.datetime.repeat) | let str .= ' ' . self.datetime.repeat | endif
     return str
-  endif
   endif
 endfunction
 
 function! s:time_methods.add(other) dict
   let datetime = s:localtime(self.datetime.to_seconds()
         \ + s:to_seconds(a:other))
-  return dotoo#time#new(datetime)
+  return dotoo#time#new(datetime, self.datetime.repeat)
 endfunction
 
 function! s:time_methods.sub(other) dict
   let datetime = s:localtime(self.datetime.to_seconds()
         \ - s:to_seconds(a:other))
-  return dotoo#time#new(datetime)
+  return dotoo#time#new(datetime, self.datetime.repeat)
 endfunction
 
 function! s:time_methods.adjust(amount) dict
@@ -337,7 +328,7 @@ function! s:time_methods.adjust(amount) dict
   if ! adjusted
     let datetime = s:localtime(self.datetime.to_seconds() + seconds)
   endif
-  return dotoo#time#new(datetime)
+  return dotoo#time#new(datetime, self.datetime.repeat)
 endfunction
 
 function! s:time_methods.next_repeat(...) dict
@@ -401,7 +392,8 @@ endfunction
 
 function! dotoo#time#new(...)
   let dt = a:0 ? a:1 : ''
+  let rp = a:0 == 2 ? a:2 : ''
   let obj = {}
   call extend(obj, s:time_methods)
-  return obj.init(dt)
+  return obj.init(dt, rp)
 endfunction

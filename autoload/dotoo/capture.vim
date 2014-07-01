@@ -11,7 +11,7 @@ call dotoo#utils#set('dotoo#capture#templates', [
       \ ['m', 'Meeting', '* MEETING with %? :MEETING:'],
       \ ['p', 'Phone call', '* PHONE %? :PHONE:'],
       \ ['h', 'Habit', ['* NEXT %?',
-      \                'SCHEDULED: [%(strftime(g:dotoo#time#datetime_format)) +1m]',
+      \                'SCHEDULED: [%(strftime(g:dotoo#time#date_day_format)) +1m]',
       \                ':PROPERTIES:',
       \                ':STYLE: habit',
       \                ':REPEAT_TO_STATE: NEXT',

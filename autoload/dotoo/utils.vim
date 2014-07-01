@@ -19,3 +19,11 @@ function! dotoo#utils#getchar(prompt, accept)
   if char =~? a:accept | return char | endif
   return ''
 endfunction
+
+function! dotoo#utils#change_todo_menu()
+  let todo_keywords = filter(copy(g:dotoo#parser#todo_keywords), 'v:val !~# "|"')
+  let acceptable_input = '[' . join(map(copy(todo_keywords), 'v:val[0]'),'') . ']'
+  let todo_keywords = map(todo_keywords, '"(".tolower(v:val[0]).") ".v:val')
+  call add(todo_keywords, 'Select todo state: ')
+  return dotoo#utils#getchar(join(todo_keywords, "\n"), acceptable_input)
+endfunction

@@ -25,7 +25,14 @@ function! DotooFoldExpr()
   endif
 endfunction
 
-autocmd! BufRead,TextChanged,TextChangedI <buffer> call dotoo#parser#parse(expand('%:p'),1)
+autocmd! TextChanged,TextChangedI <buffer> call dotoo#parser#parse(expand('%:p'),1)
+
+iabbrev <expr> <buffer> <silent> :date: '['.strftime(g:dotoo#time#date_day_format).']'
+iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#datetime_format).']'
 
 nnoremap <buffer> <silent> gI :<C-U>call dotoo#clock#start()<CR>
 nnoremap <buffer> <silent> gO :<C-U>call dotoo#clock#stop()<CR>
+nnoremap <buffer> <silent> cd :<C-U>call dotoo#change_todo()<CR>
+nnoremap <buffer> <silent> <C-A> :<C-U>call dotoo#increment_date()<CR>
+nnoremap <buffer> <silent> <C-X> :<C-U>call dotoo#decrement_date()<CR>
+nnoremap <buffer> <silent> <C-C><C-C> :<C-U>call dotoo#normalize_date()<CR>
