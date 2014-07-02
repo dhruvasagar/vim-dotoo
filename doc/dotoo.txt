@@ -1,11 +1,12 @@
+*dotoo.txt*   TODO Management in VIM inspired by Org Mode                   *dotoo*
 -------------------------------------------------------------------------------
-INTRODUCTION                                                              *dotoo*
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
                                 Version 0.1.0
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
+
 -------------------------------------------------------------------------------
 CONTENTS                                                         *dotoo-contents*
 
