@@ -1,0 +1,192 @@
+-------------------------------------------------------------------------------
+INTRODUCTION                                                              *dotoo*
+
+       DoToo, the awesome TODO management system inspired by Org-Mode.
+                                Version 0.1.0
+
+                Author: Dhruva Sagar (http://dhruvasagar.com)
+              License: MIT (http://opensource.org/licenses/MIT)
+-------------------------------------------------------------------------------
+CONTENTS                                                         *dotoo-contents*
+
+      1. Installation ................................ |dotoo-installation|
+      2. Getting Started ............................. |dotoo-getting-started|
+      3. Options ..................................... |dotoo-options|
+      4. Mappings .................................... |dotoo-mappings|
+      5. Contributing ................................ |dotoo-contributing|
+
+-------------------------------------------------------------------------------
+INSTALLATION                                                 *dotoo-installation*
+
+      There are several ways to install this plugin based on the plugin
+      manager yo use.
+
+      1. Pathogen: Clone repository in your bundle directory and restart vim. >
+                   $ git clone git@github.com:dhruvasagar/vim-dotoo.git
+<
+      2. Vundle: Add this to your vimrc - `Plugin dhruvasagar/vim-dotoo`
+
+      3. NeoBundle: Add this to your vimrc - `NeoBundle dhruvasagar/vim-dotoo`
+
+-------------------------------------------------------------------------------
+GETTING STARTED                                           *dotoo-getting-started*
+
+      1. Document Structure: The docment structure is borrowed from emacs'
+         Org Mode, without support for indentation.
+
+      2. Agenda View: You can have a look at the agenda at anytime using the key
+         binding `gA`. This opens up a buffer with TODO's that are nearing
+         deadline. It provides a variety of mappings to manipulate the TODO
+         items from the agenda view itself.
+
+         These are the agenda view mappings :
+              `q`: quit agenda buffer
+              `r`: refresh agenda buffer (force reload / parse agenda files)
+              `f`: go forward by 1 day
+              `b`: go backward by 1 day
+              `.`: go to today's date
+              `c`: change TODO of headline to other states
+              `u`: undo change in file of TODO item under the cursor
+              `s`: save all agenda files
+              `C`: trigger capture menu
+              `i`: clock-in for TODO under cursor
+              `o`: clock-out for TODO under cursor
+              `<CR>`: Open TODO under cursor & close agenda
+              `<C-S>`: Open TODO under cursor in `split`
+              `<C-T>`: Open TODO under cursor in `tab`
+              `<C-V>`: Open TODO under cursor in `vsplit`
+              `<Tab>`: same as `<C-V>`
+
+      3. Capture: This launches the capture menu that you can use to quickly
+         capture TODOs, NOTES etc. This can be invoked using the keybinding
+         `gC` from anywhere. If you invoke the same from an open dotoo file,
+         it will append the captured template into the dotoo file otherwise it
+         will append the captured template into the refile file configured by
+         |g:dotoo#capture#refile|
+
+-------------------------------------------------------------------------------
+OPTIONS                                                          *dotoo-options*
+
+                                           *g:dotoo_headline_highlight_colors*
+      |g:dotoo_headline_highlight_colors|
+            This setting defines the syntax highlight groups to be used for
+            various headlines of separate levels. >
+                let g:dotoo_headline_highlight_colors = [
+                  \ 'Title',
+                  \ 'Constant',
+                  \ 'Identifier',
+                  \ 'Statement',
+                  \ 'PreProc',
+                  \ 'Type',
+                  \ 'Special']
+<
+                                        *g:dotoo_headline_shade_leading_stars*
+      |g:dotoo_headline_shade_leading_stars|
+            This setting defines whether the leading stars of the headlines
+            will be shaded. Set this to 0 if you don't want them to be shaded. >
+                let g:dotoo_headline_shade_leading_stars = 1
+<
+                                                  *g:dotoo_todo_keyword_faces*
+      |g:dotoo_todo_keyword_faces|
+            This setting defines what the faces of various TODO states look
+            like. >
+                let g:dotoo_todo_keyword_faces = [
+                  \ ['TODO', [':foreground 160', ':weight bold']],
+                  \ ['NEXT', [':foreground 27', ':weight bold']],
+                  \ ['DONE', [':foreground 22', ':weight bold']],
+                  \ ['WAITING', [':foreground 202', ':weight bold']],
+                  \ ['HOLD', [':foreground 53', ':weight bold']],
+                  \ ['CANCELLED', [':foreground 22', ':weight bold']],
+                  \ ['MEETING', [':foreground 22', ':weight bold']],
+                  \ ['PHONE', [':foreground 22', ':weight bold']]
+                  \ ]
+<
+                                                *g:dotoo#parser#todo_keywords*
+      |g:dotoo#parser#todo_keywords|
+            This setting defines various todo keywords to be recognized. A `|`
+            separates final done states from others. >
+                let g:dotoo#parser#todo_keywords = [
+                  \ 'TODO',
+                  \ 'NEXT',
+                  \ 'WAITING',
+                  \ 'HOLD',
+                  \ 'PHONE',
+                  \ 'MEETING',
+                  \ '|',
+                  \ 'CANCELLED',
+                  \ 'DONE']
+<
+
+                                                 *g:dotoo#agenda#warning_days*
+      |g:dotoo#agenda#warning_days|
+            This setting sets the warning period, so you're warned about TODOs
+            that are due within the warning period from today. It is a string
+            of the form '{number}[dmy]' where 'd' stands for day, 'm' for
+            month, 'y' for year. >
+                let g:dotoo#agenda#warning_days = '30d'
+<
+
+                                                        *g:dotoo#agenda#files*
+      |g:dotoo#agenda#files|
+            This setting is an array of files the agenda will read to show
+            what's on the agenda within the warning days. They can include
+            wildcards which will be expanded using |glob()| >
+                let g:dotoo#agenda#files = ['~/Documents/org-files/*.dotoo']
+<
+
+                                                 *g:dotoo#time#time_ago_short*
+      |g:dotoo#time#time_ago_short|
+            This setting defines whether the time_ago would output a short
+            value near the closest years, months, days, hours, minutes or
+            seconds or a long value with the full time ago. Set it to 1 to see
+            a short time ago. >
+                let g:dotoo#time#time_ago_short = 0
+<
+                                                      *g:dotoo#capture#refile*
+      |g:dotoo#capture#refile|
+            This setting defines the default refile file where the capture
+            captures templates into. >
+                let g:dotoo#capture#refile = expand('~/Document/org-files/refile.dotoo')
+<
+
+                                                   *g:dotoo#capture#templates*
+      |g:dotoo#capture#templates|
+            This setting defines the capture templates the capture menu uses. >
+                let g:dotoo#capture#templates = [
+                  \ ['t', 'Todo', ['* TODO %?',
+                  \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
+                  \ ['n', 'Note', '* %? :NOTE:'],
+                  \ ['m', 'Meeting', '* MEETING with %? :MEETING:'],
+                  \ ['p', 'Phone call', '* PHONE %? :PHONE:'],
+                  \ ['h', 'Habit', ['* NEXT %?',
+                  \                'SCHEDULED: [%(strftime(g:dotoo#time#date_day_format)) +1m]',
+                  \                ':PROPERTIES:',
+                  \                ':STYLE: habit',
+                  \                ':REPEAT_TO_STATE: NEXT',
+                  \                ':END:']]
+                  \ ]
+<
+            NOTE: The first option defines the key press to be used for the item,
+            second is the description and third is a list for each line of the
+            template. You can use `%?` as a placeholder for where the cursor
+            will be editing the template immidiately after selecting it and
+            `%(...)` to inline viml code that will be evaluated.
+
+-------------------------------------------------------------------------------
+MAPPINGS                                                        *dotoo-mappings*
+
+                                                     *dotoo-options-agenda-view*
+      `gA`: Open Agenda View
+
+                               *dotoo-options-capture* *dotoo-options-capture-menu*
+      `gC`: Trigger Capture Menu
+
+-------------------------------------------------------------------------------
+CONTRIBUTING                                                 *dotoo-contributing*
+
+      You can find the code at https://github.com/dhruvasagar/vim-dotoo, fork
+      it and send me a PR with a good commit message and i'll review it and
+      merge if it looks good. You can also reach me directly via e-mail at
+      dhruva [dot] sagar [at] gmail [dot] com
+
+      Report issues at https://github.com/dhruavsagar/vim-dotoo/issues
