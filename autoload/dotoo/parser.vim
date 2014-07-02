@@ -7,9 +7,8 @@ function! s:flatten_headlines(headlines)
   let flat_list = []
   let headlines = deepcopy(a:headlines)
   for headline in headlines
-    let children = remove(headline, 'headlines')
     call add(flat_list, headline)
-    let flat_list += s:flatten_headlines(children)
+    let flat_list += s:flatten_headlines(headline.headlines)
   endfor
   return flat_list
 endfunction

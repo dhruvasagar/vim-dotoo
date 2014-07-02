@@ -6,9 +6,9 @@ let g:autoloaded_dotoo_parser_metadata = 1
 let s:metadata_methods = {}
 function! s:metadata_methods.serialize() dict
   if has_key(self, 'deadline')
-    return 'DEADLINE: [' . self.deadline.to_string(1) . ']'
+    return 'DEADLINE: [' . self.deadline.to_string() . ']'
   elseif has_key(self, 'scheduled')
-    return 'SCHEDULED: [' . self.scheduled.to_string(1) . ']'
+    return 'SCHEDULED: [' . self.scheduled.to_string() . ']'
   elseif has_key(self, 'closed')
     return 'CLOSED: [' . self.closed.to_string() . ']'
   endif

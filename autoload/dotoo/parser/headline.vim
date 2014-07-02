@@ -92,7 +92,8 @@ function! s:headline_methods.serialize() dict
   call add(lines, self.metadata.serialize())
   call extend(lines, self.properties.serialize())
   call extend(lines, self.logbook.serialize())
-  call extend(lines, map(self.headlines, 'v:val.serialize()'))
+  let child_headlines = map(deepcopy(self.headlines), 'v:val.serialize()')
+  call map(child_headlines, 'extend(lines, v:val)')
   call filter(lines, '!empty(v:val)')
   return lines
 endfunction
