@@ -3,13 +3,24 @@ if exists('g:autoloaded_dotoo_parser')
 endif
 let g:autoloaded_dotoo_parser = 1
 
+function! s:flatten_headlines(headlines)
+  let flat_list = []
+  let headlines = deepcopy(a:headlines)
+  for headline in headlines
+    let children = remove(headline, 'headlines')
+    call add(flat_list, headline)
+    let flat_list += s:flatten_headlines(children)
+  endfor
+  return flat_list
+endfunction
+
 function! s:sort_by_deadline(d1, d2)
   return a:d1.next_deadline().diff(a:d2.next_deadline())
 endfunction
 
 let s:dotoo_methods = {}
 function! s:dotoo_methods.filter(expr) dict
-  let headlines = deepcopy(self.headlines)
+  let headlines = s:flatten_headlines(self.headlines)
   call filter(headlines, a:expr)
   return sort(headlines, 's:sort_by_deadline')
 endfunction

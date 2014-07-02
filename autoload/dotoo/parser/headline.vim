@@ -190,7 +190,11 @@ function! dotoo#parser#headline#new(...) abort
       elseif token.type == s:syntax.headline.type
         let headline.last_lnum = token.lnum - 1
         call insert(tokens, token)
-        break
+        if len(token.content[0]) > headline.level
+          call add(headline.headlines, dotoo#parser#headline#new(file, tokens))
+        else
+          break
+        endif
       endif
     endwhile
 
