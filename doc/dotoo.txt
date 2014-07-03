@@ -23,7 +23,7 @@ INSTALLATION                                                 *dotoo-installation
       manager yo use.
 
       1. Pathogen: Clone repository in your bundle directory and restart vim. >
-                   $ git clone git@github.com:dhruvasagar/vim-dotoo.git
+             $ git clone git@github.com:dhruvasagar/vim-dotoo.git ~/.vim/bundle
 <
       2. Vundle: Add this to your vimrc - `Plugin dhruvasagar/vim-dotoo`
 
