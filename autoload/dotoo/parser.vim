@@ -14,7 +14,7 @@ function! s:flatten_headlines(headlines)
 endfunction
 
 function! s:sort_by_deadline(d1, d2)
-  return a:d1.next_deadline().diff(a:d2.next_deadline())
+  return a:d1.deadline().diff(a:d2.deadline())
 endfunction
 
 let s:dotoo_methods = {}

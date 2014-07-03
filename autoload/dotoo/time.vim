@@ -331,39 +331,11 @@ function! s:time_methods.adjust(amount) dict
   return dotoo#time#new(datetime, self.datetime.repeat)
 endfunction
 
-function! s:time_methods.next_repeat(...) dict
-  let date = a:0 ? a:1 : dotoo#time#new()
-  let force = a:0 == 2 ? a:2 : 0
+function! s:time_methods.next_repeat() dict
+  let date = dotoo#time#new()
   if empty(self.datetime.repeat)
     return self
   else
-    if has_key(self, 'repeated_until') && !force
-      return self.repeated_until
-    endif
-    let [time, u_time] = [self, self]
-    " TODO: Optimize this.
-    while time.before(date)
-      let u_time = time
-      let time = time.adjust(self.datetime.repeat)
-    endwhile
-    if date.diff(u_time) <= time.diff(date)
-      let self.repeated_until = u_time
-    else
-      let self.repeated_until = time
-    endif
-    return self.repeated_until
-  endif
-endfunction
-
-function! s:time_methods.future_repeat(...) dict
-  let date = a:0 ? a:1 : dotoo#time#new()
-  let force = a:0 == 2 ? a:2 : 0
-  if empty(self.datetime.repeat)
-    return self
-  else
-    if has_key(self, 'repeated_future') && !force
-      return self.repeated_future
-    endif
     let time = self
     if time.before(date)
       while time.before(date)
@@ -372,9 +344,7 @@ function! s:time_methods.future_repeat(...) dict
     else
       let time = time.adjust(self.datetime.repeat)
     endif
-    let self.repeated_future = time
-    let self.repeated_future.datetime.repeat = self.datetime.repeat
-    return self.repeated_future
+    return time
   endif
 endfunction
 

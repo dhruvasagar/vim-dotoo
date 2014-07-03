@@ -47,21 +47,11 @@ function! s:headline_methods.change_todo(index) dict
   call self.log_state_change()
 endfunction
 
-function! s:headline_methods.metadate(...) dict
-  let date = a:0 ? a:1 : dotoo#time#new()
-  let force = a:0 == 2 ? a:2 : 0
-  let metadate = self.next_deadline(date, force)
-  if empty(metadate) | return self.metadata.closed | endif
-  return metadate
-endfunction
-
-function! s:headline_methods.next_deadline(...) dict
-  let date = a:0 ? a:1 : dotoo#time#new()
-  let force = a:0 == 2 ? a:2 : 0
+function! s:headline_methods.deadline() dict
   if has_key(self.metadata, 'deadline')
-    return self.metadata.deadline.next_repeat(date, force)
+    return self.metadata.deadline
   elseif has_key(self.metadata, 'scheduled')
-    return self.metadata.scheduled.next_repeat(date, force)
+    return self.metadata.scheduled
   endif
   return ''
 endfunction
@@ -146,7 +136,7 @@ function! s:headline_methods.equal(other) dict
 endfunction
 
 function! s:sort_deadlines(h1, h2)
-  return a:h1.next_deadline().diff(a:h2.next_deadline())
+  return a:h1.deadline().diff(a:h2.deadline())
 endfunction
 
 function! s:cache_headline(headline)

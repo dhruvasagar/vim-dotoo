@@ -75,7 +75,7 @@ function! s:build_agendas(...)
       let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
       let agenda = printf('%s %10s:' . time_pf . '%-70s%s', '',
             \ key,
-            \ headline.metadate(s:current_date, force).time_ago(s:current_date),
+            \ headline.deadline().time_ago(s:current_date),
             \ headline.todo_title(),
             \ headline.tags)
       call add(agendas, agenda)
@@ -182,9 +182,9 @@ function! dotoo#agenda#agenda(...)
       let _deadlines = dotoos.filter('!v:val.done() && (has_key(v:val.metadata, "deadline") || has_key(v:val.metadata, "scheduled"))')
       if s:current_date.is_today()
         let s:current_date = dotoo#time#new()
-        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.next_deadline(s:current_date, force).before(warning_limit)')
+        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().before(warning_limit)')
       else
-        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.next_deadline(s:current_date, force).eq_date(s:current_date)')
+        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().eq_date(s:current_date)')
       endif
     endfor
   endif
