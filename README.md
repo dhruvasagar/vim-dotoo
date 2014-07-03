@@ -14,7 +14,7 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    * <kbd>\<C-C\>\<C-C\></kbd>: Normalize a date (fixes day name if incorrect)
 
 2. Agenda View: You can have a look at the agenda at anytime using the key
-   binding `gA`. This opens up a buffer with TODO's that are nearing
+   binding <kbd>gA</kbd>. This opens up a buffer with TODO's that are nearing
    deadline. It provides a variety of mappings to manipulate the TODO
    items from the agenda view itself.
 
@@ -38,7 +38,7 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 3. Capture: This launches the capture menu that you can use to quickly
    capture TODOs, NOTES etc. This can be invoked using the keybinding
-   `gC` from anywhere. If you invoke the same from an open dotoo file,
+   <kbd>gC</kbd> from anywhere. If you invoke the same from an open dotoo file,
    it will append the captured template into the dotoo file otherwise it
    will append the captured template into the refile file configured by
    g:dotoo#capture#refile
