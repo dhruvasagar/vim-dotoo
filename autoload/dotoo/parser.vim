@@ -28,7 +28,7 @@ let s:dotoos = {}
 let s:syntax = dotoo#parser#lexer#syntax()
 let s:parsed_tokens = {}
 function! dotoo#parser#parse(file, ...)
-  if !filereadable(a:file) | return | endif
+  if !filereadable(a:file) || fnamemodify(a:file, ':e') !=? 'dotoo' | return | endif
   let force = a:0 ? a:1 : 0
   let key = fnamemodify(a:file, ':p:t:r')
   if has_key(s:dotoos, key) && !force
