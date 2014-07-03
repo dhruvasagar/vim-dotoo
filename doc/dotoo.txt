@@ -45,9 +45,9 @@ GETTING STARTED                                           *dotoo-getting-started
                           with a [count]
               `<C-C><C-C>`: Normalize a date (fixes day name if incorrect)
 
-         A few helpful |:iabbrev| available :
+         A few helpful |:iabbrev| :
               :date:      Enter the current date
-              :time:      Enter the current date with current time
+              :time:      Enter the current date and time
 
       2. Agenda View: You can have a look at the agenda at anytime using the key
          binding `gA`. This opens up a buffer with TODO's that are nearing

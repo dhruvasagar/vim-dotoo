@@ -13,6 +13,10 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    * <kbd>\<C-X\></kbd>:   Decrement date under cursor by 1 day, can be preceded with a [count]
    * <kbd>\<C-C\>\<C-C\></kbd>: Normalize a date (fixes day name if incorrect)
 
+   A few helpful `:iabbrev` :
+   * `:date:` Enters the current date
+   * `:time:` Enters the current date & time
+
 2. Agenda View: You can have a look at the agenda at anytime using the key
    binding <kbd>gA</kbd>. This opens up a buffer with TODO's that are nearing
    deadline. It provides a variety of mappings to manipulate the TODO
