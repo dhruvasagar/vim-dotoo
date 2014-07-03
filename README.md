@@ -46,3 +46,11 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    it will append the captured template into the dotoo file otherwise it
    will append the captured template into the refile file configured by
    g:dotoo#capture#refile
+
+## Credits
+
+This plugin was inspired by the original emacs org-mode and the workflow
+described by Bert Hansen at http://doc.norang.ca/org-mode.html.
+
+I will also like to shout out for bairui http://of-vim-and-vigor.blogspot.in/
+who helped me a lot in building this.

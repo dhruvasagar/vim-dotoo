@@ -15,6 +15,7 @@ CONTENTS                                                         *dotoo-contents
       3. Options ..................................... |dotoo-options|
       4. Mappings .................................... |dotoo-mappings|
       5. Contributing ................................ |dotoo-contributing|
+      6. Credits ..................................... |dotoo-credits|
 
 -------------------------------------------------------------------------------
 INSTALLATION                                                 *dotoo-installation*
@@ -205,3 +206,12 @@ CONTRIBUTING                                                 *dotoo-contributing
       dhruva [dot] sagar [at] gmail [dot] com
 
       Report issues at https://github.com/dhruavsagar/vim-dotoo/issues
+
+-------------------------------------------------------------------------------
+CREDITS                                                           *dotoo-credits*
+
+      This plugin was inspired by the original emacs org-mode and the workflow
+      described by Bert Hansen at http://doc.norang.ca/org-mode.html.
+
+      I will also like to shout out for bairui who helped me a lot in building
+      this.
