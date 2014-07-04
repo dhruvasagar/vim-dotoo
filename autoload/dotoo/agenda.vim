@@ -59,7 +59,7 @@ function! s:agenda_view(agendas)
   setl modifiable
   silent call setline(1, s:current_date.to_string('%A %d %B %Y'))
   silent call setline(2, a:agendas)
-  let s:agenda_view_last_line = len(a:agendas) + 1
+  let s:agenda_view_last_lnum = len(a:agendas) + 1
   setl nomodified
   setl nomodifiable
   call winrestview(old_view)
@@ -178,7 +178,7 @@ function! dotoo#agenda#save_files()
 endfunction
 
 function! dotoo#agenda#toggle_log_summary()
-  call dotoo#agenda#log_summary#toggle(s:current_date, s:agenda_dotoos, s:agenda_view_last_line)
+  call dotoo#agenda#log_summary#toggle(s:current_date, s:agenda_dotoos, s:agenda_view_last_lnum)
 endfunction
 
 function! dotoo#agenda#agenda(...)
@@ -193,5 +193,5 @@ function! dotoo#agenda#agenda(...)
   call s:load_agenda_files(force)
   call winrestview(old_view)
   call s:agenda_view(s:build_agendas(force))
-  call dotoo#agenda#log_summary#show(s:current_date, s:agenda_dotoos, s:agenda_view_last_line)
+  call dotoo#agenda#log_summary#show(s:current_date, s:agenda_dotoos, s:agenda_view_last_lnum)
 endfunction

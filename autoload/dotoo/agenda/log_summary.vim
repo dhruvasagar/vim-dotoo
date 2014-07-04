@@ -9,7 +9,7 @@ function! s:log_summary_line_separator()
 endfunction
 
 function! s:build_log_summary(date, dotoo_values)
-  let log_summary = []
+  let all_log_summaries = []
   for dotoo in values(a:dotoo_values)
     let log_summaries = []
     let dotoo_summaries = dotoo.log_summary(a:date, 'day')
@@ -18,11 +18,11 @@ function! s:build_log_summary(date, dotoo_values)
     endfor
     if !empty(log_summaries)
       call add(log_summaries, s:log_summary_line_separator())
-      call extend(log_summary, log_summaries)
+      call extend(all_log_summaries, log_summaries)
     endif
   endfor
-  if !empty(log_summary) | call insert(log_summary, s:log_summary_line_separator()) | endif
-  return log_summary
+  if !empty(all_log_summaries) | call insert(all_log_summaries, s:log_summary_line_separator()) | endif
+  return all_log_summaries
 endfunction
 
 let s:agenda_log_summary_showing = 0
