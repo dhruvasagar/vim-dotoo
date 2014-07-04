@@ -64,7 +64,7 @@ function! s:logbook_methods.summary(time, span) dict
   for log in logs
     let summary += log['end'].diff(log['start'])
   endfor
-  return dotoo#time#new(summary)
+  return summary ? dotoo#time#new(summary) : summary
 endfunction
 
 function! dotoo#parser#logbook#new(...)
