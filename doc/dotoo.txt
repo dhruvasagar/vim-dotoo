@@ -213,5 +213,7 @@ CREDITS                                                           *dotoo-credits
       This plugin was inspired by the original emacs org-mode and the workflow
       described by Bert Hansen at http://doc.norang.ca/org-mode.html.
 
+      I have taken bits of the syntax definitions & ideas from `jceb/vim-orgmode`
+
       I will also like to shout out for bairui who helped me a lot in building
       this.
