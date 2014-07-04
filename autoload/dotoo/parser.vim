@@ -24,6 +24,12 @@ function! s:dotoo_methods.filter(expr) dict
   return sort(headlines, 's:sort_by_deadline')
 endfunction
 
+function! s:dotoo_methods.log_summary(time, span) dict
+  let headlines = s:flatten_headlines(self.headlines)
+  call filter(headlines, '!empty(v:val.log_summary(a:time, a:span))')
+  return map(headlines, '[v:val.todo_title(), v:val.log_summary(a:time, a:span).to_string(g:dotoo#time#time_format)]')
+endfunction
+
 let s:dotoos = {}
 let s:syntax = dotoo#parser#lexer#syntax()
 let s:parsed_tokens = {}

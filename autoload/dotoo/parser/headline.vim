@@ -127,6 +127,10 @@ function! s:headline_methods.stop_clock() dict
   call self.save()
 endfunction
 
+function! s:headline_methods.log_summary(time, span) dict
+  return self.logbook.summary(a:time, a:span)
+endfunction
+
 function! s:headline_methods.equal(other) dict
   if empty(a:other) | return 0 | endif
   if !has_key(a:other, 'todo_title') || !has_key(a:other, 'level') || !has_key(a:other, 'lnum') || !has_key(a:other, 'file')

@@ -22,18 +22,20 @@ function! s:add_agenda_file(...)
 endfunction
 
 let s:dotoo_files = []
-let s:agenda_dotoos = []
+let s:agenda_dotoos = {}
 function! s:parse_dotoos(file,...)
   let force = a:0 ? a:1 : 0
-  call add(s:dotoo_files, a:file)
+  if index(s:dotoo_files, a:file) < 0
+    call add(s:dotoo_files, a:file)
+  endif
   let dotoos = dotoo#parser#parse(a:file, force)
-  call add(s:agenda_dotoos, dotoos)
+  let s:agenda_dotoos[a:file] = dotoos
 endfunction
 
 function! s:load_agenda_files(...)
   let force = a:0 ? a:1 : 0
   if force | let s:dotoo_files = [] | endif
-  if force | let s:agenda_dotoos = [] | endif
+  if force | let s:agenda_dotoos = {} | endif
   for agenda_file in g:dotoo#agenda#files
     for orgfile in glob(agenda_file, 1, 1)
       call s:parse_dotoos(orgfile, force)
@@ -51,6 +53,7 @@ function! s:Edit(cmd)
   setf dotooagenda
 endfunction
 
+let s:agenda_view_bufnr = -1
 function! s:agenda_view(agendas)
   let old_view = winsaveview()
   call s:Edit('pedit!')
@@ -62,13 +65,44 @@ function! s:agenda_view(agendas)
   call winrestview(old_view)
 endfunction
 
+function! s:agenda_toggle_log_summary(log_summaries)
+  setl modifiable
+  if exists('s:log_summary_slnum') && s:log_summary_slnum < line('$')
+    silent exe s:log_summary_slnum.',$:delete'
+  endif
+  if s:agenda_log_summary_showing
+    let s:log_summary_slnum = line('$')+1
+    silent call setline(s:log_summary_slnum, 'Log Summary:')
+    if empty(a:log_summaries)
+      silent call setline(s:log_summary_slnum+1, 'No Clocked Tasks')
+    else
+      silent call setline(s:log_summary_slnum+1, a:log_summaries)
+    endif
+  endif
+  setl nomodified
+  setl nomodifiable
+endfunction
+
 let s:agenda_deadlines = {}
 let s:agenda_headlines = []
 function! s:build_agendas(...)
   let force = a:0 ? a:1 : 0
   let agendas = []
+  let warning_limit = s:current_date.adjust(g:dotoo#agenda#warning_days)
   let add_agenda_headlines = force || empty(s:agenda_headlines)
-  if force | let s:agenda_headlines = [] | endif
+  if force || empty(s:agenda_deadlines)
+    let s:agenda_deadlines = {}
+    let s:agenda_headlines = []
+    for dotoos in values(s:agenda_dotoos)
+      let _deadlines = dotoos.filter('!v:val.done() && !empty(v:val.deadline())')
+      if s:current_date.is_today()
+        let s:current_date = dotoo#time#new()
+        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().before(warning_limit)')
+      else
+        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().eq_date(s:current_date)')
+      endif
+    endfor
+  endif
   for key in keys(s:agenda_deadlines)
     let headlines = s:agenda_deadlines[key]
     for headline in headlines
@@ -86,6 +120,19 @@ function! s:build_agendas(...)
     call add(agendas, printf('%2s %s', '', 'No pending tasks!'))
   endif
   return agendas
+endfunction
+
+function! s:build_agenda_log_summary()
+  let log_summaries = []
+  for dotoo in values(s:agenda_dotoos)
+    call add(log_summaries, dotoo.key)
+    let dotoo_summaries = dotoo.log_summary(s:current_date, 'day')
+    for dotoo_summary in dotoo_summaries
+      call add(log_summaries, printf('| %-50.50s | %10s |', dotoo_summary[0], dotoo_summary[1]))
+    endfor
+    if len(log_summaries) == 1 | let log_summaries = [] | endif
+  endfor
+  return log_summaries
 endfunction
 
 function! s:set_agenda_modified(mod)
@@ -161,33 +208,27 @@ function! dotoo#agenda#save_files()
   call winrestview(old_view)
 endfunction
 
+function! dotoo#agenda#log_summary()
+  call s:agenda_toggle_log_summary(s:build_agenda_log_summary())
+endfunction
+
+let s:agenda_log_summary_showing = 0
+function! dotoo#agenda#toggle_log_summary()
+  let s:agenda_log_summary_showing = !s:agenda_log_summary_showing
+  call dotoo#agenda#log_summary()
+endfunction
+
 function! dotoo#agenda#agenda(...)
   let force = a:0 ? a:1 : 0
-  let warning_limit = s:current_date.adjust(g:dotoo#agenda#warning_days)
-
   if expand('%:e') ==# 'dotoo' && !s:has_agenda_file()
     if dotoo#utils#getchar('Do you wish to add the current file in agenda files? (y/n): ', '[yn]') == 'y'
       let force = 1
       call s:add_agenda_file()
     endif
   endif
-
   let old_view = winsaveview()
   call s:load_agenda_files(force)
   call winrestview(old_view)
-
-  if force || empty(s:agenda_deadlines)
-    let s:agenda_deadlines = {}
-    for dotoos in s:agenda_dotoos
-      let _deadlines = dotoos.filter('!v:val.done() && (has_key(v:val.metadata, "deadline") || has_key(v:val.metadata, "scheduled"))')
-      if s:current_date.is_today()
-        let s:current_date = dotoo#time#new()
-        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().before(warning_limit)')
-      else
-        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().eq_date(s:current_date)')
-      endif
-    endfor
-  endif
-  let agendas = s:build_agendas(force)
-  call s:agenda_view(agendas)
+  call s:agenda_view(s:build_agendas(force))
+  call dotoo#agenda#log_summary()
 endfunction

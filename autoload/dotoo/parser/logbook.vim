@@ -55,14 +55,16 @@ function! s:logbook_methods.clocking_summary() dict
 endfunction
 
 function! s:logbook_methods.summary(time, span) dict
+  let log = get(self.logs, 0)
+  if empty(log) || log.type == s:syntax.logbook_state_change.type | return 0 | endif
   if a:span ==# 'day'
-    let logs = map(self.logs, 'v:val.eq_date(a:time)')
+    let logs = filter(deepcopy(self.logs), 'v:val.start.eq_date(a:time)')
   endif
   let summary = 0
   for log in logs
-    let summary += log['end'].diff_time(log['start'])
+    let summary += log['end'].diff(log['start'])
   endfor
-  return sumary
+  return dotoo#time#new(summary)
 endfunction
 
 function! dotoo#parser#logbook#new(...)

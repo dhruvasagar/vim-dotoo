@@ -14,6 +14,7 @@ nnoremap <buffer> <silent> <nowait> s :<C-U>call dotoo#agenda#save_files()<CR>
 nnoremap <buffer> <silent> <nowait> C :<C-U>call dotoo#capture#capture()<CR>
 nnoremap <buffer> <silent> <nowait> i :<C-U>call dotoo#agenda#start_headline_clock()<CR>
 nnoremap <buffer> <silent> <nowait> o :<C-U>call dotoo#agenda#stop_headline_clock()<CR>
+nnoremap <buffer> <silent> <nowait> R :<C-U>call dotoo#agenda#toggle_log_summary()<CR>
 nnoremap <buffer> <silent> <CR> :<C-U>call dotoo#agenda#goto_headline('edit')<CR>
 nnoremap <buffer> <silent> <C-S> :<C-U>call dotoo#agenda#goto_headline('split')<CR>
 nnoremap <buffer> <silent> <C-V> :<C-U>call dotoo#agenda#goto_headline('vsplit')<CR>
