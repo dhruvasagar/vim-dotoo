@@ -65,24 +65,6 @@ function! s:agenda_view(agendas)
   call winrestview(old_view)
 endfunction
 
-function! s:agenda_toggle_log_summary(log_summaries)
-  setl modifiable
-  if s:agenda_view_last_line < line('$')
-    silent exe (s:agenda_view_last_line + 1).',$:delete'
-  endif
-  if s:agenda_log_summary_showing
-    let line = s:agenda_view_last_line + 1
-    silent call setline(line, 'Log Summary:')
-    if empty(a:log_summaries)
-      silent call setline(line+1, 'No Clocked Tasks')
-    else
-      silent call setline(line+1, a:log_summaries)
-    endif
-  endif
-  setl nomodified
-  setl nomodifiable
-endfunction
-
 let s:agenda_deadlines = {}
 let s:agenda_headlines = []
 function! s:build_agendas(...)
@@ -120,19 +102,6 @@ function! s:build_agendas(...)
     call add(agendas, printf('%2s %s', '', 'No pending tasks!'))
   endif
   return agendas
-endfunction
-
-function! s:build_agenda_log_summary()
-  let log_summaries = []
-  for dotoo in values(s:agenda_dotoos)
-    call add(log_summaries, dotoo.key)
-    let dotoo_summaries = dotoo.log_summary(s:current_date, 'day')
-    for dotoo_summary in dotoo_summaries
-      call add(log_summaries, printf('| %-50.50s | %10s |', dotoo_summary[0], dotoo_summary[1]))
-    endfor
-    if len(log_summaries) == 1 | let log_summaries = [] | endif
-  endfor
-  return log_summaries
 endfunction
 
 function! s:set_agenda_modified(mod)
@@ -208,14 +177,8 @@ function! dotoo#agenda#save_files()
   call winrestview(old_view)
 endfunction
 
-function! dotoo#agenda#log_summary()
-  call s:agenda_toggle_log_summary(s:build_agenda_log_summary())
-endfunction
-
-let s:agenda_log_summary_showing = 0
 function! dotoo#agenda#toggle_log_summary()
-  let s:agenda_log_summary_showing = !s:agenda_log_summary_showing
-  call dotoo#agenda#log_summary()
+  call dotoo#agenda#log_summary#toggle(s:current_date, s:agenda_dotoos, s:agenda_view_last_line)
 endfunction
 
 function! dotoo#agenda#agenda(...)
@@ -230,5 +193,5 @@ function! dotoo#agenda#agenda(...)
   call s:load_agenda_files(force)
   call winrestview(old_view)
   call s:agenda_view(s:build_agendas(force))
-  call dotoo#agenda#log_summary()
+  call dotoo#agenda#log_summary#show(s:current_date, s:agenda_dotoos, s:agenda_view_last_line)
 endfunction
