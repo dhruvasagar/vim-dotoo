@@ -71,7 +71,9 @@ function! s:localtime(...)
         \, 'smicro' : us / 1000}
   let datetime.depoch = s:jd(datetime.year, datetime.month, datetime.day)
         \ - s:epoch_jd
-  let real_ts = datetime.depoch * 86400 + datetime.hour * 3600 + datetime.minute * 60
+  let real_ts = s:days_to_seconds(datetime.depoch)
+        \ + s:hours_to_seconds(datetime.hour)
+        \ + s:minutes_to_seconds(datetime.minute)
         \ + datetime.second
   let datetime.stzoffset = (real_ts - ts)
   let datetime.mtzoffset = (real_ts - ts) / 60
@@ -94,7 +96,6 @@ function! s:days_to_seconds(days)
 endfunction
 
 function! s:to_seconds(time)
-  let stzoffset = s:localtime().stzoffset
   let seconds = 0
   if type(a:time) == type(0)
     let seconds = a:time
@@ -116,7 +117,7 @@ function! s:to_seconds(time)
       let seconds += s:days_to_seconds(s:jd(y, m, d) - s:epoch_jd)
     endif
   endif
-  let seconds -= stzoffset
+  let seconds -= s:localtime().stzoffset
   return seconds
 endfunction
 
@@ -266,37 +267,32 @@ function! s:time_methods.to_string(...) dict
   if format ==# g:dotoo#time#date_day_format && strftime(g:dotoo#time#time_format, self.to_seconds()) !=# '00:00'
     let format = g:dotoo#time#datetime_format
   endif
-  if empty(self.datetime.repeat)
-    return strftime(format, self.to_seconds())
-  else
-    let str = strftime(format, self.to_seconds())
-    if !empty(self.datetime.repeat) | let str .= ' ' . self.datetime.repeat | endif
-    return str
-  endif
+  let str = strftime(format, self.to_seconds())
+  if !empty(self.datetime.repeat) | let str .= ' ' . self.datetime.repeat | endif
+  return str
 endfunction
 
 function! s:time_methods.add(other) dict
-  let datetime = s:localtime(self.datetime.to_seconds()
-        \ + s:to_seconds(a:other))
+  let datetime = self.to_seconds() + a:other.to_seconds()
   return dotoo#time#new(datetime, self.datetime.repeat)
 endfunction
 
 function! s:time_methods.sub(other) dict
-  let datetime = s:localtime(self.datetime.to_seconds()
-        \ - s:to_seconds(a:other))
+  let datetime = self.to_seconds() - a:other.to_seconds()
   return dotoo#time#new(datetime, self.datetime.repeat)
 endfunction
 
 function! s:time_methods.adjust(amount) dict
-  let amount = a:amount
   let adjusted = 0
-  if type(amount) == type('')
+  if type(a:amount) == type('')
     " space separated entries
     " e.g.   1y 2m -3d 4h +5M 6s
     " NOTE: 'm' and 'M' are case sensitive, but the others are not
-    let seconds = 0
-    let [y, m, d, H, M, S] = [self.datetime.year, self.datetime.month, self.datetime.day, self.datetime.hour, self.datetime.minute, self.datetime.second]
-    for amt in split(amount, '\s\+')
+    let seconds = self.datetime.second
+          \ + s:minutes_to_seconds(self.datetime.minute)
+          \ + s:hours_to_seconds(self.datetime.hour)
+    let [y, m, d] = [self.datetime.year, self.datetime.month, self.datetime.day]
+    for amt in split(a:amount, '\s\+')
       let [n, type] = matchlist(amt, '\c\([-+]\?\d\+\)\([ymwdhs]\)')[1:2]
       if type == 'y'
         let y += str2nr(n)
@@ -316,14 +312,11 @@ function! s:time_methods.adjust(amount) dict
         throw 'Unknown adjustment type: ' . string(type)
       endif
     endfor
-    let seconds += S
-    let seconds += s:minutes_to_seconds(M)
-    let seconds += s:hours_to_seconds(H)
     let seconds += s:days_to_seconds(s:jd(y, m, d) - s:epoch_jd)
     let datetime = s:localtime(seconds)
     let adjusted = 1
   else
-    let seconds = s:to_seconds(amount)
+    let seconds = s:to_seconds(a:amount)
   endif
   if ! adjusted
     let datetime = s:localtime(self.datetime.to_seconds() + seconds)

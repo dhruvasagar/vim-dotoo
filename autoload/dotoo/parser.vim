@@ -27,7 +27,7 @@ endfunction
 function! s:dotoo_methods.log_summary(time, span) dict
   let headlines = s:flatten_headlines(self.headlines)
   call filter(headlines, '!empty(v:val.log_summary(a:time, a:span))')
-  return map(headlines, '[v:val.todo_title(), v:val.log_summary(a:time, a:span).to_string(g:dotoo#time#time_format)]')
+  return map(headlines, '[v:val.todo_title(), v:val.log_summary(a:time, a:span)]')
 endfunction
 
 let s:dotoos = {}

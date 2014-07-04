@@ -1,22 +1,28 @@
-function! s:log_summary_line(key, title, time, pad)
-  let [key, time, title] = [a:key, a:time, a:title]
-  if a:pad | let [key, time, title] = [' '.key.' ',' '.time.' ', ' '.title.' '] | endif
-  return printf('|%10s|%-50.50s|%10s|', key, title, time)
+function! s:log_summary_line(title, time, pad)
+  let [time, title] = [a:time, a:title]
+  if a:pad | let [time, title] = [' '.time.' ', ' '.title.' '] | endif
+  return printf('|%-50.50s|%10s|', title, time)
 endfunction
 
 function! s:log_summary_line_separator()
-  return s:log_summary_line(repeat('-',10), repeat('-',50), repeat('-',10), 0)
+  return s:log_summary_line(repeat('-',50), repeat('-',10), 0)
 endfunction
 
 function! s:build_log_summary(date, dotoo_values)
   let all_log_summaries = []
   for dotoo in values(a:dotoo_values)
     let log_summaries = []
+    let total_log_summary = 0
     let dotoo_summaries = dotoo.log_summary(a:date, 'day')
     for dotoo_summary in dotoo_summaries
-      call add(log_summaries, s:log_summary_line(empty(log_summaries) ? dotoo.key : '', dotoo_summary[0], dotoo_summary[1], 1))
+      call add(log_summaries,
+            \  s:log_summary_line(dotoo_summary[0],
+            \                     dotoo_summary[1].to_string(g:dotoo#time#time_format),
+            \                     1))
+      let total_log_summary += dotoo_summary[1].to_seconds() + dotoo_summary[1].datetime.stzoffset
     endfor
     if !empty(log_summaries)
+      call insert(log_summaries, s:log_summary_line(dotoo.key, dotoo#time#new(total_log_summary).to_string(g:dotoo#time#time_format), 1))
       call add(log_summaries, s:log_summary_line_separator())
       call extend(all_log_summaries, log_summaries)
     endif
