@@ -67,6 +67,7 @@ GETTING STARTED                                           *dotoo-getting-started
               `C`:     trigger capture menu
               `i`:     clock-in for headline under cursor
               `o`:     clock-out for headline under cursor
+              `R`:     Report of clocking summary for the day
               `<CR>`:  Open headline under cursor & close agenda
               `<C-S>`: Open headline under cursor in `split`
               `<C-T>`: Open headline under cursor in `tab`
