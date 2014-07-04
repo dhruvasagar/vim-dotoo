@@ -51,7 +51,7 @@ GETTING STARTED                                           *dotoo-getting-started
               :time:      Enter the current date and time
 
       2. Agenda View: You can have a look at the agenda at anytime using the key
-         binding `gA`. This opens up a buffer with TODO's that are nearing
+         binding |gA|. This opens up a buffer with TODO's that are nearing
          deadline. It provides a variety of mappings to manipulate the TODO
          items from the agenda view itself.
 
@@ -75,7 +75,7 @@ GETTING STARTED                                           *dotoo-getting-started
 
       3. Capture: This launches the capture menu that you can use to quickly
          capture TODOs, NOTES etc. This can be invoked using the keybinding
-         `gC` from anywhere. If you invoke the same from an open dotoo file,
+         |gC| from anywhere. If you invoke the same from an open dotoo file,
          it will append the captured template into the dotoo file otherwise it
          will append the captured template into the refile file configured by
          |g:dotoo#capture#refile|
@@ -191,10 +191,10 @@ OPTIONS                                                          *dotoo-options*
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*
 
-                                                     *dotoo-options-agenda-view*
+                                                *gA* *dotoo-options-agenda-view*
       `gA`: Open Agenda View
 
-                               *dotoo-options-capture* *dotoo-options-capture-menu*
+                       *gC* *dotoo-options-capture* *dotoo-options-capture-menu*
       `gC`: Trigger Capture Menu
 
 -------------------------------------------------------------------------------
