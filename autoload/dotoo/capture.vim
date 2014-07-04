@@ -18,6 +18,13 @@ call dotoo#utils#set('dotoo#capture#templates', [
       \                ':END:']]
       \ ])
 
+function! s:capture_menu()
+  let menu_lines = map(deepcopy(g:dotoo#capture#templates), '"(".v:val[0].") ".v:val[1]')
+  let acceptable_input = '[' . join(map(deepcopy(g:dotoo#capture#templates), 'v:val[0]'),'') . ']'
+  call add(menu_lines, 'Select capture template: ')
+  return dotoo#utils#getchar(join(menu_lines, "\n"), acceptable_input)
+endfunction
+
 function! s:get_selected_template(short_key)
   for template in deepcopy(g:dotoo#capture#templates)
     if template[0] ==# a:short_key | return template | endif
@@ -49,27 +56,17 @@ endfunction
 
 function! s:save_capture_template(template)
   let tmpl = s:capture_eval(a:template)
-  if expand('%:e') !=# 'dotoo'
-    call s:capture_edit('split')
-  endif
+  if expand('%:e') !=# 'dotoo' | call s:capture_edit('split') | endif
   call append(line('$') == 1 ? 0 : '$', tmpl)
   let old_search = @/
-  call search('%?', 'b')
-  exe "normal! \<esc>viw\<c-g>"
+  call search('%?')
+  normal! zv
+  exe "normal! \<Esc>viw\<C-G>"
   let @/ = old_search
-endfunction
-
-function! s:capture_menu()
-  let menu_lines = map(deepcopy(g:dotoo#capture#templates), '"(".v:val[0].") ".v:val[1]')
-  let acceptable_input = '[' . join(map(deepcopy(g:dotoo#capture#templates), 'v:val[0]'),'') . ']'
-  call add(menu_lines, 'Select capture template: ')
-  return dotoo#utils#getchar(join(menu_lines, "\n"), acceptable_input)
 endfunction
 
 function! dotoo#capture#capture()
   let selected = s:capture_menu()
   let template = s:get_selected_template(selected)
-  if !empty(template)
-    call s:save_capture_template(template[2])
-  endif
+  if !empty(template) | call s:save_capture_template(template[2]) | endif
 endfunction
