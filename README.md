@@ -54,7 +54,7 @@ This plugin was inspired by the original emacs org-mode and the workflow
 described by Bert Hansen at http://doc.norang.ca/org-mode.html.
 
 I have taken bits of the syntax definitions & ideas from
-[vim-orgmode][https://github.com/jceb/vim-orgmode]
+[vim-orgmode](https://github.com/jceb/vim-orgmode)
 
 I will also like to shout out for bairui http://of-vim-and-vigor.blogspot.in/
 who helped me a lot in building this.
