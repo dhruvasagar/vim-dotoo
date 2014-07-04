@@ -53,13 +53,13 @@ function! s:Edit(cmd)
   setf dotooagenda
 endfunction
 
-let s:agenda_view_bufnr = -1
 function! s:agenda_view(agendas)
   let old_view = winsaveview()
   call s:Edit('pedit!')
   setl modifiable
   silent call setline(1, s:current_date.to_string('%A %d %B %Y'))
   silent call setline(2, a:agendas)
+  let s:agenda_view_last_line = len(a:agendas) + 1
   setl nomodified
   setl nomodifiable
   call winrestview(old_view)
@@ -67,16 +67,16 @@ endfunction
 
 function! s:agenda_toggle_log_summary(log_summaries)
   setl modifiable
-  if exists('s:log_summary_slnum') && s:log_summary_slnum < line('$')
-    silent exe s:log_summary_slnum.',$:delete'
+  if s:agenda_view_last_line < line('$')
+    silent exe (s:agenda_view_last_line + 1).',$:delete'
   endif
   if s:agenda_log_summary_showing
-    let s:log_summary_slnum = line('$')+1
-    silent call setline(s:log_summary_slnum, 'Log Summary:')
+    let line = s:agenda_view_last_line + 1
+    silent call setline(line, 'Log Summary:')
     if empty(a:log_summaries)
-      silent call setline(s:log_summary_slnum+1, 'No Clocked Tasks')
+      silent call setline(line+1, 'No Clocked Tasks')
     else
-      silent call setline(s:log_summary_slnum+1, a:log_summaries)
+      silent call setline(line+1, a:log_summaries)
     endif
   endif
   setl nomodified
