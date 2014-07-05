@@ -76,7 +76,7 @@ function! dotoo#parser#lexer#tokenize(file) abort
   let splitted = 0
   if a:file !=# expand('%:p')
     let splitted = 1
-    silent exec 'noauto split' a:file
+    silent exec 'split' a:file
   endif
   for line in getline(1,'$')
     call add(tokens, s:tokenize_line(lnum, line))

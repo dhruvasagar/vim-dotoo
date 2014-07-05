@@ -89,7 +89,7 @@ function! s:headline_methods.serialize() dict
 endfunction
 
 function! s:headline_methods.open() dict
-  silent exe 'noauto split' self.file
+  silent exe 'split' self.file
 endfunction
 
 function! s:headline_methods.close() dict
