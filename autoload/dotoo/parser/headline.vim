@@ -95,7 +95,7 @@ function! s:headline_methods.serialize() dict
 endfunction
 
 function! s:headline_methods.open() dict
-  silent exe 'split' self.file
+  silent exe 'noauto split' self.file
 endfunction
 
 function! s:headline_methods.close() dict
@@ -112,9 +112,7 @@ function! s:headline_methods.save() dict
 endfunction
 
 function! s:headline_methods.delete() dict
-  call self.open()
   silent exec self.lnum.','.self.last_lnum.':delete'
-  call self.close()
 endfunction
 
 function! s:headline_methods.undo() dict
