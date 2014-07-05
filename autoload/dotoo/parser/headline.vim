@@ -95,19 +95,23 @@ function! s:headline_methods.serialize() dict
 endfunction
 
 function! s:headline_methods.open() dict
-  silent exe 'noauto split' self.file
+  if expand('%:p') !=# self.file
+    silent exe 'noauto split' self.file
+    return 1
+  endif
+  return 0
 endfunction
 
-function! s:headline_methods.close() dict
-  quit
+function! s:headline_methods.close(force) dict
+  if a:force | quit | endif
 endfunction
 
 function! s:headline_methods.save() dict
   let old_view = winsaveview()
-  call self.open()
+  let splitted = self.open()
   call self.delete()
   call append(self.lnum-1, self.serialize())
-  call self.close()
+  call self.close(splitted)
   call winrestview(old_view)
 endfunction
 
@@ -116,9 +120,9 @@ function! s:headline_methods.delete() dict
 endfunction
 
 function! s:headline_methods.undo() dict
-  call self.open()
+  let splitted = self.open()
   normal! u
-  call self.close()
+  call self.close(splitted)
 endfunction
 
 function! s:headline_methods.start_clock() dict
