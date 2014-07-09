@@ -148,7 +148,7 @@ OPTIONS                                                          *dotoo-options*
             This setting is an array of files the agenda will read to show
             what's on the agenda within the warning days. They can include
             wildcards which will be expanded using |glob()| >
-                let g:dotoo#agenda#files = ['~/Documents/org-files/*.dotoo']
+                let g:dotoo#agenda#files = ['~/Documents/dotoo-files/*.dotoo']
 <
 
                                                  *g:dotoo#time#time_ago_short*
@@ -163,7 +163,7 @@ OPTIONS                                                          *dotoo-options*
       |g:dotoo#capture#refile|
             This setting defines the default refile file where the capture
             captures templates into. >
-                let g:dotoo#capture#refile = expand('~/Document/org-files/refile.dotoo')
+                let g:dotoo#capture#refile = expand('~/Documents/dotoo-files/refile.dotoo')
 <
 
                                                    *g:dotoo#capture#templates*

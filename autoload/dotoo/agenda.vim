@@ -4,7 +4,7 @@ endif
 let g:autoloaded_dotoo_agenda = 1
 
 call dotoo#utils#set('dotoo#agenda#warning_days', '30d')
-call dotoo#utils#set('dotoo#agenda#files', ['~/Documents/org-files/*.dotoo'])
+call dotoo#utils#set('dotoo#agenda#files', ['~/Documents/dotoo-files/*.dotoo'])
 
 " Private API {{{1
 function! s:has_agenda_file(...)
