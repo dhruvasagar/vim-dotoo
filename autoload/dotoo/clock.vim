@@ -9,6 +9,7 @@ let s:current_clocking_headline = {}
 function! dotoo#clock#start()
   if s:syntax.headline.matches(getline('.'))
     let headline = dotoo#get_headline()
+    call headline.change_todo('n') " Mark as NEXT
     call headline.start_clock()
     let s:current_clocking_headline = headline
     call insert(s:clocking_headlines, headline)
