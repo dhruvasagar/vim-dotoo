@@ -48,5 +48,5 @@ nnoremap <silent> gC :<C-U>call dotoo#capture#capture()<CR>
 augroup dotoo
   au!
 
-  autocmd BufNewFile,BufRead *.dotoo call dotoo#parser#parse(expand('%:p'),1)
+  autocmd BufNewFile,BufRead *.dotoo call dotoo#parser#parsefile({'force': 1})
 augroup END

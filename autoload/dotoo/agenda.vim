@@ -28,7 +28,7 @@ function! s:parse_dotoos(file,...)
   if index(s:dotoo_files, a:file) < 0
     call add(s:dotoo_files, a:file)
   endif
-  let dotoos = dotoo#parser#parse(a:file, force)
+  let dotoos = dotoo#parser#parsefile({'file': a:file, 'force': force})
   let s:agenda_dotoos[a:file] = dotoos
 endfunction
 
@@ -189,9 +189,7 @@ function! dotoo#agenda#agenda(...)
       call s:add_agenda_file()
     endif
   endif
-  let old_view = winsaveview()
   call s:load_agenda_files(force)
-  call winrestview(old_view)
   call s:agenda_view(s:build_agendas(force))
   call dotoo#agenda#log_summary#show(s:current_date, s:agenda_dotoos, s:agenda_view_last_lnum)
 endfunction

@@ -33,20 +33,19 @@ endfunction
 let s:dotoos = {}
 let s:syntax = dotoo#parser#lexer#syntax()
 let s:parsed_tokens = {}
-function! dotoo#parser#parse(file, ...) abort
-  if !filereadable(a:file) || fnamemodify(a:file, ':e') !=? 'dotoo' | return | endif
-  let force = a:0 ? a:1 : 0
-  let key = fnamemodify(a:file, ':p:t:r')
-  if has_key(s:dotoos, key) && !force
+function! dotoo#parser#parse(options) abort
+  let opts = extend({'key': '', 'file': expand('%:p'), 'force': 0, 'lines': []}, a:options)
+  let key = opts.key
+  if has_key(s:dotoos, key) && !opts.force
     return s:dotoos[key]
   else
-    if force || !has_key(s:dotoos, key)
-      let s:dotoos[key] = { 'key': key, 'file': a:file, 'directives': {},
+    if opts.force || !has_key(s:dotoos, key)
+      let s:dotoos[key] = { 'key': key, 'file': opts.file, 'directives': {},
                           \ 'blank_lines': [], 'headlines': [] }
       let s:parsed_tokens[key] = {}
     endif
     let dotoo = s:dotoos[key]
-    let tokens = deepcopy(dotoo#parser#lexer#tokenize(a:file))
+    let tokens = deepcopy(dotoo#parser#lexer#tokenize(opts.lines))
     while len(tokens)
       let token = remove(tokens, 0)
       if has_key(s:parsed_tokens[key], token.lnum) && s:parsed_tokens[key][token.lnum] == token
@@ -66,4 +65,15 @@ function! dotoo#parser#parse(file, ...) abort
     call extend(dotoo, s:dotoo_methods)
     return dotoo
   endif
+endfunction
+
+function! dotoo#parser#parsefile(options) abort
+  let opts = extend({'file': expand('%:p'), 'force': 0}, a:options)
+  if !filereadable(opts.file) || fnamemodify(opts.file, ':e') !=? 'dotoo' | return | endif
+  let key = fnamemodify(opts.file, ':p:t:r')
+  return dotoo#parser#parse({
+        \ 'key': key,
+        \ 'file': opts.file,
+        \ 'force': opts.force,
+        \ 'lines': readfile(opts.file)})
 endfunction

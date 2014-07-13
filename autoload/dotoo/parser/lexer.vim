@@ -69,19 +69,13 @@ function! dotoo#parser#lexer#syntax()
   return s:syntax
 endfunction
 
-function! dotoo#parser#lexer#tokenize(file) abort
-  if !filereadable(a:file) | return | endif
+function! dotoo#parser#lexer#tokenize(lines) abort
   let lnum = 1
   let tokens = []
   let splitted = 0
-  if a:file !=# expand('%:p')
-    let splitted = 1
-    silent exec 'noauto split' a:file
-  endif
-  for line in getline(1,'$')
+  for line in a:lines
     call add(tokens, s:tokenize_line(lnum, line))
     let lnum += 1
   endfor
-  if splitted | quit | endif
   return tokens
 endfunction
