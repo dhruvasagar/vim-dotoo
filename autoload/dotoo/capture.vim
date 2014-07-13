@@ -3,7 +3,7 @@ if exists('g:autoloaded_dotoo_capture')
 endif
 let g:autoloaded_dotoo_capture = 1
 
-call dotoo#utils#set('dotoo#capture#refile', expand('~/Documents/org-files/refile.dotoo'))
+call dotoo#utils#set('dotoo#capture#refile', expand('~/Documents/dotoo-files/refile.dotoo'))
 call dotoo#utils#set('dotoo#capture#templates', [
       \ ['t', 'Todo', ['* TODO %?',
       \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
@@ -50,8 +50,6 @@ endfunction
 
 function! s:capture_edit(cmd)
   silent exe a:cmd g:dotoo#capture#refile
-  setl nobuflisted
-  setf dotoocapture
 endfunction
 
 function! s:save_capture_template(template)

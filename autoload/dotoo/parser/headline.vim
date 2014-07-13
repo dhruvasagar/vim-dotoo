@@ -147,6 +147,14 @@ function! s:headline_methods.equal(other) dict
   return self.todo_title() == a:other.todo_title() && self.level == a:other.level && self.lnum == a:other.lnum && self.file == a:other.file
 endfunction
 
+function! s:headline_methods.add_headline(headline) dict
+  call add(self.headlines, a:headline)
+endfunction
+
+function! s:headline_methods.insert_headline(headline) dict
+  call insert(self.headlines, a:headline)
+endfunction
+
 function! s:sort_deadlines(h1, h2)
   return a:h1.deadline().diff(a:h2.deadline())
 endfunction
