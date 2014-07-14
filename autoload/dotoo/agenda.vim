@@ -59,7 +59,6 @@ function! s:agenda_view(agendas)
   setl modifiable
   silent call setline(1, s:current_date.to_string('%A %d %B %Y'))
   silent call setline(2, a:agendas)
-  let s:agenda_view_last_lnum = len(a:agendas) + 1
   setl nomodified
   setl nomodifiable
   call winrestview(old_view)
@@ -106,6 +105,15 @@ endfunction
 
 function! s:set_agenda_modified(mod)
   let &l:modified = a:mod
+endfunction
+
+function! s:show_registered_plugins()
+  for plugin_name in keys(s:agenda_view_plugins)
+    let plugin = s:agenda_view_plugins[plugin_name]
+    if has_key(plugin, 'show')
+      call plugin.show(s:current_date, s:agenda_dotoos)
+    endif
+  endfor
 endfunction
 
 " Public API {{{1
@@ -177,8 +185,18 @@ function! dotoo#agenda#save_files()
   call winrestview(old_view)
 endfunction
 
-function! dotoo#agenda#toggle_log_summary()
-  call dotoo#agenda#log_summary#toggle(s:current_date, s:agenda_dotoos, s:agenda_view_last_lnum)
+let s:agenda_view_plugins = {}
+function! dotoo#agenda#register_agenda_plugin(name, plugin) abort
+  if type(a:plugin) == type({})
+    let s:agenda_view_plugins[a:name] = a:plugin
+  endif
+endfunction
+
+function! dotoo#agenda#toggle_agenda_plugin(name) abort
+  if has_key(s:agenda_view_plugins, a:name)
+    let plugin = s:agenda_view_plugins[a:name]
+    call plugin.toggle(s:current_date, s:agenda_dotoos)
+  endif
 endfunction
 
 function! dotoo#agenda#agenda(...)
@@ -191,5 +209,5 @@ function! dotoo#agenda#agenda(...)
   endif
   call s:load_agenda_files(force)
   call s:agenda_view(s:build_agendas(force))
-  call dotoo#agenda#log_summary#show(s:current_date, s:agenda_dotoos, s:agenda_view_last_lnum)
+  call s:show_registered_plugins()
 endfunction

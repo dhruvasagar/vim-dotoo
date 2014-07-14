@@ -2,23 +2,29 @@
 #+AUTHOR: Dhruva Sagar
 #+EMAIL: dhruva.sagar@gmail.com
 
-* TODO Enhance dotoo ftplugin
-DEADLINE: [2014-07-01 Tue 23:00]
-** TODO Support for Checkboxes
-** TODO Shortcut for checkboxes completion (count and progress)
-** TODO Shortcut for headline promotions
-** TODO Shortcut for priority changes
-** TODO Agenda clock summary
-** TODO Agenda weekly / monthly views
-** TODO Add archiving
-** TODO Add support for anniversaries
-** DONE Add documentation
+* TODO Support for Checkboxes
+DEADLINE: [2014-07-31 Thu]
+* TODO Shortcut for checkboxes completion (count and progress)
+DEADLINE: [2014-07-31 Thu]
+* TODO Shortcut for headline promotions
+DEADLINE: [2014-07-31 Thu]
+* TODO Shortcut for priority changes
+DEADLINE: [2014-07-31 Thu]
+* TODO Agenda clock summary
+DEADLINE: [2014-07-31 Thu]
+* TODO Agenda weekly / monthly views
+DEADLINE: [2014-07-31 Thu]
+* TODO Add archiving
+DEADLINE: [2014-07-31 Thu]
+* TODO Add support for anniversaries
+DEADLINE: [2014-07-31 Thu]
+* DONE Add documentation
 CLOSED: [2014-07-02 Wed 20:45]
-** DONE Actual headline tree
+* DONE Actual headline tree
 CLOSED: [2014-07-02 Wed 20:44]
-** DONE Date manipulations
+* DONE Date manipulations
 CLOSED: [2014-07-01 Tue 17:22]
-** DONE Shortcut to change todo state
+* DONE Shortcut to change todo state
 CLOSED: [2014-07-01 Tue 07:48]
 * DONE Finish clocking & statusline feature
 CLOSED: [2014-06-30 Mon 14:31]

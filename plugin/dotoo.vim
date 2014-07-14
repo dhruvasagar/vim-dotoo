@@ -8,6 +8,7 @@ function! s:SetGlobalOpts(opt, val)
     let g:{a:opt} = a:val
   endif
 endfunction
+
 call s:SetGlobalOpts('dotoo_heading_highlight_colors', [
       \ 'Title',
       \ 'Constant',
@@ -50,3 +51,6 @@ augroup dotoo
 
   autocmd BufNewFile,BufRead *.dotoo call dotoo#parser#parsefile({'force': 1})
 augroup END
+
+" Register Agenda Plugins
+call dotoo#agenda#log_summary#register_agenda_plugin()
