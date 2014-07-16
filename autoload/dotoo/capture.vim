@@ -4,6 +4,7 @@ endif
 let g:autoloaded_dotoo_capture = 1
 
 call dotoo#utils#set('dotoo#capture#refile', expand('~/Documents/dotoo-files/refile.dotoo'))
+call dotoo#utils#set('dotoo#capture#clock', 1)
 call dotoo#utils#set('dotoo#capture#templates', [
       \ ['t', 'Todo', ['* TODO %?',
       \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
@@ -48,14 +49,19 @@ function! s:capture_eval(template)
   return a:template
 endfunction
 
+let s:capture_tmp_file = tempname()
 function! s:capture_edit(cmd)
-  silent exe a:cmd g:dotoo#capture#refile
+  silent exe a:cmd s:capture_tmp_file
+  :%delete
+  setl nobuflisted
+  setf dotoocapture
 endfunction
 
 function! s:save_capture_template(template)
-  let tmpl = s:capture_eval(a:template)
-  if expand('%:e') !=# 'dotoo' | call s:capture_edit('split') | endif
-  call append(line('$') == 1 ? 0 : '$', tmpl)
+  " let tmpl = s:capture_eval(a:template)
+  call s:capture_edit('split')
+  " if expand('%:e') !=# 'dotoo' | call s:capture_edit('split') | endif
+  call append(line('$') == 1 ? 0 : '$', a:template)
   let old_search = @/
   call search('%?')
   normal! zv
@@ -66,5 +72,10 @@ endfunction
 function! dotoo#capture#capture()
   let selected = s:capture_menu()
   let template = s:get_selected_template(selected)
-  if !empty(template) | call s:save_capture_template(template[2]) | endif
+  let template_lines = template[2]
+  let template_lines = s:capture_eval(template_lines)
+  let dotoo = dotoo#parser#parse({'key': 'capture', 'lines': template_lines, 'force': 1})
+  let headline = dotoo.headlines[0]
+  if g:dotoo#capture#clock | call headline.logbook.start_clock() | endif
+  call s:save_capture_template(headline.serialize())
 endfunction
