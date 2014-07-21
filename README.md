@@ -1,4 +1,4 @@
-# VIM Do Too v0.4.0
+# VIM Do Too v0.4.1
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Getting Started
@@ -35,6 +35,7 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    * <kbd>i</kbd>:     clock-in for headline under cursor
    * <kbd>o</kbd>:     clock-out for headline under cursor
    * <kbd>R</kbd>:     Report of clocking summary for the day
+   * <kbd>T</kbd>:     List unscheduled TODO items
    * <kbd>\<CR\></kbd>:  Open headline under cursor & close agenda
    * <kbd>\<C-S\></kbd>: Open headline under cursor in `split`
    * <kbd>\<C-T\></kbd>: Open headline under cursor in `tab`
