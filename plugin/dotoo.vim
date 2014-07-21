@@ -53,4 +53,5 @@ augroup dotoo
 augroup END
 
 " Register Agenda Plugins
+call dotoo#agenda#todos#register_agenda_plugin()
 call dotoo#agenda#log_summary#register_agenda_plugin()

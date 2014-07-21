@@ -75,7 +75,7 @@ function! s:build_agendas(...)
     let s:agenda_deadlines = {}
     let s:agenda_headlines = []
     for dotoos in values(s:agenda_dotoos)
-      let _deadlines = dotoos.filter('!v:val.done() && !empty(v:val.deadline())')
+      let _deadlines = dotoos.filter('!v:val.done() && !empty(v:val.deadline())',1)
       if s:current_date.is_today()
         let s:current_date = dotoo#time#new()
         let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().before(warning_limit)')
@@ -84,11 +84,11 @@ function! s:build_agendas(...)
       endif
     endfor
   endif
+  let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
   for key in keys(s:agenda_deadlines)
     let headlines = s:agenda_deadlines[key]
     for headline in headlines
-      let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
-      let agenda = printf('%s %10s:' . time_pf . '%-70s%s', '',
+      let agenda = printf('%s %10s:' . time_pf . '%-70s %s', '',
             \ key,
             \ headline.metadate().time_ago(s:current_date),
             \ headline.todo_title(),
@@ -117,6 +117,10 @@ function! s:show_registered_plugins()
 endfunction
 
 " Public API {{{1
+function! dotoo#agenda#add_headline(headline)
+  call add(s:agenda_headlines, a:headline)
+endfunction
+
 function! dotoo#agenda#goto_headline(cmd)
   let headline = s:agenda_headlines[line('.')-2]
   if a:cmd ==# 'edit' | quit | split | endif

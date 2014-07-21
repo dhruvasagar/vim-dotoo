@@ -42,6 +42,11 @@ endfunction
 
 function! s:log_summary_plugin.view(log_summaries) dict "{{{2
   setl modifiable
+  if has_key(self, 'start_line') && has_key(self, 'end_line')
+    silent! exe self.start_line.','.self.end_line.':delete'
+    call remove(self, 'start_line')
+    call remove(self, 'end_line')
+  endif
   if self.showing
     let self.start_line = line('$') + 1
     let lnum = self.start_line
@@ -53,13 +58,8 @@ function! s:log_summary_plugin.view(log_summaries) dict "{{{2
     endif
     silent call append(self.start_line - 1, lines)
     let self.end_line = self.start_line + len(lines) - 1
-  elseif has_key(self, 'start_line') && has_key(self, 'end_line')
-    silent exe self.start_line.','.self.end_line.':delete'
-    call remove(self, 'start_line')
-    call remove(self, 'end_line')
   endif
-  setl nomodified
-  setl nomodifiable
+  setl nomodified nomodifiable
 endfunction
 
 function! s:log_summary_plugin.show(date, agenda_dotoos) dict "{{{2

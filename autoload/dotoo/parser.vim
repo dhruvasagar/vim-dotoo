@@ -18,10 +18,13 @@ function! s:sort_by_deadline(d1, d2)
 endfunction
 
 let s:dotoo_methods = {}
-function! s:dotoo_methods.filter(expr) dict
+function! s:dotoo_methods.filter(expr,...) dict
+  let sort = a:0 ? a:1 : 0
   let headlines = s:flatten_headlines(self.headlines)
   call filter(headlines, a:expr)
-  return sort(headlines, 's:sort_by_deadline')
+  if sort | call sort(headlines, 's:sort_by_deadline') | endif
+  return headlines
+endif
 endfunction
 
 function! s:dotoo_methods.log_summary(time, span) dict

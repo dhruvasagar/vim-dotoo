@@ -58,7 +58,9 @@ endfunction
 
 function! s:headline_methods.metadate() dict
   let metadate = self.deadline()
-  if empty(metadate) | return self.metadata.closed | endif
+  if empty(metadate) && has_key(self.metadata, 'closed')
+    return self.metadata.closed
+  endif
   return metadate
 endfunction
 
