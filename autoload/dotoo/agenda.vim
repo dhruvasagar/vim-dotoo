@@ -83,8 +83,10 @@ endfunction
 function! dotoo#agenda#save_files()
   let old_view = winsaveview()
   for _file in s:dotoo_files
-    exec 'buffer' _file
-    write
+    if bufexists(_file)
+      exec 'buffer' _file
+      write
+    endif
   endfor
   setl nomodified
   call dotoo#agenda#refresh_view()
@@ -136,12 +138,13 @@ function! dotoo#agenda#agenda()
   endif
 endfunction
 
-function! dotoo#agenda#refresh_view()
-  call s:load_agenda_files(1)
+function! dotoo#agenda#refresh_view(...)
+  let force = a:0 ? a:1 : 1
+  call s:load_agenda_files(force)
   if has_key(s:agenda_views, s:current_view)
     let view_plugin = s:agenda_views[s:current_view]
     if has_key(view_plugin, 'show')
-      call view_plugin.show(s:agenda_dotoos, 1)
+      call view_plugin.show(s:agenda_dotoos, force)
     endif
   endif
 endfunction

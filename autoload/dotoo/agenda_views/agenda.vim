@@ -69,7 +69,7 @@ function! s:start_headline_clock()
   let old_view = winsaveview()
   call dotoo#agenda_views#agenda#goto_headline('edit')
   call dotoo#clock#start()
-  call dotoo#agenda#refresh_view(s:view_name)
+  call dotoo#agenda#refresh_view()
   call s:set_agenda_modified(1)
   call winrestview(old_view)
 endfunction
@@ -78,7 +78,7 @@ function! s:stop_headline_clock()
   let old_view = winsaveview()
   call dotoo#agenda_views#agenda#goto_headline('edit')
   call dotoo#clock#stop()
-  call dotoo#agenda#refresh_view(s:view_name)
+  call dotoo#agenda#refresh_view()
   call s:set_agenda_modified(1)
   call winrestview(old_view)
 endfunction
@@ -90,7 +90,7 @@ function! s:change_headline_todo()
     call headline.change_todo(selected)
     let old_view = winsaveview()
     call headline.save()
-    call dotoo#agenda#refresh_view(s:view_name)
+    call dotoo#agenda#refresh_view(0)
     call s:set_agenda_modified(getbufvar(bufnr('#'), '&modified'))
     call winrestview(old_view)
   endif
@@ -100,7 +100,7 @@ function! s:undo_headline_change()
   let headline = s:agenda_headlines[line('.')-2]
   let old_view = winsaveview()
   call headline.undo()
-  call dotoo#agenda#refresh_view(s:view_name)
+  call dotoo#agenda#refresh_view()
   call winrestview(old_view)
 endfunction
 
@@ -111,7 +111,7 @@ function! s:adjust_current_date(amount)
   else
     let s:current_date = s:current_date.adjust(a:amount).start_of('day')
   endif
-  call dotoo#agenda#refresh_view(s:view_name)
+  call dotoo#agenda#refresh_view()
 endfunction
 
 let s:view_name = 'agenda'
