@@ -184,8 +184,8 @@ hi def link dotoo_time_in Statement
 syn match dotoo_file_name /^\s*[^:]*\ze:/
 hi def link dotoo_file_name Function
 
-syn match dotoo_date /^\a\+ \d\{2} \a\+ \d\{4}/
-hi def link dotoo_date Constant
+syn match dotoo_header /\%1l/
+hi def link dotoo_header Constant
 
 syn match dotoo_tags /\s\+:.*:$/
 hi def link dotoo_tags Delimiter

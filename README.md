@@ -1,4 +1,4 @@
-# VIM Do Too v0.4.1
+# VIM Do Too v0.5.0
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Getting Started

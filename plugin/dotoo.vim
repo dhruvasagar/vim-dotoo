@@ -52,6 +52,10 @@ augroup dotoo
   autocmd BufNewFile,BufRead *.dotoo call dotoo#parser#parsefile({'force': 1})
 augroup END
 
+" Register Agenda Views
+call dotoo#agenda_views#todos#register()
+call dotoo#agenda_views#agenda#register()
+
 " Register Agenda Plugins
-call dotoo#agenda#todos#register_agenda_plugin()
-call dotoo#agenda#log_summary#register_agenda_plugin()
+" call dotoo#agenda#todos#register_agenda_plugin()
+" call dotoo#agenda#log_summary#register_agenda_plugin()

@@ -1,3 +1,8 @@
+if exists('g:autoloaded_dotoo_agenda_log_summary')
+  finish
+endif
+let g:autoloaded_dotoo_agenda_log_summary = 1
+
 " Log Summary Agenda Plugin {{{1
 let s:plugin_name = 'log_summary'
 let s:log_summary_plugin = {'showing': 0, 'mapped': 0}

@@ -7,20 +7,6 @@ call dotoo#utils#set('dotoo#agenda#warning_days', '30d')
 call dotoo#utils#set('dotoo#agenda#files', ['~/Documents/dotoo-files/*.dotoo'])
 
 " Private API {{{1
-function! s:has_agenda_file(...)
-  let afile = a:0 ? a:1 : expand('%:p')
-  for agenda_file in g:dotoo#agenda#files
-    for orgfile in glob(agenda_file, 1, 1)
-      if orgfile ==# afile | return 1 | endif
-    endfor
-  endfor
-endfunction
-
-function! s:add_agenda_file(...)
-  let file = a:0 ? a:1 : expand('%:p')
-  call add(g:dotoo#agenda#files, file)
-endfunction
-
 let s:dotoo_files = []
 let s:agenda_dotoos = {}
 function! s:parse_dotoos(file,...)
@@ -43,139 +29,55 @@ function! s:load_agenda_files(...)
   endfor
 endfunction
 
-let s:tmpfile = tempname()
-function! s:Edit(cmd)
-  silent exe a:cmd s:tmpfile
-  if a:cmd =~# 'pedit' | wincmd P | endif
-  setl winheight=20
-  setl buftype=acwrite nobuflisted
-  setl readonly nofoldenable nolist
-  setf dotooagenda
+function! s:agenda_views_menu()
+  let views = keys(s:agenda_views)
+  let acceptable_input = '['.join(map(copy(views), 'v:val[0]'),'').']'
+  call map(views, '"(".tolower(v:val[0]).") ".v:val')
+  call add(views, 'Select agenda view: ')
+  let selected = dotoo#utils#getchar(join(views, "\n"), acceptable_input)
+  let sel = filter(keys(s:agenda_views), "v:val =~# '^'.selected.'.*'")
+  return !empty(sel) ? sel[0] : ''
 endfunction
 
-function! s:agenda_view(agendas)
-  let old_view = winsaveview()
-  call s:Edit('pedit!')
-  setl modifiable
-  silent call setline(1, s:current_date.to_string('%A %d %B %Y'))
-  silent call setline(2, a:agendas)
-  setl nomodified
-  setl nomodifiable
-  call winrestview(old_view)
-endfunction
-
-let s:agenda_deadlines = {}
-let s:agenda_headlines = []
-function! s:build_agendas(...)
-  let force = a:0 ? a:1 : 0
-  let agendas = []
-  let warning_limit = s:current_date.adjust(g:dotoo#agenda#warning_days)
-  let add_agenda_headlines = force || empty(s:agenda_headlines)
-  if force || empty(s:agenda_deadlines)
-    let s:agenda_deadlines = {}
-    let s:agenda_headlines = []
-    for dotoos in values(s:agenda_dotoos)
-      let _deadlines = dotoos.filter('!v:val.done() && !empty(v:val.deadline())',1)
-      if s:current_date.is_today()
-        let s:current_date = dotoo#time#new()
-        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().before(warning_limit)')
-      else
-        let s:agenda_deadlines[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().eq_date(s:current_date)')
-      endif
-    endfor
-  endif
-  let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
-  for key in keys(s:agenda_deadlines)
-    let headlines = s:agenda_deadlines[key]
-    for headline in headlines
-      let agenda = printf('%s %10s:' . time_pf . '%-70s %s', '',
-            \ key,
-            \ headline.metadate().time_ago(s:current_date),
-            \ headline.todo_title(),
-            \ headline.tags)
-      call add(agendas, agenda)
-      if add_agenda_headlines | call add(s:agenda_headlines, headline) | endif
+function! s:has_agenda_file(...)
+  let afile = a:0 ? a:1 : expand('%:p')
+  for agenda_file in g:dotoo#agenda#files
+    for orgfile in glob(agenda_file, 1, 1)
+      if orgfile ==# afile | return 1 | endif
     endfor
   endfor
-  if empty(agendas)
-    call add(agendas, printf('%2s %s', '', 'No pending tasks!'))
-  endif
-  return agendas
 endfunction
 
-function! s:set_agenda_modified(mod)
-  let &l:modified = a:mod
+function! s:add_agenda_file(...)
+  let file = a:0 ? a:1 : expand('%:p')
+  call add(g:dotoo#agenda#files, file)
 endfunction
 
-function! s:show_registered_plugins()
-  for plugin_name in keys(s:agenda_view_plugins)
-    let plugin = s:agenda_view_plugins[plugin_name]
-    if has_key(plugin, 'show')
-      call plugin.show(s:current_date, s:agenda_dotoos)
+function! s:add_agenda_file_menu()
+  if expand('%:e') ==# 'dotoo' && !s:has_agenda_file()
+    if dotoo#utils#getchar('Do you wish to add the current file in agenda files? (y/n): ', '[yn]') == 'y'
+      call s:add_agenda_file()
+      return 1
     endif
-  endfor
+  endif
+  return 0
 endfunction
+
+" function! s:show_registered_agenda_plugins()
+"   for plugin_name in keys(s:agenda_view_plugins)
+"     let plugin = s:agenda_view_plugins[plugin_name]
+"     if has_key(plugin, 'show')
+"       call plugin.show(s:current_date, s:agenda_dotoos)
+"     endif
+"   endfor
+" endfunction
 
 " Public API {{{1
-function! dotoo#agenda#add_headline(headline)
-  call add(s:agenda_headlines, a:headline)
-endfunction
-
-function! dotoo#agenda#goto_headline(cmd)
-  let headline = s:agenda_headlines[line('.')-2]
-  if a:cmd ==# 'edit' | quit | split | endif
-  exec a:cmd '+'.headline.lnum headline.file
-  if empty(&filetype) | edit | endif
-  normal! zv
-endfunction
-
-function! dotoo#agenda#start_headline_clock()
-  let old_view = winsaveview()
-  call dotoo#agenda#goto_headline('edit')
-  call dotoo#clock#start()
-  call dotoo#agenda#agenda(1)
-  call s:set_agenda_modified(1)
-  call winrestview(old_view)
-endfunction
-
-function! dotoo#agenda#stop_headline_clock()
-  let old_view = winsaveview()
-  call dotoo#agenda#goto_headline('edit')
-  call dotoo#clock#stop()
-  call dotoo#agenda#agenda(1)
-  call s:set_agenda_modified(1)
-  call winrestview(old_view)
-endfunction
-
-function! dotoo#agenda#change_headline_todo()
-  let headline = s:agenda_headlines[line('.')-2]
-  let selected = dotoo#utils#change_todo_menu()
-  if !empty(selected)
-    call headline.change_todo(selected)
-    let old_view = winsaveview()
-    call headline.save()
-    call dotoo#agenda#agenda()
-    call s:set_agenda_modified(getbufvar(bufnr('#'), '&modified'))
-    call winrestview(old_view)
+let s:agenda_views = {}
+function! dotoo#agenda#register_view(name, plugin) abort
+  if type(a:plugin) == type({})
+    let s:agenda_views[a:name] = a:plugin
   endif
-endfunction
-
-function! dotoo#agenda#undo_headline_change()
-  let headline = s:agenda_headlines[line('.')-2]
-  let old_view = winsaveview()
-  call headline.undo()
-  call dotoo#agenda#agenda(1)
-  call winrestview(old_view)
-endfunction
-
-let s:current_date = dotoo#time#new()
-function! dotoo#agenda#adjust_current_date(amount)
-  if a:amount ==# '.'
-    let s:current_date = dotoo#time#new()
-  else
-    let s:current_date = s:current_date.adjust(a:amount).start_of('day')
-  endif
-  call dotoo#agenda#agenda(1)
 endfunction
 
 function! dotoo#agenda#save_files()
@@ -185,33 +87,61 @@ function! dotoo#agenda#save_files()
     write
   endfor
   setl nomodified
-  call dotoo#agenda#agenda()
+  call dotoo#agenda#refresh_view()
   call winrestview(old_view)
 endfunction
 
-let s:agenda_view_plugins = {}
-function! dotoo#agenda#register_agenda_plugin(name, plugin) abort
-  if type(a:plugin) == type({})
-    let s:agenda_view_plugins[a:name] = a:plugin
+" let s:agenda_view_plugins = {}
+" function! dotoo#agenda#register_agenda_plugin(name, plugin) abort
+"   if type(a:plugin) == type({})
+"     let s:agenda_view_plugins[a:name] = a:plugin
+"   endif
+" endfunction
+
+" function! dotoo#agenda#toggle_agenda_plugin(name) abort
+"   if has_key(s:agenda_view_plugins, a:name)
+"     let plugin = s:agenda_view_plugins[a:name]
+"     call plugin.toggle(s:current_date, s:agenda_dotoos)
+"   endif
+" endfunction
+
+" function! dotoo#agenda#add_file_to_agenda_menu()
+"   if expand('%:e') ==# 'dotoo' && !s:has_agenda_file()
+"     if dotoo#utils#getchar('Do you wish to add the current file in agenda files? (y/n): ', '[yn]') == 'y'
+"       call s:add_agenda_file()
+"       return 1
+"     endif
+"   endif
+"   return 0
+" endfunction
+
+let s:tmpfile = tempname()
+function! dotoo#agenda#edit(cmd)
+  silent exe a:cmd s:tmpfile
+  if a:cmd =~# 'pedit' | wincmd P | endif
+  setl winheight=20
+  setl buftype=acwrite nobuflisted
+  setl readonly nofoldenable nolist
+  setf dotooagenda
+endfunction
+
+let s:current_view = ''
+function! dotoo#agenda#agenda()
+  let s:current_view = s:agenda_views_menu()
+  let view_plugin = get(s:agenda_views, s:current_view, {})
+  if has_key(view_plugin, 'show')
+    let force = s:add_agenda_file_menu()
+    call s:load_agenda_files(force)
+    call view_plugin.show(s:agenda_dotoos, force)
   endif
 endfunction
 
-function! dotoo#agenda#toggle_agenda_plugin(name) abort
-  if has_key(s:agenda_view_plugins, a:name)
-    let plugin = s:agenda_view_plugins[a:name]
-    call plugin.toggle(s:current_date, s:agenda_dotoos)
-  endif
-endfunction
-
-function! dotoo#agenda#agenda(...)
-  let force = a:0 ? a:1 : 0
-  if expand('%:e') ==# 'dotoo' && !s:has_agenda_file()
-    if dotoo#utils#getchar('Do you wish to add the current file in agenda files? (y/n): ', '[yn]') == 'y'
-      let force = 1
-      call s:add_agenda_file()
+function! dotoo#agenda#refresh_view()
+  call s:load_agenda_files(1)
+  if has_key(s:agenda_views, s:current_view)
+    let view_plugin = s:agenda_views[s:current_view]
+    if has_key(view_plugin, 'show')
+      call view_plugin.show(s:agenda_dotoos, 1)
     endif
   endif
-  call s:load_agenda_files(force)
-  call s:agenda_view(s:build_agendas(force))
-  call s:show_registered_plugins()
 endfunction
