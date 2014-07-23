@@ -97,10 +97,8 @@ function! s:undo_headline_change()
 endfunction
 
 let s:view_name = 'todos'
-let s:todos_view = {'mapped': 0}
+let s:todos_view = {}
 function! s:todos_view.map() dict
-  if self.mapped | return | endif
-  let self.mapped = 1
   nnoremap <buffer> <silent> <nowait> c :<C-U>call <SID>change_headline_todo()<CR>
   nnoremap <buffer> <silent> <nowait> u :<C-U>call <SID>undo_headline_change()<CR>
   nnoremap <buffer> <silent> <nowait> i :<C-U>call <SID>start_headline_clock()<CR>

@@ -115,10 +115,8 @@ function! s:adjust_current_date(amount)
 endfunction
 
 let s:view_name = 'agenda'
-let s:agenda_view = {'mapped': 0}
+let s:agenda_view = {}
 function! s:agenda_view.map() dict
-  if self.mapped | return | endif
-  let self.mapped = 1
   nnoremap <buffer> <silent> <nowait> . :<C-U>call <SID>adjust_current_date('.')<CR>
   nnoremap <buffer> <silent> <nowait> f :<C-U>call <SID>adjust_current_date('+1d')<CR>
   nnoremap <buffer> <silent> <nowait> b :<C-U>call <SID>adjust_current_date('-1d')<CR>
