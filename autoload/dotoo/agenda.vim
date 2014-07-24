@@ -63,14 +63,17 @@ function! s:add_agenda_file_menu()
   return 0
 endfunction
 
-" function! s:show_registered_agenda_plugins()
-"   for plugin_name in keys(s:agenda_view_plugins)
-"     let plugin = s:agenda_view_plugins[plugin_name]
-"     if has_key(plugin, 'show')
-"       call plugin.show(s:current_date, s:agenda_dotoos)
-"     endif
-"   endfor
-" endfunction
+function! s:view_cleanup(view_name)
+  let view = get(s:agenda_views, a:view_name, {})
+  if has_key(view, 'cleanup') | call view.cleanup() | endif
+endfunction
+
+function! s:show_view(view_name, force)
+  let view = get(s:agenda_views, a:view_name, {})
+  if has_key(view, 'show')
+    call view.show(s:agenda_dotoos, a:force)
+  endif
+endfunction
 
 " Public API {{{1
 let s:agenda_views = {}
@@ -93,58 +96,28 @@ function! dotoo#agenda#save_files()
   call winrestview(old_view)
 endfunction
 
-" let s:agenda_view_plugins = {}
-" function! dotoo#agenda#register_agenda_plugin(name, plugin) abort
-"   if type(a:plugin) == type({})
-"     let s:agenda_view_plugins[a:name] = a:plugin
-"   endif
-" endfunction
-
-" function! dotoo#agenda#toggle_agenda_plugin(name) abort
-"   if has_key(s:agenda_view_plugins, a:name)
-"     let plugin = s:agenda_view_plugins[a:name]
-"     call plugin.toggle(s:current_date, s:agenda_dotoos)
-"   endif
-" endfunction
-
-" function! dotoo#agenda#add_file_to_agenda_menu()
-"   if expand('%:e') ==# 'dotoo' && !s:has_agenda_file()
-"     if dotoo#utils#getchar('Do you wish to add the current file in agenda files? (y/n): ', '[yn]') == 'y'
-"       call s:add_agenda_file()
-"       return 1
-"     endif
-"   endif
-"   return 0
-" endfunction
-
 let s:tmpfile = tempname()
 function! dotoo#agenda#edit(cmd)
   silent exe a:cmd s:tmpfile
   if a:cmd =~# 'pedit' | wincmd P | endif
   setl winheight=20
   setl buftype=acwrite nobuflisted
-  setl readonly nofoldenable nolist
+  setl readonly nomodifiable nofoldenable nolist
   setf dotooagenda
 endfunction
 
 let s:current_view = ''
 function! dotoo#agenda#agenda()
+  let old_view = s:current_view
   let s:current_view = s:agenda_views_menu()
-  let view_plugin = get(s:agenda_views, s:current_view, {})
-  if has_key(view_plugin, 'show')
-    let force = s:add_agenda_file_menu()
-    call s:load_agenda_files(force)
-    call view_plugin.show(s:agenda_dotoos, force)
-  endif
+  if old_view !=# s:current_view | call s:view_cleanup(old_view) | endif
+  let force = s:add_agenda_file_menu()
+  call s:load_agenda_files(force)
+  call s:show_view(s:current_view, force)
 endfunction
 
 function! dotoo#agenda#refresh_view(...)
   let force = a:0 ? a:1 : 1
   call s:load_agenda_files(force)
-  if has_key(s:agenda_views, s:current_view)
-    let view_plugin = s:agenda_views[s:current_view]
-    if has_key(view_plugin, 'show')
-      call view_plugin.show(s:agenda_dotoos, force)
-    endif
-  endif
+  call s:show_view(s:current_view, force)
 endfunction

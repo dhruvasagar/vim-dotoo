@@ -114,6 +114,15 @@ function! s:adjust_current_date(amount)
   call dotoo#agenda#refresh_view()
 endfunction
 
+" function! s:show_registered_agenda_plugins()
+"   for plugin_name in keys(s:agenda_view_plugins)
+"     let plugin = s:agenda_view_plugins[plugin_name]
+"     if has_key(plugin, 'show')
+"       call plugin.show(s:current_date, s:agenda_dotoos)
+"     endif
+"   endfor
+" endfunction
+
 let s:view_name = 'agenda'
 let s:agenda_view = {}
 function! s:agenda_view.map() dict
@@ -131,11 +140,45 @@ function! s:agenda_view.map() dict
   nmap <buffer> <silent> <Tab> <C-V>
 endfunction
 
+function! s:agenda_view.unmap() dict
+  nunmap <buffer> .
+  nunmap <buffer> f
+  nunmap <buffer> b
+  nunmap <buffer> c
+  nunmap <buffer> u
+  nunmap <buffer> i
+  nunmap <buffer> o
+  nunmap <buffer> <CR>
+  nunmap <buffer> <C-S>
+  nunmap <buffer> <C-V>
+  nunmap <buffer> <C-T>
+  nunmap <buffer> <Tab>
+endfunction
+
 function! s:agenda_view.show(dotoos, ...) dict
   let force = a:0 ? a:1 : 0
   call s:agenda_view(s:build_agendas(a:dotoos, force))
   call self.map()
 endfunction
+
+function! s:agenda_view.cleanup() dict
+  call dotoo#agenda#edit('pedit!')
+  call self.unmap()
+endfunction
+
+" let s:agenda_view_plugins = {}
+" function! dotoo#agenda_views#agenda#register_agenda_plugin(name, plugin) abort
+"   if type(a:plugin) == type({})
+"     let s:agenda_view_plugins[a:name] = a:plugin
+"   endif
+" endfunction
+
+" function! dotoo#agenda_views#agenda#toggle_agenda_plugin(name) abort
+"   if has_key(s:agenda_view_plugins, a:name)
+"     let plugin = s:agenda_view_plugins[a:name]
+"     call plugin.toggle(s:current_date, s:agenda_dotoos)
+"   endif
+" endfunction
 
 function! dotoo#agenda_views#agenda#register()
   call dotoo#agenda#register_view(s:view_name, s:agenda_view)
