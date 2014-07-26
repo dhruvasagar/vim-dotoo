@@ -52,7 +52,7 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
 ## Credits
 
 This plugin was inspired by the original emacs org-mode and the workflow
-described by Bert Hansen at http://doc.norang.ca/org-mode.html.
+described by Bernt Hansen at http://doc.norang.ca/org-mode.html.
 
 I have taken bits of the syntax definitions & ideas from
 [vim-orgmode](https://github.com/jceb/vim-orgmode)
