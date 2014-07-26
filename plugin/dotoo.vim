@@ -56,6 +56,7 @@ augroup END
 call dotoo#agenda_views#todos#register()
 call dotoo#agenda_views#notes#register()
 call dotoo#agenda_views#agenda#register()
+call dotoo#agenda_views#refiles#register()
 
 " Register Agenda Plugins
 " call dotoo#agenda#todos#register_agenda_plugin()
