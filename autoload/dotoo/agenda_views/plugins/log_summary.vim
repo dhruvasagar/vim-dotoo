@@ -44,6 +44,10 @@ function! s:log_summary_plugin.map() dict "{{{2
   exec 'nnoremap <buffer> <silent> <nowait> R :<C-U>call dotoo#agenda_views#agenda#toggle_plugin("' . s:plugin_name . '")<CR>'
 endfunction
 
+function! s:log_summary_plugin.unmap() dict "{{{2
+  unmap <buffer> R
+endfunction
+
 function! s:log_summary_plugin.setup() dict
   call self.map()
 endfunction
