@@ -7,6 +7,10 @@ call dotoo#utils#set('dotoo#agenda#warning_days', '30d')
 call dotoo#utils#set('dotoo#agenda#files', ['~/Documents/dotoo-files/*.dotoo'])
 
 " Private API {{{1
+function! s:agenda_modified(mod)
+  let &l:modified = a:mod
+endfunction
+
 let s:dotoo_files = []
 let s:agenda_dotoos = {}
 function! s:parse_dotoos(file,...)
@@ -66,19 +70,103 @@ function! s:add_agenda_file_menu()
   return 0
 endfunction
 
+let s:tmpfile = tempname()
+function! s:edit(cmd)
+  silent exe a:cmd s:tmpfile
+  if a:cmd =~# 'pedit' | wincmd P | endif
+  setl winheight=20
+  setl buftype=acwrite nobuflisted
+  setl readonly nomodifiable nofoldenable nolist
+  setf dotooagenda
+endfunction
+
 function! s:view_cleanup(view_name)
   let view = get(s:agenda_views, a:view_name, {})
-  if has_key(view, 'cleanup') | call view.cleanup() | endif
+  if has_key(view, 'cleanup')
+    call s:edit('pedit!')
+    call view.cleanup()
+  endif
 endfunction
 
 function! s:show_view(view_name, force)
   let view = get(s:agenda_views, a:view_name, {})
-  if has_key(view, 'show')
-    call view.show(s:agenda_dotoos, a:force)
+  if has_key(view, 'content')
+    let content = view.content(s:agenda_dotoos, a:force)
+    let old_view = winsaveview()
+    call s:edit('pedit!')
+    setl modifiable
+    silent normal! ggdG
+    silent call setline(1, content)
+    setl nomodified nomodifiable
+    if has_key(view, 'setup') | call view.setup() | endif
+    call winrestview(old_view)
   endif
 endfunction
 
 " Public API {{{1
+let s:agenda_headlines = []
+function! dotoo#agenda#headlines(...)
+  if a:0
+    if a:0 == 1
+      let s:agenda_headlines = a:1
+    elseif a:0 == 2 && a:2
+      if type(a:1) == type([])
+        call extend(s:agenda_headlines, a:1)
+      else
+        call add(s:agenda_headlines, a:1)
+      endif
+    endif
+  endif
+  return s:agenda_headlines
+endfunction
+
+function! dotoo#agenda#goto_headline(cmd)
+  let headline = s:agenda_headlines[line('.')-2]
+  if a:cmd ==# 'edit' | quit | split | endif
+  exec a:cmd '+'.headline.lnum headline.file
+  if empty(&filetype) | edit | endif
+  normal! zv
+endfunction
+
+function! dotoo#agenda#start_headline_clock()
+  let old_view = winsaveview()
+  call dotoo#agenda#goto_headline('edit')
+  call dotoo#clock#start()
+  call dotoo#agenda#refresh_view()
+  call s:agenda_modified(1)
+  call winrestview(old_view)
+endfunction
+
+function! dotoo#agenda#stop_headline_clock()
+  let old_view = winsaveview()
+  call dotoo#agenda#goto_headline('edit')
+  call dotoo#clock#stop()
+  call dotoo#agenda#refresh_view()
+  call s:agenda_modified(1)
+  call winrestview(old_view)
+endfunction
+
+function! dotoo#agenda#change_headline_todo()
+  let headline = s:agenda_headlines[line('.')-2]
+  let selected = dotoo#utils#change_todo_menu()
+  if !empty(selected)
+    call headline.change_todo(selected)
+    let old_view = winsaveview()
+    call headline.save()
+    call dotoo#agenda#refresh_view(0)
+    call s:agenda_modified(getbufvar(bufnr('#'), '&modified'))
+    call winrestview(old_view)
+  endif
+endfunction
+
+function! s:undo_headline_change() "{{{1
+  let headline = s:agenda_headlines[line('.')-2]
+  let old_view = winsaveview()
+  call headline.undo()
+  call dotoo#agenda#refresh_view()
+  call winrestview(old_view)
+endfunction
+
 let s:agenda_views = {}
 function! dotoo#agenda#register_view(name, plugin) abort
   if type(a:plugin) == type({})
@@ -97,16 +185,6 @@ function! dotoo#agenda#save_files()
   setl nomodified
   call dotoo#agenda#refresh_view()
   call winrestview(old_view)
-endfunction
-
-let s:tmpfile = tempname()
-function! dotoo#agenda#edit(cmd)
-  silent exe a:cmd s:tmpfile
-  if a:cmd =~# 'pedit' | wincmd P | endif
-  setl winheight=20
-  setl buftype=acwrite nobuflisted
-  setl readonly nomodifiable nofoldenable nolist
-  setf dotooagenda
 endfunction
 
 let s:current_view = ''
