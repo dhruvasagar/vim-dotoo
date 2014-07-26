@@ -95,11 +95,11 @@ function! s:show_view(view_name, force)
     let old_view = winsaveview()
     call s:edit('pedit!')
     setl modifiable
-    silent normal! ggdG
     silent call setline(1, content)
     setl nomodified nomodifiable
     if has_key(view, 'setup') | call view.setup() | endif
     call winrestview(old_view)
+    normal! j
   endif
 endfunction
 
