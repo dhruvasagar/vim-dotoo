@@ -34,6 +34,7 @@ function! s:build_summaries(date, dotoo_values) "{{{2
     endif
   endfor
   if !empty(all_summaries) | call insert(all_summaries, s:line_separator()) | endif
+  call insert(all_summaries, 'Log Summary')
   return all_summaries
 endfunction
 
