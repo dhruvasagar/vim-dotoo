@@ -53,9 +53,10 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 1. Agenda Menu - <img src="http://i.imgur.com/17doNZn.png"/>
 2. Agenda View - <img src="http://i.imgur.com/Jstc961.png"/>
-3. Todos View - <img src="http://i.imgur.com/0Jg0Ezs.png"/>
-4. Refile View - <img src="http://i.imgur.com/HoSJkEu.png"/>
-5. Notes View - <img src="http://i.imgur.com/TyEeNWa.png"/>
+4. Agenda View with Log Summary - <img src="http://i.imgur.com/7sSV5dm.png"/>
+5. Todos View - <img src="http://i.imgur.com/0Jg0Ezs.png"/>
+6. Refile View - <img src="http://i.imgur.com/HoSJkEu.png"/>
+7. Notes View - <img src="http://i.imgur.com/TyEeNWa.png"/>
 
 ## Credits
 
