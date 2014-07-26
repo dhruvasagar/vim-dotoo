@@ -63,11 +63,13 @@ endfunction
 
 function! dotoo#capture#capture()
   let selected = s:capture_menu()
-  let template = s:get_selected_template(selected)
-  let template_lines = template[2]
-  let template_lines = s:capture_template_eval(template_lines)
-  let dotoo = dotoo#parser#parse({'key': 'capture', 'lines': template_lines, 'force': 1})
-  let headline = dotoo.headlines[0]
-  if g:dotoo#capture#clock | call headline.logbook.start_clock() | endif
-  call s:capture_template_save(headline.serialize())
+  if !empty(selected)
+    let template = s:get_selected_template(selected)
+    let template_lines = template[2]
+    let template_lines = s:capture_template_eval(template_lines)
+    let dotoo = dotoo#parser#parse({'key': 'capture', 'lines': template_lines, 'force': 1})
+    let headline = dotoo.headlines[0]
+    if g:dotoo#capture#clock | call headline.logbook.start_clock() | endif
+    call s:capture_template_save(headline.serialize())
+  endif
 endfunction
