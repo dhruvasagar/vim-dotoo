@@ -49,6 +49,14 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    will append the captured template into the refile file configured by
    g:dotoo#capture#refile
 
+## Screenshots
+
+1. Agenda Menu - <img src="http://i.imgur.com/17doNZn.png"/>
+2. Agenda View - <img src="http://i.imgur.com/Jstc961.png"/>
+3. Todos View - <img src="http://i.imgur.com/0Jg0Ezs.png"/>
+4. Refile View - <img src="http://i.imgur.com/HoSJkEu.png"/>
+5. Notes View - <img src="http://i.imgur.com/TyEeNWa.png"/>
+
 ## Credits
 
 This plugin was inspired by the original emacs org-mode and the workflow
