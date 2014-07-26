@@ -35,7 +35,10 @@ function! s:agenda_views_menu()
   call map(views, '"(".tolower(v:val[0]).") ".v:val')
   call add(views, 'Select agenda view: ')
   let selected = dotoo#utils#getchar(join(views, "\n"), acceptable_input)
-  let sel = filter(keys(s:agenda_views), "v:val =~# '^'.selected.'.*'")
+  let sel = []
+  if !empty(selected)
+    let sel = filter(keys(s:agenda_views), "v:val =~# '^'.selected.'.*'")
+  endif
   return !empty(sel) ? sel[0] : ''
 endfunction
 
