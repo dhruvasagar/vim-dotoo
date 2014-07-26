@@ -86,7 +86,7 @@ endfunction
 function! s:headline_methods.serialize() dict
   let lines = []
   call add(lines, self.line())
-  call add(lines, self.content)
+  call extend(lines, self.content)
   call add(lines, self.metadata.serialize())
   call extend(lines, self.properties.serialize())
   call extend(lines, self.logbook.serialize())
@@ -182,7 +182,7 @@ function! dotoo#parser#headline#new(...) abort
         \ 'title': token.content[3],
         \ 'tags': token.content[4],
         \ 'lnum': token.lnum,
-        \ 'content': '',
+        \ 'content': [],
         \ 'metadata': dotoo#parser#metadata#new(),
         \ 'properties': dotoo#parser#properties#new(),
         \ 'logbook': dotoo#parser#logbook#new(),
@@ -193,7 +193,7 @@ function! dotoo#parser#headline#new(...) abort
     while len(tokens)
       let token = remove(tokens, 0)
       if token.type ==# s:syntax.line.type
-        let headline.content .= token.content[0]
+        call add(headline.content, token.content[0])
       elseif token.type == s:syntax.metadata.type
         call extend(headline.metadata, dotoo#parser#metadata#new(token))
       elseif token.type == s:syntax.properties.type
