@@ -9,6 +9,12 @@ function! s:headline_methods.done() dict
   return self.todo =~? join(g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords, '|'):], '\|')
 endfunction
 
+function! s:headline_methods.bare_object() dict
+  let bare_object = deepcopy(self)
+  call remove(bare_object, 'headlines')
+  return bare_object
+endfunction
+
 function! s:headline_methods.repeatable() dict
   if has_key(self.metadata, 'deadline')
     return !empty(get(self.metadata.deadline.datetime, 'repeat', ''))
@@ -157,6 +163,11 @@ function! s:headline_methods.insert_headline(headline) dict
   call insert(self.headlines, a:headline)
 endfunction
 
+function! s:headline_methods.remove_headline(headline) dict
+  let index = index(self.headlines, a:headline)
+  call remove(self.headlines, index)
+endfunction
+
 function! s:sort_deadlines(h1, h2)
   return a:h1.deadline().diff(a:h2.deadline())
 endfunction
@@ -215,6 +226,9 @@ function! dotoo#parser#headline#new(...) abort
   endif
 
   call extend(headline, s:headline_methods)
+  for hl in headline.headlines
+    let hl.parent = headline.bare_object()
+  endfor
   let headline.id = sha256(string(headline))
 
   " Cache headlines for lookup
@@ -229,4 +243,10 @@ function! dotoo#parser#headline#get(...)
   if has_key(s:headlines, file)
     return get(s:headlines[file], lnum)
   endif
+endfunction
+
+function! dotoo#parser#headline#filter(expr)
+  let headlines = map(values(s:headlines), 'values(v:val)')
+  let headlines = dotoo#utils#flatten(headlines)
+  return filter(headlines, a:expr)
 endfunction

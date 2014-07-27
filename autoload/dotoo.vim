@@ -8,6 +8,26 @@ function! dotoo#get_headline(...)
   return call('dotoo#parser#headline#get', a:000)
 endfunction
 
+function! dotoo#get_headline_by_title(title)
+  let headlines = dotoo#parser#headline#filter("v:val.title =~# '" . a:title . "'")
+  if !empty(headlines) | return headlines[0] | endif
+endfunction
+
+function! dotoo#move_headline(headline, parent_headline)
+  if has_key(a:headline, 'parent')
+    let parent = a:headline.parent
+    call parent.remove_headline(a:headline)
+    call parent.save()
+  else
+    let splitted = a:headline.open()
+    call a:headline.delete()
+    call a:headline.close(splitted)
+  endif
+  call a:parent_headline.add_headline(a:headline)
+  call a:parent_headline.save()
+  call dotoo#agenda#save_files()
+endfunction
+
 function! dotoo#change_todo(...)
   let headline = a:0 ? a:1 : dotoo#get_headline()
   let selection = dotoo#utils#change_todo_menu()

@@ -20,6 +20,19 @@ function! dotoo#utils#getchar(prompt, accept)
   return ''
 endfunction
 
+function! dotoo#utils#flatten(items)
+  let flat_list = []
+  let items = deepcopy(a:items)
+  for item in items
+    if type(item) == type([])
+      let flat_list += dotoo#utils#flatten(item)
+    else
+      call add(flat_list, item)
+    endif
+  endfor
+  return flat_list
+endfunction
+
 function! dotoo#utils#change_todo_menu()
   let todo_keywords = filter(copy(g:dotoo#parser#todo_keywords), 'v:val !~# "|"')
   let acceptable_input = '[' . join(map(copy(todo_keywords), 'v:val[0]'),'') . ']'

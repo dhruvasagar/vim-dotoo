@@ -3,7 +3,13 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
+command! -bar -nargs=1 -buffer
+      \ -complete=customlist,dotoo#agenda#headline_complete
+      \ DotooMove
+      \ call dotoo#agenda#move_headline(dotoo#get_headline_by_title(<q-args>))
+
 nnoremap <buffer> <silent> <nowait> q :<C-U>quit<CR>
+nnoremap <buffer> <silent> <nowait> m :<C-U>DotooMove <C-Z>
 nnoremap <buffer> <silent> <nowait> C :<C-U>call dotoo#capture#capture()<CR>
 nnoremap <buffer> <silent> <nowait> s :<C-U>call dotoo#agenda#save_files()<CR>
 nnoremap <buffer> <silent> <nowait> r :<C-U>call dotoo#agenda#refresh_view()<CR>

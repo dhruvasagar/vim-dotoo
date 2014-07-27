@@ -188,6 +188,26 @@ function! dotoo#agenda#save_files()
   call winrestview(old_view)
 endfunction
 
+function! dotoo#agenda#move_headline(headline)
+  let headline = s:agenda_headlines[line('.')-2]
+  call dotoo#move_headline(headline, a:headline)
+endfunction
+
+function! dotoo#agenda#headline_complete(ArgLead, CmdLine, CursorPos)
+  let headlines = []
+  let pattern = ''
+  if empty(a:ArgLead)
+    let pattern = '1'
+  else
+    let pattern = "v:val.title =~# '^" . a:ArgLead . "'"
+  endif
+  for dotoo in values(s:agenda_dotoos)
+    let hs = dotoo.filter(pattern)
+    call extend(headlines, map(hs, 'v:val.title'))
+  endfor
+  return headlines
+endfunction
+
 let s:current_view = ''
 function! dotoo#agenda#agenda()
   let old_view = s:current_view
