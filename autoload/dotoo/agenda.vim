@@ -100,7 +100,6 @@ function! s:show_view(view_name, force)
     setl nomodified nomodifiable
     if has_key(view, 'setup') | call view.setup() | endif
     call winrestview(old_view)
-    normal! j
   endif
 endfunction
 
