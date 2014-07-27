@@ -226,9 +226,6 @@ function! dotoo#parser#headline#new(...) abort
   endif
 
   call extend(headline, s:headline_methods)
-  for hl in headline.headlines
-    let hl.parent = headline.bare_object()
-  endfor
   let headline.id = sha256(string(headline))
 
   " Cache headlines for lookup

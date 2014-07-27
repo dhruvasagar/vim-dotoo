@@ -14,18 +14,12 @@ function! dotoo#get_headline_by_title(title)
 endfunction
 
 function! dotoo#move_headline(headline, parent_headline)
-  if has_key(a:headline, 'parent')
-    let parent = a:headline.parent
-    call parent.remove_headline(a:headline)
-    call parent.save()
-  else
-    let splitted = a:headline.open()
-    call a:headline.delete()
-    call a:headline.close(splitted)
-  endif
+  let splitted = a:headline.open()
+  call a:headline.delete()
+  silent write
+  call a:headline.close(splitted)
   call a:parent_headline.add_headline(a:headline)
   call a:parent_headline.save()
-  call dotoo#agenda#save_files()
 endfunction
 
 function! dotoo#change_todo(...)
