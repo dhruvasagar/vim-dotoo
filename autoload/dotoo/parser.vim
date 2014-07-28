@@ -72,11 +72,18 @@ endfunction
 
 function! dotoo#parser#parsefile(options) abort
   let opts = extend({'file': expand('%:p'), 'force': 0}, a:options)
-  if !filereadable(opts.file) || fnamemodify(opts.file, ':e') !=? 'dotoo' | return | endif
+  let lines = []
+  if opts.file ==# expand('%:p') && &filetype ==# 'dotoo'
+    let lines = getline(1,'$')
+  elseif filereadable(opts.file) && fnamemodify(opts.file, ':e') ==# 'dotoo'
+    let lines = readfile(opts.file)
+  else
+    return
+  endif
   let key = fnamemodify(opts.file, ':p:t:r')
   return dotoo#parser#parse({
         \ 'key': key,
         \ 'file': opts.file,
         \ 'force': opts.force,
-        \ 'lines': readfile(opts.file)})
+        \ 'lines': lines})
 endfunction
