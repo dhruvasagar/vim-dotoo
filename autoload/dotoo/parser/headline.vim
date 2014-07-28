@@ -156,10 +156,12 @@ function! s:headline_methods.equal(other) dict
 endfunction
 
 function! s:headline_methods.add_headline(headline) dict
+  let a:headline.level = self.level + 1
   call add(self.headlines, a:headline)
 endfunction
 
 function! s:headline_methods.insert_headline(headline) dict
+  let a:headline.level = self.level + 1
   call insert(self.headlines, a:headline)
 endfunction
 
