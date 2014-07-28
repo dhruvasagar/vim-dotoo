@@ -60,7 +60,3 @@ call dotoo#agenda_views#refiles#register()
 
 " Register Agenda View Plugins
 call dotoo#agenda_views#plugins#log_summary#register()
-
-" Register Agenda Plugins
-" call dotoo#agenda#todos#register_agenda_plugin()
-" call dotoo#agenda#log_summary#register_agenda_plugin()
