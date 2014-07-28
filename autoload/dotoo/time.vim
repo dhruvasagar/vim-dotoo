@@ -101,7 +101,7 @@ function! s:to_seconds(time)
     let seconds = a:time
   elseif type(a:time) == type({})
     if has_key(a:time, 'to_seconds')
-      let seconds = a:time.to_seconds()
+      return a:time.to_seconds()
     endif
   elseif type(a:time) == type('')
     if empty(a:time)
