@@ -3,6 +3,18 @@ if exists('g:autoloaded_dotoo_parser')
 endif
 let g:autoloaded_dotoo_parser = 1
 
+function! s:readfile(file)
+  let lines = []
+  if expand('%:p') ==# fnamemodify(a:file, ':p')
+    let lines = getline(1, '$')
+  else
+    silent exe 'noauto split' a:file
+    let lines = getline(1, '$')
+    quit
+  endif
+  return lines
+endfunction
+
 function! s:flatten_headlines(headlines)
   let flat_list = []
   let headlines = deepcopy(a:headlines)
@@ -76,7 +88,7 @@ function! dotoo#parser#parsefile(options) abort
   if opts.file ==# expand('%:p') && &filetype ==# 'dotoo'
     let lines = getline(1,'$')
   elseif filereadable(opts.file) && fnamemodify(opts.file, ':e') ==# 'dotoo'
-    let lines = readfile(opts.file)
+    let lines = s:readfile(opts.file)
   else
     return
   endif
