@@ -16,6 +16,7 @@ endfunction
 
 function! s:build_summaries(date, dotoo_values) "{{{2
   let all_summaries = []
+  let all_total = 0
   for dotoo in values(a:dotoo_values)
     let summaries = []
     let total = 0
@@ -23,17 +24,24 @@ function! s:build_summaries(date, dotoo_values) "{{{2
     for dotoo_summary in dotoo_summaries
       call add(summaries,
             \  s:log_line(dotoo_summary[0],
-            \            dotoo_summary[1].to_string(g:dotoo#time#time_format),
+            \            dotoo#time#log(dotoo_summary[1]).to_string(g:dotoo#time#time_format),
             \            1))
-      let total += dotoo_summary[1].to_seconds() + dotoo_summary[1].datetime.stzoffset
+      let total += dotoo_summary[1]
     endfor
     if !empty(summaries)
-      call insert(summaries, s:log_line(dotoo.key, dotoo#time#new(total).to_string(g:dotoo#time#time_format), 1))
+      let all_total += total
+      call insert(summaries, s:log_line(dotoo.key, dotoo#time#log(total).to_string(g:dotoo#time#time_format), 1))
       call add(summaries, s:line_separator())
       call extend(all_summaries, summaries)
     endif
   endfor
-  if !empty(all_summaries) | call insert(all_summaries, s:line_separator()) | endif
+  if empty(all_summaries)
+    call add(all_summaries, 'No Logs for this day')
+  else
+    call insert(all_summaries, s:line_separator())
+    call insert(all_summaries, s:log_line('Total', dotoo#time#log(all_total).to_string(g:dotoo#time#time_format), 1))
+    call insert(all_summaries, s:line_separator())
+  endif
   call insert(all_summaries, 'Log Summary')
   return all_summaries
 endfunction

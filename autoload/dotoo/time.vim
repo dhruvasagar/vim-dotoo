@@ -203,10 +203,6 @@ function! s:time_methods.diff(other) dict
   return self.to_seconds() - a:other.to_seconds()
 endfunction
 
-function! s:time_methods.diff_time(other) dict
-  return dotoo#time#new(self.diff(a:other))
-endfunction
-
 function! s:time_methods.diff_in_words(other, ...) dict
   let short = a:0 ? a:1 : 0
   let diff = self.diff(a:other)
@@ -363,4 +359,13 @@ function! dotoo#time#new(...)
   let obj = {}
   call extend(obj, s:time_methods)
   return obj.init(dt, rp)
+endfunction
+
+function! dotoo#time#log(seconds)
+  let secs = a:seconds
+  let mins = secs / 60
+  let hours = mins / 60
+  let mins = mins % 60
+  let hours = hours % 24
+  return dotoo#time#new(printf('%s %02d:%02d', strftime(g:dotoo#time#date_day_format), hours, mins))
 endfunction

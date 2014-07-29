@@ -13,7 +13,7 @@ function! s:logbook_methods.serialize() dict
     if log.type == s:syntax.logbook_clock.type
       let log_string = 'CLOCK: [' . log['start'].to_string(g:dotoo#time#datetime_format) . ']'
       if has_key(log, 'end')
-        let diff_time = log['end'].diff_time(log['start']).to_string(g:dotoo#time#time_format)
+        let diff_time = dotoo#time#log(log['end'].diff(log['start'])).to_string(g:dotoo#time#time_format)
         let log_string .= '--[' . log['end'].to_string(g:dotoo#time#datetime_format) . ']'
         let log_string .= ' => ' . diff_time
       endif
@@ -50,7 +50,7 @@ endfunction
 function! s:logbook_methods.clocking_summary() dict
   let log = get(self.logs, 0)
   if !empty(log) && !has_key(log, 'end')
-    return dotoo#time#new().diff_time(log['start']).to_string(g:dotoo#time#time_format)
+    return dotoo#time#log(dotoo#time#new().diff(log['start'])).to_string(g:dotoo#time#time_format)
   endif
 endfunction
 
@@ -68,7 +68,7 @@ function! s:logbook_methods.summary(time, span) dict
       let summary += dotoo#time#new().diff(log['start'])
     endif
   endfor
-  return summary ? dotoo#time#new(summary) : summary
+  return summary
 endfunction
 
 function! dotoo#parser#logbook#new(...)
