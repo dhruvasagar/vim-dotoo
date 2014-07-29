@@ -353,6 +353,10 @@ function! s:time_methods.end_of(span)
   return dotoo#time#end_of(self, a:span)
 endfunction
 
+function! s:time_methods.repeatable()
+  return !empty(self.datetime, 'repeat', '')
+endfunction
+
 function! dotoo#time#new(...)
   let dt = a:0 ? a:1 : ''
   let rp = a:0 == 2 ? a:2 : ''

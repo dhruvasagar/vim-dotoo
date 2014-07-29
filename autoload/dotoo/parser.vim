@@ -4,15 +4,13 @@ endif
 let g:autoloaded_dotoo_parser = 1
 
 function! s:readfile(file)
-  let lines = []
-  if expand('%:p') ==# fnamemodify(a:file, ':p')
-    let lines = getline(1, '$')
-  else
+  if !bufloaded(a:file)
+    let old_view = winsaveview()
     silent exe 'noauto split' a:file
-    let lines = getline(1, '$')
     quit
+    call winrestview(old_view)
   endif
-  return lines
+  return getbufline(a:file, 1, '$')
 endfunction
 
 function! s:flatten_headlines(headlines)
@@ -85,7 +83,7 @@ endfunction
 function! dotoo#parser#parsefile(options) abort
   let opts = extend({'file': expand('%:p'), 'force': 0}, a:options)
   let lines = []
-  if opts.file ==# expand('%:p') && &filetype ==# 'dotoo'
+  if expand('%:p') ==# fnamemodify(opts.file, ':p') && &filetype ==# 'dotoo'
     let lines = getline(1,'$')
   elseif filereadable(opts.file) && fnamemodify(opts.file, ':e') ==# 'dotoo'
     let lines = s:readfile(opts.file)

@@ -17,9 +17,9 @@ endfunction
 
 function! s:headline_methods.repeatable() dict
   if has_key(self.metadata, 'deadline')
-    return !empty(get(self.metadata.deadline.datetime, 'repeat', ''))
+    return self.metadata.deadline.repeatable()
   elseif has_key(self.metadata, 'scheduled')
-    return !empty(get(self.metadata.scheduled.datetime, 'repeat', ''))
+    return self.metadata.scheduled.repeatable()
   endif
   return 0
 endfunction
