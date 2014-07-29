@@ -354,7 +354,7 @@ function! s:time_methods.end_of(span)
 endfunction
 
 function! s:time_methods.repeatable()
-  return !empty(self.datetime, 'repeat', '')
+  return !empty(get(self.datetime, 'repeat', ''))
 endfunction
 
 function! dotoo#time#new(...)
