@@ -217,14 +217,16 @@ function! dotoo#parser#headline#new(...) abort
         let headline.last_lnum = token.lnum - 1
         call insert(tokens, token)
         if len(token.content[0]) > headline.level
-          call add(headline.headlines, dotoo#parser#headline#new(file, tokens))
+          let hl = dotoo#parser#headline#new(file, tokens)
+          call add(headline.headlines, hl)
+          let headline.last_lnum = hl.last_lnum
         else
           break
         endif
       endif
     endwhile
 
-    if !has_key(headline, 'last_lnum') | let headline.last_lnum = '$' | endif
+    if !has_key(headline, 'last_lnum') | let headline.last_lnum = line('$') | endif
   endif
 
   call extend(headline, s:headline_methods)
