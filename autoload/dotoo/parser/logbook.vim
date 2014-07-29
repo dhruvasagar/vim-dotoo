@@ -62,7 +62,11 @@ function! s:logbook_methods.summary(time, span) dict
   endif
   let summary = 0
   for log in logs
-    let summary += log['end'].diff(log['start'])
+    if has_key(log, 'end')
+      let summary += log['end'].diff(log['start'])
+    else
+      let summary += dotoo#time#new().diff(log['start'])
+    endif
   endfor
   return summary ? dotoo#time#new(summary) : summary
 endfunction
