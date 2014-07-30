@@ -31,7 +31,7 @@ command! -bar -nargs=1 -buffer
       \ -complete=customlist,dotoo#agenda#headline_complete
       \ DotooMove
       \ call dotoo#move_headline(dotoo#get_headline(),
-      \                          dotoo#get_headline_by_title(<q-args>))
+      \                          dotoo#agenda#get_headline_by_title(<q-args>))
 
 iabbrev <expr> <buffer> <silent> :date: '['.strftime(g:dotoo#time#date_day_format).']'
 iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#datetime_format).']'

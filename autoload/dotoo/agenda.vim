@@ -159,7 +159,7 @@ function! dotoo#agenda#change_headline_todo()
   endif
 endfunction
 
-function! s:undo_headline_change() "{{{1
+function! dotoo#agenda#undo_headline_change() "{{{1
   let headline = s:agenda_headlines[line('.')-2]
   let old_view = winsaveview()
   call headline.undo()
@@ -187,23 +187,51 @@ function! dotoo#agenda#save_files()
   call winrestview(old_view)
 endfunction
 
+function! dotoo#agenda#get_headline_by_title(file_title)
+  if a:file_title =~# '\.'
+    let [filekey, title] = split(a:file_title, '\.')
+    let dotoo = get(s:agenda_dotoos, bufname(filekey), '')
+    if !empty(dotoo)
+      let headlines = dotoo.filter("v:val.title =~# '" . title . "'")
+      if !empty(headlines) | return headlines[0] | endif
+    endif
+  else
+    return a:file_title
+  endif
+endfunction
+
 function! dotoo#agenda#move_headline(headline)
   let headline = s:agenda_headlines[line('.')-2]
   call dotoo#move_headline(headline, a:headline)
+  call dotoo#agenda#refresh_view()
 endfunction
 
 function! dotoo#agenda#headline_complete(ArgLead, CmdLine, CursorPos)
   let headlines = []
-  let pattern = ''
-  if empty(a:ArgLead)
-    let pattern = '1'
-  else
-    let pattern = "v:val.title =~# '^" . a:ArgLead . "'"
-  endif
-  for dotoo in values(s:agenda_dotoos)
-    let hs = dotoo.filter(pattern)
-    call extend(headlines, map(hs, 'v:val.title'))
+  for key in keys(s:agenda_dotoos)
+    let _key = fnamemodify(key, ':p:t:r')
+    if empty(a:ArgLead) || _key =~# '^'.a:ArgLead[:stridx(a:ArgLead, '.')-1]
+      if _key ==# a:ArgLead
+        call add(headlines, _key)
+      endif
+      let dotoo = s:agenda_dotoos[key]
+      if !empty(a:ArgLead) && a:ArgLead =~# '\..'
+        let title = split(a:ArgLead, '\.')[1]
+        let hdlns = dotoo.filter("v:val.title =~# '^" .title. "'")
+      else
+        let hdlns = dotoo.filter('1')
+      endif
+      call extend(headlines, map(hdlns, "_key . '.' . v:val.title"))
+    else
+      let dotoo = s:agenda_dotoos[key]
+      let hdlns = dotoo.filter("v:val.title =~# '^" . a:ArgLead . "'")
+      call extend(headlines, map(hdlns, "_key . '.' . v:val.title"))
+    endif
   endfor
+  " for dotoo in values(s:agenda_dotoos)
+  "   let hs = dotoo.filter(pattern)
+  "   call extend(headlines, map(hs, 'v:val.title'))
+  " endfor
   return headlines
 endfunction
 

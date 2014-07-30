@@ -6,7 +6,7 @@ let b:did_ftplugin = 1
 command! -bar -nargs=1 -buffer
       \ -complete=customlist,dotoo#agenda#headline_complete
       \ DotooMove
-      \ call dotoo#agenda#move_headline(dotoo#get_headline_by_title(<q-args>))
+      \ call dotoo#agenda#move_headline(dotoo#agenda#get_headline_by_title(<q-args>))
 
 nnoremap <buffer> <silent> <nowait> q :<C-U>quit<CR>
 nnoremap <buffer> <silent> <nowait> m :<C-U>DotooMove <C-Z>

@@ -8,18 +8,19 @@ function! dotoo#get_headline(...)
   return call('dotoo#parser#headline#get', a:000)
 endfunction
 
-function! dotoo#get_headline_by_title(title)
-  let headlines = dotoo#parser#headline#filter("v:val.title =~# '" . a:title . "'")
-  if !empty(headlines) | return headlines[0] | endif
-endfunction
-
 function! dotoo#move_headline(headline, parent_headline)
   let splitted = a:headline.open()
   call a:headline.delete()
   silent write
   call a:headline.close(splitted)
-  call a:parent_headline.add_headline(a:headline)
-  call a:parent_headline.save()
+  if type(a:parent_headline) == type({})
+    call a:parent_headline.add_headline(a:headline)
+    call a:parent_headline.save()
+  else
+    silent exe 'noauto split' bufname(a:parent_headline)
+    call append('$', a:headline.serialize())
+    quit
+  endif
 endfunction
 
 function! dotoo#change_todo(...)

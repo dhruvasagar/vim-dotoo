@@ -245,9 +245,3 @@ function! dotoo#parser#headline#get(...)
     return get(s:headlines[file], lnum)
   endif
 endfunction
-
-function! dotoo#parser#headline#filter(expr)
-  let headlines = map(values(s:headlines), 'values(v:val)')
-  let headlines = dotoo#utils#flatten(headlines)
-  return filter(headlines, a:expr)
-endfunction
