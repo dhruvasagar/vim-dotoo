@@ -188,8 +188,8 @@ function! dotoo#agenda#save_files()
 endfunction
 
 function! dotoo#agenda#get_headline_by_title(file_title)
-  if a:file_title =~# '\.'
-    let [filekey, title] = split(a:file_title, '\.')
+  if a:file_title =~# ':'
+    let [filekey, title] = split(a:file_title, ':')
     let dotoo = get(s:agenda_dotoos, bufname(filekey), '')
     if !empty(dotoo)
       let headlines = dotoo.filter("v:val.title =~# '" . title . "'")
@@ -210,28 +210,24 @@ function! dotoo#agenda#headline_complete(ArgLead, CmdLine, CursorPos)
   let headlines = []
   for key in keys(s:agenda_dotoos)
     let _key = fnamemodify(key, ':p:t:r')
-    if empty(a:ArgLead) || _key =~# '^'.a:ArgLead[:stridx(a:ArgLead, '.')-1]
+    if empty(a:ArgLead) || _key =~# '^'.a:ArgLead[:stridx(a:ArgLead, ':')-1]
       if _key ==# a:ArgLead
         call add(headlines, _key)
       endif
       let dotoo = s:agenda_dotoos[key]
-      if !empty(a:ArgLead) && a:ArgLead =~# '\..'
-        let title = split(a:ArgLead, '\.')[1]
+      if !empty(a:ArgLead) && a:ArgLead =~# ':.'
+        let title = split(a:ArgLead, ':')[1]
         let hdlns = dotoo.filter("v:val.title =~# '^" .title. "'")
       else
         let hdlns = dotoo.filter('1')
       endif
-      call extend(headlines, map(hdlns, "_key . '.' . v:val.title"))
+      call extend(headlines, map(hdlns, "_key . ':' . v:val.title"))
     else
       let dotoo = s:agenda_dotoos[key]
       let hdlns = dotoo.filter("v:val.title =~# '^" . a:ArgLead . "'")
-      call extend(headlines, map(hdlns, "_key . '.' . v:val.title"))
+      call extend(headlines, map(hdlns, "_key . ':' . v:val.title"))
     endif
   endfor
-  " for dotoo in values(s:agenda_dotoos)
-  "   let hs = dotoo.filter(pattern)
-  "   call extend(headlines, map(hs, 'v:val.title'))
-  " endfor
   return headlines
 endfunction
 
