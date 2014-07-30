@@ -69,7 +69,7 @@ function! dotoo#capture#capture()
     let template_lines = s:capture_template_eval(template_lines)
     let dotoo = dotoo#parser#parse({'key': 'capture', 'lines': template_lines, 'force': 1})
     let headline = dotoo.headlines[0]
-    if g:dotoo#capture#clock | call headline.logbook.start_clock() | endif
+    if g:dotoo#capture#clock | call dotoo#clock#start(headline) | endif
     call s:capture_template_save(headline.serialize())
   endif
 endfunction

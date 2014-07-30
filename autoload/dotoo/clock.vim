@@ -6,36 +6,41 @@ let g:autoloaded_dotoo_clock = 1
 let s:syntax = dotoo#parser#lexer#syntax()
 let s:clocking_headlines = []
 let s:current_clocking_headline = {}
-function! dotoo#clock#start()
-  if s:syntax.headline.matches(getline('.'))
-    let headline = dotoo#get_headline()
-    call headline.change_todo('n') " Mark as NEXT
-    call headline.start_clock()
-    let s:current_clocking_headline = headline
-    call insert(s:clocking_headlines, headline)
+function! dotoo#clock#start(...)
+  let headline = a:0 ? a:1 : dotoo#get_headline()
+  if empty(headline) | return | endif
+  if !empty(s:current_clocking_headline)
+    let curr_hl = dotoo#get_headline(s:current_clocking_headline.file, s:current_clocking_headline.lnum)
+    " Stop clocking the current clock
+    call curr_hl.stop_clock()
   endif
+  call headline.change_todo('n') " Mark as NEXT
+  call headline.start_clock()
+  let s:current_clocking_headline = {'file': headline.file, 'lnum': headline.lnum}
+  call insert(s:clocking_headlines, s:current_clocking_headline)
 endfunction
 
-function! dotoo#clock#stop()
-  if s:syntax.headline.matches(getline('.'))
-    let headline = dotoo#get_headline()
-    if headline.equal(s:current_clocking_headline)
-      if !empty(s:clocking_headlines)
-        call remove(s:clocking_headlines, 0)
-        let s:current_clocking_headline = get(s:clocking_headlines, 0, {})
-      else
-        let s:current_clocking_headline = {}
-      endif
+function! dotoo#clock#stop(...)
+  let headline = a:0 ? a:1 : dotoo#get_headline()
+  if empty(headline) | return | endif
+  if headline.is_clocking()
+    call headline.stop_clock()
+    call remove(s:clocking_headlines, 0)
+    let s:current_clocking_headline = get(s:clocking_headlines, 0, {})
+    " Resume clocking the old stopped clock
+    if !empty(s:current_clocking_headline)
+      let curr_hl = dotoo#get_headline(s:current_clocking_headline.file, s:current_clocking_headline.lnum)
+      call curr_hl.start_clock()
     endif
   endif
-  call headline.stop_clock()
 endfunction
 
 function! dotoo#clock#summary()
   if !empty(s:current_clocking_headline)
-    return s:current_clocking_headline.logbook.clocking_summary() .
+    let curr_hl = dotoo#get_headline(s:current_clocking_headline.file, s:current_clocking_headline.lnum)
+    return curr_hl.logbook.clocking_summary() .
           \ ' ' .
-          \ s:current_clocking_headline.title[:10]
+          \ curr_hl.title[:10]
   endif
   return ''
 endfunction

@@ -70,10 +70,17 @@ function! dotoo#decrement_date()
   if !s:adjust_date('-'.v:count1.'d') | exe "normal! \<C-X>" | endif
 endfunction
 
-function! dotoo#normalize_date()
+let s:syntax = dotoo#parser#lexer#syntax()
+function! dotoo#normalize()
   let dt = s:get_date()
   if !empty(dt)
     call s:set_date(dt)
+  elseif s:syntax.logbook_clock.matches(getline('.'))
+    let old_view = winsaveview()
+    call search('^\*\+', 'b')
+    let headline = dotoo#get_headline()
+    call headline.save()
+    call winrestview(old_view)
   else
     exe "normal! \<C-C>\<C-C>"
   endif

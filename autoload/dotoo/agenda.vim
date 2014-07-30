@@ -129,21 +129,15 @@ function! dotoo#agenda#goto_headline(cmd)
 endfunction
 
 function! dotoo#agenda#start_headline_clock()
-  let old_view = winsaveview()
-  call dotoo#agenda#goto_headline('edit')
-  call dotoo#clock#start()
-  call dotoo#agenda#refresh_view()
+  let headline = s:agenda_headlines[line('.')-2]
+  call dotoo#clock#start(headline)
   call s:agenda_modified(1)
-  call winrestview(old_view)
 endfunction
 
 function! dotoo#agenda#stop_headline_clock()
-  let old_view = winsaveview()
-  call dotoo#agenda#goto_headline('edit')
-  call dotoo#clock#stop()
-  call dotoo#agenda#refresh_view()
+  let headline = s:agenda_headlines[line('.')-2]
+  call dotoo#clock#stop(headline)
   call s:agenda_modified(1)
-  call winrestview(old_view)
 endfunction
 
 function! dotoo#agenda#change_headline_todo()

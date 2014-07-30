@@ -138,6 +138,10 @@ function! s:headline_methods.start_clock() dict
   call self.save()
 endfunction
 
+function! s:headline_methods.is_clocking() dict
+  return self.logbook.is_clocking()
+endfunction
+
 function! s:headline_methods.stop_clock() dict
   call self.logbook.stop_clock()
   call self.save()
