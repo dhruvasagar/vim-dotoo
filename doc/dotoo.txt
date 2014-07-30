@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.5.0
+                                Version 0.6.0
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -39,6 +39,7 @@ GETTING STARTED                                           *dotoo-getting-started
          These are the dotoo document mappings :
               `gI`:         clock-in headline under cursor
               `gO`:         clock-out headline under cursor
+              `gM`:         move headline under cursor to selected target
               `cit`:        change TODO of headline under cursor
               `<C-A>`:      Increment date under cursor by 1 day, can be preceded
                           with a [count]
@@ -50,37 +51,55 @@ GETTING STARTED                                           *dotoo-getting-started
               :date:      Enter the current date
               :time:      Enter the current date and time
 
-      2. Agenda View: You can have a look at the agenda at anytime using the key
-         binding |gA|. This opens up a buffer with TODO's that are nearing
-         deadline. It provides a variety of mappings to manipulate the TODO
-         items from the agenda view itself.
+      2. Agenda Views: You can have a look at the agenda views at anytime using the key
+         binding <kbd>gA</kbd>, this displays the list of currently registered
+         agenda views available, selecting one of them then opens up the view. The
+         agenda views pulls information from agenda files, this can be configured by
+         setting `g:dotoo#agenda#files` which is a list of file names / file blobs.
 
-         These are the agenda view mappings :
-              `q`:     quit agenda buffer
-              `r`:     refresh agenda buffer (force reload / parse agenda files)
-              `f`:     go forward by 1 day
-              `b`:     go backward by 1 day
-              `.`:     go to today's date
-              `c`:     change TODO of headline under cursor
-              `u`:     undo change in file of headline under the cursor
-              `s`:     save all agenda files
-              `C`:     trigger capture menu
-              `i`:     clock-in for headline under cursor
-              `o`:     clock-out for headline under cursor
-              `R`:     Report of clocking summary for the day
-              `T`:     List unscheduled TODO items
-              `<CR>`:  Open headline under cursor & close agenda
-              `<C-S>`: Open headline under cursor in `split`
-              `<C-T>`: Open headline under cursor in `tab`
-              `<C-V>`: Open headline under cursor in `vsplit`
-              `<Tab>`: same as `<C-V>`
+         These are the agenda view mappings common to all :
+               `q`:     quit agenda buffer
+               `r`:     refresh agenda buffer (force reload / parse agenda files)
+               `c`:     change TODO of headline under cursor
+               `u`:     undo change in file of headline under the cursor
+               `s`:     save all agenda files
+               `C`:     trigger capture menu
+               `i`:     clock-in for headline under cursor
+               `o`:     clock-out for headline under cursor
+               `m`:     Move headline to selected target
+               `<CR>`:  Open headline under cursor & close agenda
+               `<C-S>`: Open headline under cursor in `split`
+               `<C-T>`: Open headline under cursor in `tab`
+               `<C-V>`: Open headline under cursor in `vsplit`
+               `<Tab>`: same as `<C-V>`
+
+         There are 4 views available currently :
+         1. Agenda View : This displays all TODOs that are nearing deadline.
+            deadline. It provides a variety of mappings to manipulate the TODO items
+            from the agenda view itself.
+
+            These are mappings specific to agenda view:
+                `f`:     go forward by 1 day
+                `b`:     go backward by 1 day
+                `.`:     go to today's date
+                `R`:     Report of clocking summary for the day
+
+         2. TODOs View : This displays all unscheduled TODO items from your agenda
+            files.
+
+         3. Refiles : This displays all headlines in the refile file that you should
+            then move to an appropriate target file / project / headline.
+
+         4. Notes : This displays all the notes from all the agenda files.
 
       3. Capture: This launches the capture menu that you can use to quickly
          capture TODOs, NOTES etc. This can be invoked using the keybinding
-         |gC| from anywhere. If you invoke the same from an open dotoo file,
-         it will append the captured template into the dotoo file otherwise it
-         will append the captured template into the refile file configured by
-         |g:dotoo#capture#refile|
+         |gC| from anywhere. It will append the captured template into the
+         refile file configured by |g:dotoo#capture#refile|. Capture also
+         clocks the tasks to log the time spent while capturing, this works
+         best with MEETING captures where you can just launch capture mode and
+         leave it open till the duration of the meeting to log the meeting,
+         though it can be used with any capture.
 
 -------------------------------------------------------------------------------
 OPTIONS                                                          *dotoo-options*

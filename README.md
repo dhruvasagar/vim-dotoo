@@ -1,4 +1,4 @@
-# VIM Do Too v0.5.0
+# VIM Do Too v0.6.0
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Getting Started
@@ -8,6 +8,7 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    These are the dotoo document mappings :
    * <kbd>gI</kbd>:      clock-in headline under cursor
    * <kbd>gO</kbd>:      clock-out headline under cursor
+   * <kbd>gM</kbd>:      move headline under cursor to selected target
    * <kbd>cit</kbd>:     change TODO of headline under cursor
    * <kbd>\<C-A\></kbd>:   Increment date under cursor by 1 day, can be preceded with a [count]
    * <kbd>\<C-X\></kbd>:   Decrement date under cursor by 1 day, can be preceded with a [count]
@@ -17,37 +18,57 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    * `:date:` Enters the current date
    * `:time:` Enters the current date & time
 
-2. Agenda View: You can have a look at the agenda at anytime using the key
-   binding <kbd>gA</kbd>. This opens up a buffer with TODO's that are nearing
-   deadline. It provides a variety of mappings to manipulate the TODO
-   items from the agenda view itself.
+2. Agenda Views: You can have a look at the agenda views at anytime using the key
+   binding <kbd>gA</kbd>, this displays the list of currently registered
+   agenda views available, selecting one of them then opens up the view. The
+   agenda views pulls information from agenda files, this can be configured by
+   setting `g:dotoo#agenda#files` which is a list of file names / file blobs.
 
-   These are the agenda view mappings :
+   These are the agenda view mappings common to all :
    * <kbd>q</kbd>:     quit agenda buffer
    * <kbd>r</kbd>:     refresh agenda buffer (force reload / parse agenda files)
-   * <kbd>f</kbd>:     go forward by 1 day
-   * <kbd>b</kbd>:     go backward by 1 day
-   * <kbd>.</kbd>:     go to today's date
    * <kbd>c</kbd>:     change TODO of headline under cursor
    * <kbd>u</kbd>:     undo change in file of headline under the cursor
    * <kbd>s</kbd>:     save all agenda files
    * <kbd>C</kbd>:     trigger capture menu
    * <kbd>i</kbd>:     clock-in for headline under cursor
    * <kbd>o</kbd>:     clock-out for headline under cursor
-   * <kbd>R</kbd>:     Report of clocking summary for the day
-   * <kbd>T</kbd>:     List unscheduled TODO items
+   * <kbd>m</kbd>:     Move headline to selected target
    * <kbd>\<CR\></kbd>:  Open headline under cursor & close agenda
    * <kbd>\<C-S\></kbd>: Open headline under cursor in `split`
    * <kbd>\<C-T\></kbd>: Open headline under cursor in `tab`
    * <kbd>\<C-V\></kbd>: Open headline under cursor in `vsplit`
    * <kbd>\<Tab\></kbd>: same as <kbd>\<C-V\></kbd>
 
+   There are 4 views available currently :
+   1. Agenda View : This displays all TODOs that are nearing deadline.
+      deadline. It provides a variety of mappings to manipulate the TODO items
+      from the agenda view itself.
+
+      These are mappings specific to agenda view:
+      * <kbd>f</kbd>:     go forward by 1 day
+      * <kbd>b</kbd>:     go backward by 1 day
+      * <kbd>.</kbd>:     go to today's date
+      * <kbd>R</kbd>:     Report of clocking summary for the day
+
+   2. TODOs View : This displays all unscheduled TODO items from your agenda
+      files.
+
+   3. Refiles : This displays all headlines in the refile file that you should
+      then move to an appropriate target file / project / headline.
+
+   4. Notes : This displays all the notes from all the agenda files.
+
+
 3. Capture: This launches the capture menu that you can use to quickly
    capture TODOs, NOTES etc. This can be invoked using the keybinding
-   <kbd>gC</kbd> from anywhere. If you invoke the same from an open dotoo file,
-   it will append the captured template into the dotoo file otherwise it
-   will append the captured template into the refile file configured by
-   g:dotoo#capture#refile
+   <kbd>gC</kbd> from anywhere. The capture launches with a split window in
+   select mode, you can just start typing to edit the capture. On saving the
+   capture is then moved to the refile file, this can be configured using
+   `g:dotoo#capture#refile`. You can always look at your refiles in the
+   refiles view and move them to the desired target file / headline from
+   there. Capture also clocks the tasks so you can log how much time was spent
+   doing them.
 
 ## Screenshots
 
