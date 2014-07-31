@@ -77,7 +77,6 @@ GETTING STARTED                                           *dotoo-getting-started
                `i`:     clock-in for headline under cursor
                `o`:     clock-out for headline under cursor
                `m`:     Move headline to selected target
-               `S`:     Change agenda span to day, week or month
                `<CR>`:  Open headline under cursor & close agenda
                `<C-S>`: Open headline under cursor in `split`
                `<C-T>`: Open headline under cursor in `tab`
@@ -91,10 +90,11 @@ GETTING STARTED                                           *dotoo-getting-started
             from the agenda view itself.
 
             These are mappings specific to agenda view:
-                `f`:     go forward by 1 day
-                `b`:     go backward by 1 day
-                `.`:     go to today's date
-                `R`:     Report of clocking summary for the day
+               `f`:     go forward by 1 day
+               `b`:     go backward by 1 day
+               `.`:     go to today's date
+               `R`:     Report of clocking summary for the day
+               `S`:     Change agenda span to day, week or month
 
                                                                *dotoo-todo-view*
          2. TODOs View : This displays all unscheduled TODO items from your agenda
