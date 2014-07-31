@@ -71,7 +71,7 @@ function! s:change_span()
   elseif span =~# '^m'
     let s:current_span = 'month'
   endif
-  let s:current_date = s:current_date.start_of(s:current_span)
+  let s:current_date = dotoo#time#new().start_of(s:current_span)
   call dotoo#agenda#refresh_view()
 endfunction
 
