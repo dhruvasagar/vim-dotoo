@@ -11,11 +11,12 @@ function! s:build_agendas(dotoos, ...)
     let s:agendas = {}
     for dotoos in values(a:dotoos)
       let _deadlines = dotoos.filter('!v:val.done() && !empty(v:val.deadline())',1)
-      if s:current_date.is_today()
+      if s:current_span ==# 'day' && s:current_date.is_today()
         let s:current_date = dotoo#time#new()
         let s:agendas[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().before(warning_limit)')
       else
-        let s:agendas[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().eq_date(s:current_date)')
+        let s:agendas[dotoos.key] = filter(deepcopy(_deadlines),
+              \ 'v:val.deadline().between(s:current_date.start_of(s:current_span), s:current_date.end_of(s:current_span))')
       endif
     endfor
   endif
@@ -39,20 +40,38 @@ function! s:build_agendas(dotoos, ...)
   endif
   for plugin in values(s:agenda_view_plugins)
     if has_key(plugin, 'content')
-      call extend(agendas, plugin.content(s:current_date, a:dotoos))
+      call extend(agendas, plugin.content(s:current_date, s:current_span, a:dotoos))
     endif
   endfor
-- call insert(agendas, s:current_date.to_string('%A %d %B %Y'))
+- call insert(agendas, 'Date: ' . s:current_date.to_string('%A %d %B %Y') . ', Span: ' . s:current_span)
   return agendas
 endfunction
 
 let s:current_date = dotoo#time#new()
 function! s:adjust_current_date(amount)
   if a:amount ==# '.'
-    let s:current_date = dotoo#time#new()
+    let s:current_date = dotoo#time#new().start_of(s:current_span)
   else
-    let s:current_date = s:current_date.adjust(a:amount).start_of('day')
+    let s:current_date = s:current_date.adjust(a:amount . s:current_span[0])
   endif
+  call dotoo#agenda#refresh_view()
+endfunction
+
+let s:current_span = 'day'
+function! s:change_span()
+  let span = dotoo#utils#getchar(join([
+        \ '(d) day',
+        \ '(w) week',
+        \ '(m) month',
+        \ 'Select span: '], "\n"), '[dwm]')
+  if span =~# '^d'
+    let s:current_span = 'day'
+  elseif span =~# '^w'
+    let s:current_span = 'week'
+  elseif span =~# '^m'
+    let s:current_span = 'month'
+  endif
+  let s:current_date = s:current_date.start_of(s:current_span)
   call dotoo#agenda#refresh_view()
 endfunction
 
@@ -60,14 +79,16 @@ let s:view_name = 'agenda'
 let s:agenda_view = {}
 function! s:agenda_view.map() dict
   nnoremap <buffer> <silent> <nowait> . :<C-U>call <SID>adjust_current_date('.')<CR>
-  nnoremap <buffer> <silent> <nowait> f :<C-U>call <SID>adjust_current_date('+1d')<CR>
-  nnoremap <buffer> <silent> <nowait> b :<C-U>call <SID>adjust_current_date('-1d')<CR>
+  nnoremap <buffer> <silent> <nowait> f :<C-U>call <SID>adjust_current_date('+1')<CR>
+  nnoremap <buffer> <silent> <nowait> b :<C-U>call <SID>adjust_current_date('-1')<CR>
+  nnoremap <buffer> <silent> <nowait> S :<C-U>call <SID>change_span()<CR>
 endfunction
 
 function! s:agenda_view.unmap() dict
   nunmap <buffer> .
   nunmap <buffer> f
   nunmap <buffer> b
+  nunmap <buffer> S
 endfunction
 
 function! s:agenda_view.setup() dict

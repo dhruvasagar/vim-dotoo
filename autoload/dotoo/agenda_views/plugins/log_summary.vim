@@ -14,13 +14,13 @@ function! s:line_separator() "{{{2
   return s:log_line(repeat('-',50), repeat('-',10), 0)
 endfunction
 
-function! s:build_summaries(date, dotoo_values) "{{{2
+function! s:build_summaries(date, span, dotoo_values) "{{{2
   let all_summaries = []
   let all_total = 0
   for dotoo in values(a:dotoo_values)
     let summaries = []
     let total = 0
-    let dotoo_summaries = dotoo.log_summary(a:date, 'day')
+    let dotoo_summaries = dotoo.log_summary(a:date, a:span)
     for dotoo_summary in dotoo_summaries
       call add(summaries,
             \  s:log_line(dotoo_summary[0],
@@ -60,9 +60,9 @@ function! s:log_summary_plugin.setup() dict
   call self.map()
 endfunction
 
-function! s:log_summary_plugin.content(date, agenda_dotoos) dict "{{{2
+function! s:log_summary_plugin.content(date, span, agenda_dotoos) dict "{{{2
   if self.showing
-    return s:build_summaries(a:date, a:agenda_dotoos)
+    return s:build_summaries(a:date, a:span, a:agenda_dotoos)
   endif
   return []
 endfunction
