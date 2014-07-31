@@ -41,6 +41,7 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    * <kbd>\<Tab\></kbd>: same as <kbd>\<C-V\></kbd>
 
    There are 4 views available currently :
+
    1. Agenda View : This displays all TODOs that are nearing deadline.
       deadline. It provides a variety of mappings to manipulate the TODO items
       from the agenda view itself.

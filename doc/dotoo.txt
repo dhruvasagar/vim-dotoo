@@ -10,12 +10,19 @@
 -------------------------------------------------------------------------------
 CONTENTS                                                         *dotoo-contents*
 
-      1. Installation ................................ |dotoo-installation|
-      2. Getting Started ............................. |dotoo-getting-started|
-      3. Options ..................................... |dotoo-options|
-      4. Mappings .................................... |dotoo-mappings|
-      5. Contributing ................................ |dotoo-contributing|
-      6. Credits ..................................... |dotoo-credits|
+      1. Installation ............................... |dotoo-installation|
+      2. Getting Started ............................ |dotoo-getting-started|
+            1. Document Structure ................... |dotoo-document-structure|
+            2. Agenda Views ......................... |dotoo-agenda-views|
+                  1. Agenda View .................... |dotoo-agenda-view|
+                  2. Todo View ...................... |dotoo-todo-view|
+                  3. Refiles View ................... |dotoo-refiles-view|
+                  4. Notes View ..................... |dotoo-notes-view|
+            3. Capture .............................. |dotoo-capture|
+      3. Options .................................... |dotoo-options|
+      4. Mappings ................................... |dotoo-mappings|
+      5. Contributing ............................... |dotoo-contributing|
+      6. Credits .................................... |dotoo-credits|
 
 -------------------------------------------------------------------------------
 INSTALLATION                                                 *dotoo-installation*
@@ -33,6 +40,7 @@ INSTALLATION                                                 *dotoo-installation
 -------------------------------------------------------------------------------
 GETTING STARTED                                           *dotoo-getting-started*
 
+                                                      *dotoo-document-structure*
       1. Document Structure: The docment structure is borrowed from emacs'
          Org Mode, without support for indentation.
 
@@ -51,11 +59,13 @@ GETTING STARTED                                           *dotoo-getting-started
               :date:      Enter the current date
               :time:      Enter the current date and time
 
-      2. Agenda Views: You can have a look at the agenda views at anytime using the key
-         binding <kbd>gA</kbd>, this displays the list of currently registered
-         agenda views available, selecting one of them then opens up the view. The
-         agenda views pulls information from agenda files, this can be configured by
-         setting `g:dotoo#agenda#files` which is a list of file names / file blobs.
+                                                            *dotoo-agenda-views*
+      2. Agenda Views: You can have a look at the agenda views at anytime using
+         the key binding `gA`, this displays the list of currently registered
+         agenda views available, selecting one of them then opens up the view.
+         The agenda views pulls information from agenda files, this can be
+         configured by setting `g:dotoo#agenda#files` which is a list of file
+         names / file blobs.
 
          These are the agenda view mappings common to all :
                `q`:     quit agenda buffer
@@ -74,6 +84,7 @@ GETTING STARTED                                           *dotoo-getting-started
                `<Tab>`: same as `<C-V>`
 
          There are 4 views available currently :
+                                                             *dotoo-agenda-view*
          1. Agenda View : This displays all TODOs that are nearing deadline.
             deadline. It provides a variety of mappings to manipulate the TODO items
             from the agenda view itself.
@@ -84,14 +95,18 @@ GETTING STARTED                                           *dotoo-getting-started
                 `.`:     go to today's date
                 `R`:     Report of clocking summary for the day
 
+                                                               *dotoo-todo-view*
          2. TODOs View : This displays all unscheduled TODO items from your agenda
             files.
 
+                                                            *dotoo-refiles-view*
          3. Refiles : This displays all headlines in the refile file that you should
             then move to an appropriate target file / project / headline.
 
+                                                              *dotoo-notes-view*
          4. Notes : This displays all the notes from all the agenda files.
 
+                                                                 *dotoo-capture*
       3. Capture: This launches the capture menu that you can use to quickly
          capture TODOs, NOTES etc. This can be invoked using the keybinding
          |gC| from anywhere. It will append the captured template into the
