@@ -43,7 +43,7 @@ function! s:build_agendas(dotoos, ...)
       call extend(agendas, plugin.content(s:current_date, s:current_span, a:dotoos))
     endif
   endfor
-- call insert(agendas, 'Date: ' . s:current_date.to_string('%A %d %B %Y') . ', Span: ' . s:current_span)
+  call insert(agendas, 'Date: ' . s:current_date.to_string('%A %d %B %Y') . ', Span: ' . s:current_span)
   return agendas
 endfunction
 
