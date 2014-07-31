@@ -27,18 +27,12 @@ endfunction
 
 autocmd! TextChanged,TextChangedI <buffer> call dotoo#parser#parsefile({'force':1})
 
-command! -bar -nargs=1 -buffer
-      \ -complete=customlist,dotoo#agenda#headline_complete
-      \ DotooMove
-      \ call dotoo#move_headline(dotoo#get_headline(),
-      \                          dotoo#agenda#get_headline_by_title(<q-args>))
-
 iabbrev <expr> <buffer> <silent> :date: '['.strftime(g:dotoo#time#date_day_format).']'
 iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#datetime_format).']'
 
 nnoremap <buffer> <silent> gI :<C-U>call dotoo#clock#start()<CR>
 nnoremap <buffer> <silent> gO :<C-U>call dotoo#clock#stop()<CR>
-nnoremap <buffer> <silent> gM :<C-U>DotooMove <C-Z>
+nnoremap <buffer> <silent> gM :<C-U>call dotoo#move_headline(dotoo#get_headline())<CR>
 nnoremap <buffer> <silent> cit :<C-U>call dotoo#change_todo()<CR>
 nnoremap <buffer> <silent> <C-A> :<C-U>call dotoo#increment_date()<CR>
 nnoremap <buffer> <silent> <C-X> :<C-U>call dotoo#decrement_date()<CR>

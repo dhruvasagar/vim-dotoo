@@ -8,16 +8,18 @@ function! dotoo#get_headline(...)
   return call('dotoo#parser#headline#get', a:000)
 endfunction
 
-function! dotoo#move_headline(headline, parent_headline)
+function! dotoo#move_headline(headline)
+  let target_title = input('Enter target: ', '', 'customlist,dotoo#agenda#headline_complete')
+  let target_hl = dotoo#agenda#get_headline_by_title(target_title)
   let splitted = a:headline.open()
   call a:headline.delete()
   silent write
   call a:headline.close(splitted)
-  if type(a:parent_headline) == type({})
-    call a:parent_headline.add_headline(a:headline)
-    call a:parent_headline.save()
+  if type(target_hl) == type({})
+    call target_hl.add_headline(a:headline)
+    call target_hl.save()
   else
-    silent exe 'noauto split' bufname(a:parent_headline)
+    silent exe 'noauto split' bufname(target_hl)
     call append('$', a:headline.serialize())
     quit
   endif

@@ -194,9 +194,9 @@ function! dotoo#agenda#get_headline_by_title(file_title)
   endif
 endfunction
 
-function! dotoo#agenda#move_headline(headline)
+function! dotoo#agenda#move_headline()
   let headline = s:agenda_headlines[line('.')-2]
-  call dotoo#move_headline(headline, a:headline)
+  call dotoo#move_headline(headline)
   call dotoo#agenda#refresh_view()
 endfunction
 
