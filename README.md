@@ -1,4 +1,4 @@
-# VIM Do Too v0.7.0
+# VIM Do Too v0.8.0
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Getting Started
@@ -52,6 +52,7 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
       * <kbd>.</kbd>:     go to today's date
       * <kbd>R</kbd>:     Report of clocking summary for the day
       * <kbd>S</kbd>:     Change agenda span to day, week or month
+      * <kbd>/</kbd>:     Filter agenda by file, tags or todos
 
    2. TODOs View : This displays all unscheduled TODO items from your agenda
       files.
