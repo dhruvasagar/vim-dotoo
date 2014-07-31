@@ -10,9 +10,6 @@ function! s:build_agendas(dotoos, ...)
   if force || empty(s:agendas)
     let s:agendas = {}
     for key in keys(a:dotoos)
-      if has_key(s:filters, 'file') && s:filters['file'] !=# fnamemodify(key, ':p:t:r')
-        continue
-      endif
       let dotoo = a:dotoos[key]
       let _deadlines = dotoo.filter('!v:val.done() && !empty(v:val.deadline())',1)
       if s:current_span ==# 'day' && s:current_date.is_today()
@@ -22,9 +19,9 @@ function! s:build_agendas(dotoos, ...)
         let _deadlines = filter(_deadlines,
               \ 'v:val.deadline().between(s:current_date.start_of(s:current_span), s:current_date.end_of(s:current_span))')
       endif
-      if has_key(s:filters, 'tag')
-        let _deadlines = filter(_deadlines, "v:val.tags =~? '" . s:filters['tag'] . "'")
-      endif
+      for key in keys(s:filters)
+        let _deadlines = filter(_deadlines, "v:val[key] =~? '" . s:filters[key] . "'")
+      endfor
       let s:agendas[dotoo.key] = _deadlines
     endfor
   endif
@@ -147,21 +144,26 @@ function! dotoo#agenda_views#agenda#filter_file_complete(A,L,P)
   return filter(keys(s:agendas), 'v:val =~? a:A')
 endfunction
 
-function! dotoo#agenda_views#agenda#filter_tag_complete(A,L,P)
+function! dotoo#agenda_views#agenda#filter_tags_complete(A,L,P)
   let tags = []
   for key in keys(s:agendas)
     let headlines = s:agendas[key]
     let htags = map(headlines, 'v:val.tags')
     let htags = map(htags, "substitute(v:val, ' ', '', 'g')")
     let htags = map(htags, "join(split(v:val,':'),'')")
-    let htags = filter(htags, '!empty(v:val)')
+    call filter(htags, '!empty(v:val)')
     call extend(tags, htags)
   endfor
   return uniq(sort(tags))
 endfunction
 
+function! dotoo#agenda_views#agenda#filter_todo_complete(A,L,P)
+  let todos = dotoo#utils#flatten(g:dotoo#parser#todo_keywords)
+  return filter(todos, "v:val !~# '\|' && v:val =~? a:A")
+endfunction
+
 function! dotoo#agenda_views#agenda#filter_complete(A,L,P)
-  let ops = ['file', 'tag']
+  let ops = ['file', 'tags', 'todo']
   return filter(ops, 'v:val =~? a:A')
 endfunction
 
