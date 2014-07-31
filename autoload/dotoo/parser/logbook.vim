@@ -62,9 +62,7 @@ endfunction
 function! s:logbook_methods.summary(time, span) dict
   let log = get(self.logs, 0)
   if empty(log) || log.type == s:syntax.logbook_state_change.type | return 0 | endif
-  if a:span ==# 'day'
-    let logs = filter(deepcopy(self.logs), 'v:val.start.eq_date(a:time)')
-  endif
+  let logs = filter(deepcopy(self.logs), 'v:val.start.between(a:time.start_of(a:span), a:time.end_of(a:span))')
   let summary = 0
   for log in logs
     if has_key(log, 'end')
