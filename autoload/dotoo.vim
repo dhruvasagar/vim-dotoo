@@ -10,6 +10,7 @@ endfunction
 
 function! dotoo#move_headline(headline)
   let target_title = input('Enter target: ', '', 'customlist,dotoo#agenda#headline_complete')
+  redraw!
   let target_hl = dotoo#agenda#get_headline_by_title(target_title)
   let splitted = a:headline.open()
   call a:headline.delete()

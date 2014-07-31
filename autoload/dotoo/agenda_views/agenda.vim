@@ -9,15 +9,23 @@ function! s:build_agendas(dotoos, ...)
   let warning_limit = s:current_date.adjust(g:dotoo#agenda#warning_days)
   if force || empty(s:agendas)
     let s:agendas = {}
-    for dotoos in values(a:dotoos)
-      let _deadlines = dotoos.filter('!v:val.done() && !empty(v:val.deadline())',1)
+    for key in keys(a:dotoos)
+      if has_key(s:filters, 'file') && s:filters['file'] !=# fnamemodify(key, ':p:t:r')
+        continue
+      endif
+      let dotoo = a:dotoos[key]
+      let _deadlines = dotoo.filter('!v:val.done() && !empty(v:val.deadline())',1)
       if s:current_span ==# 'day' && s:current_date.is_today()
         let s:current_date = dotoo#time#new()
-        let s:agendas[dotoos.key] = filter(deepcopy(_deadlines), 'v:val.deadline().before(warning_limit)')
+        let _deadlines = filter(_deadlines, 'v:val.deadline().before(warning_limit)')
       else
-        let s:agendas[dotoos.key] = filter(deepcopy(_deadlines),
+        let _deadlines = filter(_deadlines,
               \ 'v:val.deadline().between(s:current_date.start_of(s:current_span), s:current_date.end_of(s:current_span))')
       endif
+      if has_key(s:filters, 'tag')
+        let _deadlines = filter(_deadlines, "v:val.tags =~? '" . s:filters['tag'] . "'")
+      endif
+      let s:agendas[dotoo.key] = _deadlines
     endfor
   endif
   let agendas = []
@@ -43,7 +51,13 @@ function! s:build_agendas(dotoos, ...)
       call extend(agendas, plugin.content(s:current_date, s:current_span, a:dotoos))
     endif
   endfor
-  call insert(agendas, 'Date: ' . s:current_date.to_string('%A %d %B %Y') . ', Span: ' . s:current_span)
+  let header = []
+  call add(header, 'Date: ' . s:current_date.to_string('%A %d %B %Y'))
+  call add(header, 'Span: ' . s:current_span)
+  if !empty(s:filters)
+    call add(header, 'Filters: ' . join(map(items(s:filters), "v:val[0].'='.v:val[1]"), ', '))
+  endif
+  call insert(agendas, join(header, ', '))
   return agendas
 endfunction
 
@@ -75,6 +89,23 @@ function! s:change_span()
   call dotoo#agenda#refresh_view()
 endfunction
 
+let s:filters = {}
+function! s:filter_agendas()
+  let type = input('Filter by: ', '', 'customlist,dotoo#agenda_views#agenda#filter_complete')
+  if empty(type)
+    let s:filters = {}
+  else
+    let filter_by = input('Select '.type.': ', '', 'customlist,dotoo#agenda_views#agenda#filter_'.type.'_complete')
+    if !empty(filter_by)
+      let s:filters[type] = filter_by
+    elseif has_key(s:filters, type)
+      call remove(s:filters, type)
+    endif
+  endif
+  redraw!
+  call dotoo#agenda#refresh_view()
+endfunction
+
 let s:view_name = 'agenda'
 let s:agenda_view = {}
 function! s:agenda_view.map() dict
@@ -82,6 +113,7 @@ function! s:agenda_view.map() dict
   nnoremap <buffer> <silent> <nowait> f :<C-U>call <SID>adjust_current_date('+1')<CR>
   nnoremap <buffer> <silent> <nowait> b :<C-U>call <SID>adjust_current_date('-1')<CR>
   nnoremap <buffer> <silent> <nowait> S :<C-U>call <SID>change_span()<CR>
+  nnoremap <buffer> <silent> <nowait> / :<C-U>call <SID>filter_agendas()<CR>
 endfunction
 
 function! s:agenda_view.unmap() dict
@@ -89,6 +121,7 @@ function! s:agenda_view.unmap() dict
   nunmap <buffer> f
   nunmap <buffer> b
   nunmap <buffer> S
+  nunmap <buffer> /
 endfunction
 
 function! s:agenda_view.setup() dict
@@ -108,6 +141,28 @@ function! s:agenda_view.cleanup() dict
   for plugin in values(s:agenda_view_plugins)
     if has_key(plugin, 'cleanup') | call plugin.cleanup() | endif
   endfor
+endfunction
+
+function! dotoo#agenda_views#agenda#filter_file_complete(A,L,P)
+  return filter(keys(s:agendas), 'v:val =~? a:A')
+endfunction
+
+function! dotoo#agenda_views#agenda#filter_tag_complete(A,L,P)
+  let tags = []
+  for key in keys(s:agendas)
+    let headlines = s:agendas[key]
+    let htags = map(headlines, 'v:val.tags')
+    let htags = map(htags, "substitute(v:val, ' ', '', 'g')")
+    let htags = map(htags, "join(split(v:val,':'),'')")
+    let htags = filter(htags, '!empty(v:val)')
+    call extend(tags, htags)
+  endfor
+  return uniq(sort(tags))
+endfunction
+
+function! dotoo#agenda_views#agenda#filter_complete(A,L,P)
+  let ops = ['file', 'tag']
+  return filter(ops, 'v:val =~? a:A')
 endfunction
 
 let s:agenda_view_plugins = {}
