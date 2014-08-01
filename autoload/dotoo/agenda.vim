@@ -286,10 +286,11 @@ endfunction
 
 let s:current_view = ''
 function! dotoo#agenda#agenda()
+  let force = 1
   let old_view = s:current_view
   let s:current_view = s:agenda_views_menu()
   if old_view !=# s:current_view | call s:view_cleanup(old_view) | endif
-  let force = s:add_agenda_file_menu()
+  call s:add_agenda_file_menu()
   call s:load_agenda_files(force)
   call s:show_view(s:current_view, force)
 endfunction
