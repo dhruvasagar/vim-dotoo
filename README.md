@@ -51,8 +51,8 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
       * <kbd>f</kbd>:     go forward by 1 day
       * <kbd>b</kbd>:     go backward by 1 day
       * <kbd>.</kbd>:     go to today's date
-      * <kbd>R</kbd>:     Report of clocking summary for the day
       * <kbd>S</kbd>:     Change agenda span to day, week or month
+      * <kbd>R</kbd>:     Report of clocking summary for the current span
 
    2. TODOs View : This displays all unscheduled TODO items from your agenda
       files.

@@ -94,8 +94,8 @@ GETTING STARTED                                           *dotoo-getting-started
                `f`:     go forward by 1 day
                `b`:     go backward by 1 day
                `.`:     go to today's date
-               `R`:     Report of clocking summary for the day
                `S`:     Change agenda span to day, week or month
+               `R`:     Report of clocking summary for the current span
 
                                                                *dotoo-todo-view*
          2. TODOs View : This displays all unscheduled TODO items from your agenda
