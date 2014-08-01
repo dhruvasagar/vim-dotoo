@@ -197,7 +197,7 @@ function! dotoo#parser#headline#new(...) abort
         \ 'todo': token.content[1],
         \ 'priority': token.content[2],
         \ 'title': token.content[3],
-        \ 'tags': token.content[4],
+        \ 'tags': dotoo#utils#strip(token.content[4]),
         \ 'lnum': token.lnum,
         \ 'content': [],
         \ 'metadata': dotoo#parser#metadata#new(),

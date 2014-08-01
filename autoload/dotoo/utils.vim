@@ -9,6 +9,10 @@ function! dotoo#utils#set(opt, val)
   endif
 endfunction
 
+function! dotoo#utils#strip(string)
+  return matchstr(a:string, '^\s*\zs.\{-}\ze\s*$')
+endfunction
+
 function! dotoo#utils#getchar(prompt, accept)
   let old_cmdheight = &cmdheight
   let &cmdheight = len(split(a:prompt, "\n"))
