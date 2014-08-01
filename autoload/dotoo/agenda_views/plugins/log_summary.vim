@@ -30,7 +30,8 @@ function! s:build_summaries(date, span, dotoo_values) "{{{2
     endfor
     if !empty(summaries)
       let all_total += total
-      call insert(summaries, s:log_line(dotoo.key, dotoo#time#log(total).to_string(g:dotoo#time#time_format), 1))
+      let file_name = fnamemodify(dotoo.file, ':p:t:r')
+      call insert(summaries, s:log_line(file_name . ' File Total', dotoo#time#log(total).to_string(g:dotoo#time#time_format), 1))
       call add(summaries, s:line_separator())
       call extend(all_summaries, summaries)
     endif
@@ -39,7 +40,7 @@ function! s:build_summaries(date, span, dotoo_values) "{{{2
     call add(all_summaries, 'No Logs for this day')
   else
     call insert(all_summaries, s:line_separator())
-    call insert(all_summaries, s:log_line('Total', dotoo#time#log(all_total).to_string(g:dotoo#time#time_format), 1))
+    call insert(all_summaries, s:log_line('Grand Total', dotoo#time#log(all_total).to_string(g:dotoo#time#time_format), 1))
     call insert(all_summaries, s:line_separator())
   endif
   call insert(all_summaries, 'Log Summary')
