@@ -192,6 +192,7 @@ function! dotoo#parser#headline#new(...) abort
   let token = len(tokens) ? remove(tokens, 0) : {'lnum': 0, 'content': map(range(5),'""')}
 
   let headline =  {
+        \ 'key': fnamemodify(file, ':p:t:r'),
         \ 'file': file,
         \ 'level': len(token.content[0]),
         \ 'todo': token.content[1],

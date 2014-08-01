@@ -27,12 +27,11 @@ function! s:build_agendas(dotoos, ...)
   call dotoo#agenda#headlines([])
   let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
   for file in keys(s:agendas)
-    let key = fnamemodify(file, ':p:t:r')
     let headlines = s:agendas[file]
     call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
       let agenda = printf('%s %10s:' . time_pf . '%-70s %s', '',
-            \ key,
+            \ headline.key,
             \ headline.metadate().time_ago(s:current_date),
             \ headline.todo_title(),
             \ headline.tags)

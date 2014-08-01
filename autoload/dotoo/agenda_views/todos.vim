@@ -24,7 +24,7 @@ function! s:build_todos(dotoos, ...)
     call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
       let todo = printf('%s %10s: %-70s %s', '',
-            \ key,
+            \ headline.key,
             \ headline.todo_title(),
             \ headline.tags)
       call add(todos, todo)

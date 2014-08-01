@@ -18,12 +18,11 @@ function! s:build_notes(dotoos, ...)
   let notes = []
   call dotoo#agenda#headlines([])
   for file in keys(s:notes_deadlines)
-    let key = fnamemodify(file, ':p:t:r')
     let headlines = s:notes_deadlines[file]
     call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
       let note = printf('%s %10s: %-70s %s', '',
-            \ key,
+            \ headline.key,
             \ headline.todo_title(),
             \ headline.tags)
       call add(notes, note)

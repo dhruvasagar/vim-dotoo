@@ -47,7 +47,7 @@ let s:dotoos = {}
 let s:syntax = dotoo#parser#lexer#syntax()
 let s:parsed_tokens = {}
 function! dotoo#parser#parse(options) abort
-  let opts = extend({'key': '', 'file': expand('%:p'), 'force': 0, 'lines': []}, a:options)
+  let opts = extend({'file': expand('%:p'), 'force': 0, 'lines': []}, a:options)
   if has_key(s:dotoos, opts.file) && !opts.force
     return s:dotoos[opts.file]
   else
