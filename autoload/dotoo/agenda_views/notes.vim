@@ -6,19 +6,20 @@ let g:autoloaded_dotoo_agenda_views_notes = 1
 let s:notes_deadlines = {} "{{{1
 function! s:build_notes(dotoos, ...)
   let force = a:0 ? a:1 : 0
-  let filters_header = ''
+  let filters_header = dotoo#agenda#filters_header()
   if force || empty(s:notes_deadlines)
     let s:notes_deadlines = {}
     for dotoo in values(a:dotoos)
       let headlines = dotoo.filter("v:val.tags =~? 'note'")
-      let filters_header = dotoo#agenda#apply_filters(headlines)
-      let s:notes_deadlines[dotoo.key] = headlines
+      call dotoo#agenda#apply_filters(headlines)
+      let s:notes_deadlines[dotoo.file] = headlines
     endfor
   endif
   let notes = []
   call dotoo#agenda#headlines([])
-  for key in keys(s:notes_deadlines)
-    let headlines = s:notes_deadlines[key]
+  for file in keys(s:notes_deadlines)
+    let key = fnamemodify(file, ':p:t:r')
+    let headlines = s:notes_deadlines[file]
     call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
       let note = printf('%s %10s: %-70s %s', '',

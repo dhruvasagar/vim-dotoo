@@ -7,11 +7,10 @@ let s:agendas = {}
 function! s:build_agendas(dotoos, ...)
   let force = a:0 ? a:1 : 0
   let warning_limit = s:current_date.adjust(g:dotoo#agenda#warning_days)
-  let filters_header = ''
+  let filters_header = dotoo#agenda#filters_header()
   if force || empty(s:agendas)
     let s:agendas = {}
-    for key in keys(a:dotoos)
-      let dotoo = a:dotoos[key]
+    for dotoo in values(a:dotoos)
       let _deadlines = dotoo.filter('!v:val.done() && !empty(v:val.deadline())',1)
       if s:current_span ==# 'day' && s:current_date.is_today()
         let s:current_date = dotoo#time#new()
@@ -20,15 +19,16 @@ function! s:build_agendas(dotoos, ...)
         let _deadlines = filter(_deadlines,
               \ 'v:val.deadline().between(s:current_date.start_of(s:current_span), s:current_date.end_of(s:current_span))')
       endif
-      let filters_header = dotoo#agenda#apply_filters(_deadlines)
-      let s:agendas[dotoo.key] = _deadlines
+      call dotoo#agenda#apply_filters(_deadlines)
+      let s:agendas[dotoo.file] = _deadlines
     endfor
   endif
   let agendas = []
   call dotoo#agenda#headlines([])
   let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
-  for key in keys(s:agendas)
-    let headlines = s:agendas[key]
+  for file in keys(s:agendas)
+    let key = fnamemodify(file, ':p:t:r')
+    let headlines = s:agendas[file]
     call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
       let agenda = printf('%s %10s:' . time_pf . '%-70s %s', '',

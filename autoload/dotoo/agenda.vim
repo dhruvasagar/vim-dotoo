@@ -248,6 +248,9 @@ function! dotoo#agenda#apply_filters(headlines, ...)
     if index(exceptions, key) >= 0 | continue | endif
     call filter(a:headlines, "v:val[key] =~? '" . s:filters[key] . "'")
   endfor
+endfunction
+
+function! dotoo#agenda#filters_header()
   if !empty(s:filters)
     return 'Filters: ' . join(map(items(s:filters), "v:val[0].'='.v:val[1]"), ', ')
   endif

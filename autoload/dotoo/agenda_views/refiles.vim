@@ -6,19 +6,20 @@ let g:autoloaded_dotoo_agenda_views_refiles = 1
 let s:refiles = {}
 function! s:build_refiles(dotoos, ...)
   let force = a:0 ? a:1 : 0
-  let filters_header = ''
+  let filters_header = dotoo#agenda#filters_header()
   if force || empty(s:refiles)
     let s:refiles = {}
     for dotoo in values(a:dotoos)
       let headlines = dotoo.filter("v:val.file =~# 'refile'")
-      let filters_header = dotoo#agenda#apply_filters(headlines, 'file')
-      let s:refiles[dotoo.key] = headlines
+      call dotoo#agenda#apply_filters(headlines, 'file')
+      let s:refiles[dotoo.file] = headlines
     endfor
   endif
   let refiles = []
   call dotoo#agenda#headlines([])
-  for key in keys(s:refiles)
-    let headlines = s:refiles[key]
+  for file in keys(s:refiles)
+    let key = fnamemodify(file, ':p:t:r')
+    let headlines = s:refiles[file]
     call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
       let refile = printf('%s %10s: %-70s %s', '',

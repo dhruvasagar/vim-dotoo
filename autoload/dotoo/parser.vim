@@ -48,23 +48,22 @@ let s:syntax = dotoo#parser#lexer#syntax()
 let s:parsed_tokens = {}
 function! dotoo#parser#parse(options) abort
   let opts = extend({'key': '', 'file': expand('%:p'), 'force': 0, 'lines': []}, a:options)
-  let key = opts.key
-  if has_key(s:dotoos, key) && !opts.force
-    return s:dotoos[key]
+  if has_key(s:dotoos, opts.file) && !opts.force
+    return s:dotoos[opts.file]
   else
-    if opts.force || !has_key(s:dotoos, key)
-      let s:dotoos[key] = { 'key': key, 'file': opts.file, 'directives': {},
+    if opts.force || !has_key(s:dotoos, opts.file)
+      let s:dotoos[opts.file] = {'file': opts.file, 'directives': {},
                           \ 'blank_lines': [], 'headlines': [] }
-      let s:parsed_tokens[key] = {}
+      let s:parsed_tokens[opts.file] = {}
     endif
-    let dotoo = s:dotoos[key]
+    let dotoo = s:dotoos[opts.file]
     let tokens = deepcopy(dotoo#parser#lexer#tokenize(opts.lines))
     while len(tokens)
       let token = remove(tokens, 0)
-      if has_key(s:parsed_tokens[key], token.lnum) && s:parsed_tokens[key][token.lnum] == token
+      if has_key(s:parsed_tokens[opts.file], token.lnum) && s:parsed_tokens[opts.file][token.lnum] == token
         continue
       else
-        let s:parsed_tokens[key][token.lnum] = token
+        let s:parsed_tokens[opts.file][token.lnum] = token
       endif
       if token.type ==# s:syntax.directive.type
         call extend(dotoo.directives, dotoo#parser#directive#new(token))
@@ -90,9 +89,7 @@ function! dotoo#parser#parsefile(options) abort
   else
     return
   endif
-  let key = fnamemodify(opts.file, ':p:t:r')
   return dotoo#parser#parse({
-        \ 'key': key,
         \ 'file': opts.file,
         \ 'force': opts.force,
         \ 'lines': lines})
