@@ -225,6 +225,62 @@ function! dotoo#agenda#headline_complete(ArgLead, CmdLine, CursorPos)
   return headlines
 endfunction
 
+let s:filters = {}
+function! dotoo#agenda#filter_agendas()
+  let type = input('Filter by: ', '', 'customlist,dotoo#agenda#filter_complete')
+  if empty(type)
+    let s:filters = {}
+  else
+    let filter_by = input('Select '.type.': ', '', 'customlist,dotoo#agenda#filter_'.type.'_complete')
+    if !empty(filter_by)
+      let s:filters[type] = filter_by
+    elseif has_key(s:filters, type)
+      call remove(s:filters, type)
+    endif
+  endif
+  redraw!
+  call dotoo#agenda#refresh_view()
+endfunction
+
+function! dotoo#agenda#apply_filters(headlines, ...)
+  let exceptions = a:000
+  for key in keys(s:filters)
+    if index(exceptions, key) >= 0 | continue | endif
+    call filter(a:headlines, "v:val[key] =~? '" . s:filters[key] . "'")
+  endfor
+  if !empty(s:filters)
+    return 'Filters: ' . join(map(items(s:filters), "v:val[0].'='.v:val[1]"), ', ')
+  endif
+endfunction
+
+function! dotoo#agenda#filter_file_complete(A,L,P)
+  let file_names = map(keys(s:agenda_dotoos), "fnamemodify(v:val, ':p:t:r')")
+  return filter(file_names, 'v:val =~? a:A')
+endfunction
+
+function! dotoo#agenda#filter_tags_complete(A,L,P)
+  let tags = []
+  for key in keys(s:agenda_dotoos)
+    let dotoo = s:agenda_dotoos[key]
+    let headlines = dotoo.filter('1')
+    let htags = map(headlines, 'v:val.tags')
+    let htags = map(htags, "join(split(v:val,':'),'')")
+    call filter(htags, '!empty(v:val)')
+    call extend(tags, htags)
+  endfor
+  return uniq(sort(tags))
+endfunction
+
+function! dotoo#agenda#filter_todo_complete(A,L,P)
+  let todos = dotoo#utils#flatten(g:dotoo#parser#todo_keywords)
+  return filter(todos, "v:val !~# '\|' && v:val =~? a:A")
+endfunction
+
+function! dotoo#agenda#filter_complete(A,L,P)
+  let ops = ['file', 'tags', 'todo']
+  return filter(ops, 'v:val =~? a:A')
+endfunction
+
 let s:current_view = ''
 function! dotoo#agenda#agenda()
   let old_view = s:current_view

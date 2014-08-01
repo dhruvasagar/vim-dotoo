@@ -6,10 +6,12 @@ let g:autoloaded_dotoo_agenda_views_refiles = 1
 let s:refiles = {}
 function! s:build_refiles(dotoos, ...)
   let force = a:0 ? a:1 : 0
+  let filters_header = ''
   if force || empty(s:refiles)
     let s:refiles = {}
     for dotoo in values(a:dotoos)
       let headlines = dotoo.filter("v:val.file =~# 'refile'")
+      let filters_header = dotoo#agenda#apply_filters(headlines, 'file')
       let s:refiles[dotoo.key] = headlines
     endfor
   endif
@@ -29,7 +31,10 @@ function! s:build_refiles(dotoos, ...)
   if empty(refiles)
     call add(refiles, printf('%2s %s', '', 'No REFILES!'))
   endif
-  call insert(refiles, 'REFILES')
+  let header = []
+  call add(header, 'Refiles')
+  if !empty(filters_header) | call add(header, filters_header) | endif
+  call insert(refiles, join(header, ', '))
   return refiles
 endfunction
 

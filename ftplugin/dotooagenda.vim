@@ -12,6 +12,7 @@ nnoremap <buffer> <silent> <nowait> c :<C-U>call dotoo#agenda#change_headline_to
 nnoremap <buffer> <silent> <nowait> u :<C-U>call dotoo#agenda#undo_headline_change()<CR>
 nnoremap <buffer> <silent> <nowait> i :<C-U>call dotoo#agenda#start_headline_clock()<CR>
 nnoremap <buffer> <silent> <nowait> o :<C-U>call dotoo#agenda#stop_headline_clock()<CR>
+nnoremap <buffer> <silent> <nowait> / :<C-U>call dotoo#agenda#filter_agendas()<CR>
 nnoremap <buffer> <silent> <nowait> <CR> :<C-U>call dotoo#agenda#goto_headline('edit')<CR>
 nnoremap <buffer> <silent> <nowait> <C-S> :<C-U>call dotoo#agenda#goto_headline('split')<CR>
 nnoremap <buffer> <silent> <nowait> <C-V> :<C-U>call dotoo#agenda#goto_headline('vsplit')<CR>

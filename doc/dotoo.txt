@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.8.0
+                                Version 0.8.1
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -77,6 +77,7 @@ GETTING STARTED                                           *dotoo-getting-started
                `i`:     clock-in for headline under cursor
                `o`:     clock-out for headline under cursor
                `m`:     Move headline to selected target
+               `/`:     Filter by file, tags or todos
                `<CR>`:  Open headline under cursor & close agenda
                `<C-S>`: Open headline under cursor in `split`
                `<C-T>`: Open headline under cursor in `tab`
@@ -95,7 +96,6 @@ GETTING STARTED                                           *dotoo-getting-started
                `.`:     go to today's date
                `R`:     Report of clocking summary for the day
                `S`:     Change agenda span to day, week or month
-               `/`:     Filter agenda by file, tags or todos
 
                                                                *dotoo-todo-view*
          2. TODOs View : This displays all unscheduled TODO items from your agenda
