@@ -72,7 +72,6 @@ endfunction
 function! dotoo#parser#lexer#tokenize(lines) abort
   let lnum = 1
   let tokens = []
-  let splitted = 0
   for line in a:lines
     call add(tokens, s:tokenize_line(lnum, line))
     let lnum += 1

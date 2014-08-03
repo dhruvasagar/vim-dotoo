@@ -15,7 +15,7 @@ function! dotoo#clock#start(...)
     call curr_hl.stop_clock()
   endif
   call headline.change_todo('n') " Mark as NEXT
-  call headline.start_clock()
+  call headline.logbook.start_clock()
   let s:current_clocking_headline = {'file': headline.file, 'lnum': headline.lnum}
   call insert(s:clocking_headlines, s:current_clocking_headline)
 endfunction
@@ -24,7 +24,7 @@ function! dotoo#clock#stop(...)
   let headline = a:0 ? a:1 : dotoo#get_headline()
   if empty(headline) | return | endif
   if headline.is_clocking()
-    call headline.stop_clock()
+    call headline.logbook.stop_clock()
     call remove(s:clocking_headlines, 0)
     let s:current_clocking_headline = get(s:clocking_headlines, 0, {})
     " Resume clocking the old stopped clock

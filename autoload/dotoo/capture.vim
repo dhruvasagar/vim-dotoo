@@ -56,7 +56,7 @@ function! s:capture_template_save(template)
   call s:capture_edit('split')
   call append(line('$') == 1 ? 0 : '$', a:template)
   let old_search = @/
-  call search('%?')
+  call search('%?', 'b')
   exe "normal! \<Esc>viw\<C-G>"
   let @/ = old_search
 endfunction
