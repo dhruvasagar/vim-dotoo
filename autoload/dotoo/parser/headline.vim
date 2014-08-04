@@ -133,18 +133,22 @@ function! s:headline_methods.undo() dict
   call self.close(splitted)
 endfunction
 
-function! s:headline_methods.start_clock() dict
-  call self.logbook.start_clock()
-  call self.save()
-endfunction
-
 function! s:headline_methods.is_clocking() dict
   return self.logbook.is_clocking()
 endfunction
 
+function! s:headline_methods.start_clock() dict
+  if !self.is_clocking()
+    call self.logbook.start_clock()
+    call self.save()
+  endif
+endfunction
+
 function! s:headline_methods.stop_clock() dict
-  call self.logbook.stop_clock()
-  call self.save()
+  if self.is_clocking()
+    call self.logbook.stop_clock()
+    call self.save()
+  endif
 endfunction
 
 function! s:headline_methods.log_summary(time, span) dict
@@ -236,6 +240,10 @@ function! dotoo#parser#headline#new(...) abort
 
   call extend(headline, s:headline_methods)
   let headline.id = sha256(string(headline))
+
+  if headline.is_clocking()
+    call dotoo#clock#start(headline)
+  endif
 
   " Cache headlines for lookup
   call s:cache_headline(headline)
