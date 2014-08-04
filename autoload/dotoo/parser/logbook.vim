@@ -34,20 +34,21 @@ function! s:logbook_methods.log(log) dict
   call insert(self.logs, a:log)
 endfunction
 
-function! s:logbook_methods.start_clock() dict
-  let log = {'type': s:syntax.logbook_clock.type}
-  let log['start'] = dotoo#time#new()
-  call self.log(log)
-endfunction
-
 function! s:logbook_methods.is_clocking() dict
   let log = get(self.logs, 0)
   return !empty(log) && has_key(log, 'start') && !has_key(log, 'end')
 endfunction
 
+function! s:logbook_methods.start_clock() dict
+  if self.is_clocking() | return | endif
+  let log = {'type': s:syntax.logbook_clock.type}
+  let log['start'] = dotoo#time#new()
+  call self.log(log)
+endfunction
+
 function! s:logbook_methods.stop_clock() dict
-  let log = get(self.logs, 0) " get latest log
   if self.is_clocking()
+    let log = get(self.logs, 0) " get latest log
     let log['end'] = dotoo#time#new()
   endif
 endfunction
