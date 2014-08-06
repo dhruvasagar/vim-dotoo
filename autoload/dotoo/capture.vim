@@ -52,9 +52,7 @@ function! s:capture_edit(cmd)
   setf dotoocapture
 endfunction
 
-function! s:capture_template_save(template)
-  call s:capture_edit('split')
-  call append(line('$') == 1 ? 0 : '$', a:template)
+function! s:capture_select()
   let old_search = @/
   call search('%?', 'b')
   exe "normal! \<Esc>viw\<C-G>"
@@ -67,9 +65,10 @@ function! dotoo#capture#capture()
     let template = s:get_selected_template(selected)
     let template_lines = template[2]
     let template_lines = s:capture_template_eval(template_lines)
-    let dotoo = dotoo#parser#parse({'file': 'capture', 'lines': template_lines, 'force': 1})
+    call s:capture_edit('split')
+    let dotoo = dotoo#parser#parse({'lines': template_lines, 'force': 1})
     let headline = dotoo.headlines[0]
     if g:dotoo#capture#clock | call dotoo#clock#start(headline) | endif
-    call s:capture_template_save(headline.serialize())
+    call s:capture_select()
   endif
 endfunction

@@ -124,7 +124,7 @@ function! s:headline_methods.save() dict
 endfunction
 
 function! s:headline_methods.delete() dict
-  silent! exec self.lnum.','.self.last_lnum.':delete'
+  silent exec self.lnum.','.self.last_lnum.':delete'
 endfunction
 
 function! s:headline_methods.undo() dict
