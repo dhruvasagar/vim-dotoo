@@ -241,9 +241,10 @@ function! dotoo#parser#headline#new(...) abort
   call extend(headline, s:headline_methods)
   let headline.id = sha256(string(headline))
 
-  if headline.is_clocking()
-    call dotoo#clock#start(headline)
-  endif
+  " Has side-effects
+  " if headline.is_clocking()
+  "   call dotoo#clock#start(headline)
+  " endif
 
   " Cache headlines for lookup
   call s:cache_headline(headline)
