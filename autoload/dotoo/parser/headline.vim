@@ -137,17 +137,19 @@ function! s:headline_methods.is_clocking() dict
   return self.logbook.is_clocking()
 endfunction
 
-function! s:headline_methods.start_clock() dict
+function! s:headline_methods.start_clock(...) dict
+  let persist = a:0 ? a:1 : 1
   if !self.is_clocking()
     call self.logbook.start_clock()
-    call self.save()
+    if persist | call self.save() | endif
   endif
 endfunction
 
-function! s:headline_methods.stop_clock() dict
+function! s:headline_methods.stop_clock(...) dict
+  let persist = a:0 ? a:1 : 1
   if self.is_clocking()
     call self.logbook.stop_clock()
-    call self.save()
+    if persist | call self.save() | endif
   endif
 endfunction
 

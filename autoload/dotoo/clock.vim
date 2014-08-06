@@ -12,6 +12,7 @@ let s:clocking_headlines = []
 let s:current_clocking_headline = {}
 function! dotoo#clock#start(...)
   let headline = a:0 ? a:1 : dotoo#get_headline()
+  let persist = a:0 == 2 ? a:2 : 1
   if empty(headline) | return | endif
   if !empty(s:current_clocking_headline) && !s:is_current(headline)
     let curr_hl = dotoo#get_headline(s:current_clocking_headline.file, s:current_clocking_headline.lnum)
@@ -19,16 +20,17 @@ function! dotoo#clock#start(...)
     call curr_hl.stop_clock()
   endif
   call headline.change_todo('n') " Mark as NEXT
-  call headline.start_clock()
+  call headline.start_clock(persist)
   let s:current_clocking_headline = {'file': headline.file, 'lnum': headline.lnum}
   call insert(s:clocking_headlines, s:current_clocking_headline)
 endfunction
 
 function! dotoo#clock#stop(...)
   let headline = a:0 ? a:1 : dotoo#get_headline()
+  let persist = a:0 == 2 ? a:2 : 1
   if empty(headline) | return | endif
   if headline.is_clocking()
-    call headline.stop_clock()
+    call headline.stop_clock(persist)
     call remove(s:clocking_headlines, 0)
     let s:current_clocking_headline = get(s:clocking_headlines, 0, {})
     " Resume clocking the old stopped clock

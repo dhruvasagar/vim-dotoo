@@ -68,7 +68,10 @@ function! dotoo#capture#capture()
     call s:capture_edit('split')
     let dotoo = dotoo#parser#parse({'lines': template_lines, 'force': 1})
     let headline = dotoo.headlines[0]
-    if g:dotoo#capture#clock | call dotoo#clock#start(headline) | endif
+    let todo = headline.todo
+    if g:dotoo#capture#clock | call dotoo#clock#start(headline, 0) | endif
+    call headline.change_todo(todo) " work around clocking todo state change
+    call setline(1, headline.serialize())
     call s:capture_select()
   endif
 endfunction
