@@ -24,6 +24,10 @@ function! s:properties_methods.repeat_to_state() dict
   return empty(repeat_to_state) ? g:dotoo#parser#todo_keywords[0] : repeat_to_state
 endfunction
 
+function! s:properties_methods.is_habit() dict
+  return has_key(self, 'STYLE') ? self['STYLE'] ==? 'habit' : 0
+endfunction
+
 let s:syntax = dotoo#parser#lexer#syntax()
 function! dotoo#parser#properties#new(...)
   let tokens = a:0 ? a:1 : []
