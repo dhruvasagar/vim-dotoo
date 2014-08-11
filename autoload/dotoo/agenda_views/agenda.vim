@@ -30,7 +30,7 @@ function! s:build_agendas(dotoos, ...)
     let headlines = s:agendas[file]
     call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
-      let agenda = printf('%s %10s:' . time_pf . '%-70s %s', '',
+      let agenda = printf('%s %10.10s:' . time_pf . '%-50.70s %s', '',
             \ headline.key,
             \ headline.metadate().time_ago(s:current_date),
             \ headline.todo_title(),
