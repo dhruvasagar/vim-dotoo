@@ -20,8 +20,7 @@ call s:SetGlobalOpts('dotoo_heading_highlight_colors', [
 call s:SetGlobalOpts('dotoo_heading_highlight_levels', len(g:dotoo_heading_highlight_colors))
 call s:SetGlobalOpts('dotoo_todo_keyword_faces', [])
 call s:SetGlobalOpts('dotoo_heading_shade_leading_stars', 1)
-
-let g:dotoo#parser#todo_keywords = [
+call s:SetGlobalOpts('dotoo#parser#todo_keywords', [
       \ 'TODO',
       \ 'NEXT',
       \ 'WAITING',
@@ -31,8 +30,8 @@ let g:dotoo#parser#todo_keywords = [
       \ '|',
       \ 'CANCELLED',
       \ 'DONE'
-      \ ]
-let g:dotoo_todo_keyword_faces = [
+      \ ])
+call s:SetGlobalOpts('dotoo_todo_keyword_faces', [
       \ ['TODO', [':foreground 160', ':weight bold']],
       \ ['NEXT', [':foreground 27', ':weight bold']],
       \ ['DONE', [':foreground 22', ':weight bold']],
@@ -41,7 +40,7 @@ let g:dotoo_todo_keyword_faces = [
       \ ['CANCELLED', [':foreground 22', ':weight bold']],
       \ ['MEETING', [':foreground 22', ':weight bold']],
       \ ['PHONE', [':foreground 22', ':weight bold']]
-      \ ]
+      \ ])
 
 nnoremap <silent> gA :<C-U>call dotoo#agenda#agenda()<CR>
 nnoremap <silent> gC :<C-U>call dotoo#capture#capture()<CR>
