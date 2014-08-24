@@ -18,7 +18,6 @@ call s:SetGlobalOpts('dotoo_heading_highlight_colors', [
       \ 'Type',
       \ 'Special'])
 call s:SetGlobalOpts('dotoo_heading_highlight_levels', len(g:dotoo_heading_highlight_colors))
-call s:SetGlobalOpts('dotoo_todo_keyword_faces', [])
 call s:SetGlobalOpts('dotoo_heading_shade_leading_stars', 1)
 call s:SetGlobalOpts('dotoo#parser#todo_keywords', [
       \ 'TODO',
