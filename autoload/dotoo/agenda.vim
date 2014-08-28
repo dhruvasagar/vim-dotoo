@@ -184,7 +184,9 @@ endfunction
 function! dotoo#agenda#get_headline_by_title(file_title)
   if a:file_title =~# ':'
     let [filekey, title] = split(a:file_title, ':')
-    let dotoo = get(s:agenda_dotoos, bufname(filekey), '')
+    let bufname = bufname(filekey)
+    let bufname = empty(bufname) ? bufname(filekey . '.dotoo') : bufname
+    let dotoo = get(s:agenda_dotoos, bufname, '')
     if !empty(dotoo)
       let headlines = dotoo.filter("v:val.title =~# '" . title . "'")
       if !empty(headlines) | return headlines[0] | endif
