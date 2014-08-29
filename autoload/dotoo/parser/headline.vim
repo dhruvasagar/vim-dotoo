@@ -225,22 +225,19 @@ function! dotoo#parser#headline#new(...) abort
       elseif token.type == s:syntax.logbook.type
         call extend(headline.logbook, dotoo#parser#logbook#new(tokens))
       elseif token.type == s:syntax.headline.type
-        let headline.last_lnum = token.lnum - 1
         call insert(tokens, token)
         if len(token.content[0]) > headline.level
           let hl = dotoo#parser#headline#new(file, tokens)
           call add(headline.headlines, hl)
-          let headline.last_lnum = hl.last_lnum
         else
           break
         endif
       endif
     endwhile
-
-    if !has_key(headline, 'last_lnum') | let headline.last_lnum = line('$') | endif
   endif
 
   call extend(headline, s:headline_methods)
+  let headline.last_lnum = headline.lnum + len(headline.serialize()) - 1
   let headline.id = sha256(string(headline))
 
   " Has side-effects
