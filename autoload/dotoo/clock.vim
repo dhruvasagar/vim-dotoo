@@ -19,7 +19,10 @@ function! dotoo#clock#start(...)
     " Stop clocking the current clock
     call curr_hl.stop_clock()
   endif
-  call headline.change_todo('n') " Mark as NEXT
+  if !empty(headline.todo)
+    " Mark as NEXT
+    call headline.change_todo('n')
+  endif
   call headline.start_clock(persist)
   let s:current_clocking_headline = {'file': headline.file, 'lnum': headline.lnum}
   call insert(s:clocking_headlines, s:current_clocking_headline)

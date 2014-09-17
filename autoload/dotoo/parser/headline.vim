@@ -44,7 +44,7 @@ endfunction
 function! s:headline_methods.change_todo(index) dict
   if type(a:index) == type(0)
     let self.todo = g:dotoo#parser#todo_keywords[a:index]
-  elseif type(a:index) == type('')
+  elseif type(a:index) == type('') && !empty(a:index)
     let todo = get(filter(copy(g:dotoo#parser#todo_keywords), 'v:val =~? "^".a:index'), 0)
     if todo || !empty(todo)
       let self.todo = g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords, todo)]
