@@ -7,7 +7,6 @@ function! s:readfile(file)
   if !bufloaded(a:file)
     let old_view = winsaveview()
     silent exe 'noauto split' a:file
-    quit
     call winrestview(old_view)
   endif
   return getbufline(a:file, 1, '$')
@@ -86,9 +85,6 @@ function! dotoo#parser#parsefile(options) abort
     let lines = getline(1,'$')
   elseif filereadable(opts.file) && fnamemodify(opts.file, ':e') ==# 'dotoo'
     let lines = s:readfile(opts.file)
-    if len(lines) ==# 0
-      let lines = readfile(opts.file)
-    endif
   else
     return
   endif
