@@ -6,11 +6,11 @@ let g:autoloaded_dotoo_parser_metadata = 1
 let s:metadata_methods = {}
 function! s:metadata_methods.serialize() dict
   if has_key(self, 'deadline')
-    return 'DEADLINE: [' . self.deadline.to_string() . ']'
+    return 'DEADLINE: ' . self.lsep . self.deadline.to_string() . self.rsep
   elseif has_key(self, 'scheduled')
-    return 'SCHEDULED: [' . self.scheduled.to_string() . ']'
+    return 'SCHEDULED: ' . self.lsep . self.scheduled.to_string() . self.rsep
   elseif has_key(self, 'closed')
-    return 'CLOSED: [' . self.closed.to_string() . ']'
+    return 'CLOSED: ' . self.lsep . self.closed.to_string() . self.rsep
   endif
   return ''
 endfunction
@@ -35,7 +35,11 @@ endfunction
 function! dotoo#parser#metadata#new(...)
   let token = a:0 ? a:1 : 0
   let metadata = {}
-  if !empty(token) | let metadata[tolower(token.content[0])] = dotoo#time#new(token.content[1]) | endif
+  if !empty(token)
+    let metadata.lsep = token.content[1]
+    let metadata.rsep = token.content[3]
+    let metadata[tolower(token.content[0])] = dotoo#time#new(token.content[2])
+  endif
   call extend(metadata, s:metadata_methods)
   return metadata
 endfunction

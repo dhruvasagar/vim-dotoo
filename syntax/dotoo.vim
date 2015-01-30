@@ -180,14 +180,14 @@ unlet! s:todo_headings
 " }}}
 " }}}
 " Timestamps: {{{
-"[2003-09-16 Tue]
-syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a\]\)/
-"[2003-09-16 Tue 12:00]
-syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]\)/
-"[2003-09-16 Tue +1m]
-syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a +\d\+[ymwdhs]\]\)/
-"[2003-09-15 Tue 12:00 +1m]
-syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d +\d\+[ymwdhs]\]\)/
+"[2003-09-16 Tue] | <2003-09-16 Tue>
+syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a[\>\]]\)/
+"[2003-09-16 Tue 12:00] | <2003-09-16 Tue 12:00>
+syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d[\>\]]\)/
+"[2003-09-16 Tue +1m] | <2003-09-16 Tue +1m>
+syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a +\d\+[ymwdhs][\>\]]\)/
+"[2003-09-15 Tue 12:00 +1m] | <2003-09-16 Tue 12:00 +1m>
+syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d +\d\+[ymwdhs][\>\]]\)/
 "[2003-09-16 Tue]--[2003-09-16 Tue]
 syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a\]--\[\d\d\d\d-\d\d-\d\d \a\a\a\]\)/
 "[2003-09-16 Tue 12:00]--[2003-09-16 Tue 12:00]

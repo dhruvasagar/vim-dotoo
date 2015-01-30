@@ -11,9 +11,9 @@
 * TODO Add archiving
 * TODO Add support for anniversaries
 * TODO Improve documentation
-DEADLINE: [2014-08-03 Sun 18:00]
+DEADLINE: <2014-08-03 Sun 18:00>
 * TODO Test Task with Deadline
-DEADLINE: [2014-07-28 Mon 14:23]
+DEADLINE: <2014-07-28 Mon 14:23>
 * TODO Test Task with Repeatable Deadline
 DEADLINE: [2014-07-28 Mon 14:23 +1m]
 * DONE Add documentation
