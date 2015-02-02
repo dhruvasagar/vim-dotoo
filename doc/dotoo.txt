@@ -202,7 +202,11 @@ OPTIONS                                                          *dotoo-options*
             captures templates into. >
                 let g:dotoo#capture#refile = expand('~/Documents/dotoo-files/refile.dotoo')
 <
-
+                                                         *g:dotoo#capture#clock*
+      |g:dotoo#capture#clock|
+            This setting enables clocking while capturing. >
+                let g:dotoo#capture#clock = 1
+<
                                                    *g:dotoo#capture#templates*
       |g:dotoo#capture#templates|
             This setting defines the capture templates the capture menu uses. >

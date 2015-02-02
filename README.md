@@ -71,7 +71,8 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    `g:dotoo#capture#refile`. You can always look at your refiles in the
    refiles view and move them to the desired target file / headline from
    there. Capture also clocks the tasks so you can log how much time was spent
-   doing them.
+   doing them by default, you can disable this behavior by setting
+   `let g:dotoo#capture#clock = 0`.
 
 ## Screenshots
 
