@@ -153,7 +153,7 @@ function! dotoo#agenda#change_headline_todo()
   endif
 endfunction
 
-function! dotoo#agenda#undo_headline_change() "{{{1
+function! dotoo#agenda#undo_headline_change()
   let headline = s:agenda_headlines[line('.')-2]
   let old_view = winsaveview()
   call headline.undo()
