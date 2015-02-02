@@ -5,12 +5,13 @@ let g:autoloaded_dotoo_parser_metadata = 1
 
 let s:metadata_methods = {}
 function! s:metadata_methods.serialize() dict
+  let [lsep, rsep] = [get(self, 'lsep', ''), get(self, 'rspec', '')]
   if has_key(self, 'deadline')
-    return 'DEADLINE: ' . self.lsep . self.deadline.to_string() . self.rsep
+    return 'DEADLINE: ' . lsep . self.deadline.to_string() . rsep
   elseif has_key(self, 'scheduled')
-    return 'SCHEDULED: ' . self.lsep . self.scheduled.to_string() . self.rsep
+    return 'SCHEDULED: ' . lsep . self.scheduled.to_string() . rsep
   elseif has_key(self, 'closed')
-    return 'CLOSED: ' . self.lsep . self.closed.to_string() . self.rsep
+    return 'CLOSED: ' . lsep . self.closed.to_string() . rsep
   endif
   return ''
 endfunction
