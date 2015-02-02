@@ -57,7 +57,7 @@ function! s:log_summary_plugin.unmap() dict "{{{2
   unmap <buffer> R
 endfunction
 
-function! s:log_summary_plugin.setup() dict
+function! s:log_summary_plugin.setup() dict "{{{2
   call self.map()
 endfunction
 
@@ -68,10 +68,10 @@ function! s:log_summary_plugin.content(date, span, agenda_dotoos) dict "{{{2
   return []
 endfunction
 
-function! s:log_summary_plugin.cleanup() dict
+function! s:log_summary_plugin.cleanup() dict "{{{2
   call self.unmap()
 endfunction
 
-function! dotoo#agenda_views#plugins#log_summary#register() "{{{1
+function! dotoo#agenda_views#plugins#log_summary#register() "{{{2
   call dotoo#agenda_views#agenda#register_plugin(s:plugin_name, s:log_summary_plugin)
 endfunction
