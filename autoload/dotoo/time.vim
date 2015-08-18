@@ -6,7 +6,7 @@ let g:autoloaded_dotoo_time = 1
 call dotoo#utils#set('dotoo#time#time_ago_short', 0)
 
 call dotoo#utils#set('dotoo#time#date_regex', '\v^(\d{4})-(\d{2})-(\d{2})')
-call dotoo#utils#set('dotoo#time#day_regex', '(\w{3})')
+call dotoo#utils#set('dotoo#time#day_regex', '(\w{1,3})')
 
 call dotoo#utils#set('dotoo#time#date_day_regex', g:dotoo#time#date_regex . ' ' .g:dotoo#time#day_regex)
 
