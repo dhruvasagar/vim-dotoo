@@ -5,6 +5,7 @@ let b:did_ftplugin = 1
 
 setl foldexpr=DotooFoldExpr()
 setl foldmethod=expr
+setl foldtext=getline(v:foldstart)
 
 let s:syntax = dotoo#parser#lexer#syntax()
 function! DotooFoldExpr()
