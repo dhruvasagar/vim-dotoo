@@ -1,11 +1,10 @@
-" better names for functions
 fun! s:is_checkbox(line)
   return a:line =~ '^\s*- \[[ -X]\] '
 endf
-function! s:is_open_checkbox(line)
+function! s:is_unchecked_checkbox(line)
   return a:line =~ '^\s*- \[ \] \+'
 endfunction
-function! s:is_started_checkbox(line)
+function! s:is_partial(line)
   return a:line =~ '^\s*- \[-\] \+'
 endfunction
 function! s:is_checked_checkbox(line)
@@ -37,9 +36,7 @@ fun! s:test_children(parent, checked)
   return 1
 endf
 
-" NOTE: nline has to contain a checkbox, else this fails
-" TODO: should update, also when unchecked
-fun! s:process_parents(nline)
+fun! s:process_parents(nline, checked)
   let nline = a:nline
   let nlast = a:nline
   let lind = indent(nlast)
@@ -57,18 +54,35 @@ fun! s:process_parents(nline)
     endif
     let nlast = nline
     let lind = indent(nlast)
-    if s:is_open_checkbox(line)
+    if s:is_unchecked_checkbox(line)
       call setline(nline, substitute(line, '- \[ \] ', '- [-] ', ''))
     endif
-    if s:test_children(nlast, 1)
-      call setline(nlast, substitute(getline(nlast), '- \[-\] ', '- [X] ', ''))
+    if s:is_checked_checkbox(line)
+      call setline(nline, substitute(line, '- \[X\] ', '- [-] ', ''))
+    endif
+    if s:test_children(nlast, a:checked)
+      if a:checked
+        call setline(nlast, substitute(getline(nlast), '- \[-\] ', '- [X] ', ''))
+      else
+        call setline(nlast, substitute(getline(nlast), '- \[-\] ', '- [ ] ', ''))
+      endif
     endif 
   endw
 endf
 
-fun! CheckCheckbox(nline)
-  " TODO: if no checkbox on given line, go to firtst above
-  let line = getline(a:nline)
-  call setline(a:nline, substitute(line, '- \[ \] ', '- [X] ', ''))
-  call s:process_parents(a:nline)
+fun! ToggleCheckbox(nline)
+  let nline = a:nline
+  while nline > 0 && !s:is_checkbox(getline(nline))
+    let nline = nline - 1
+  endw
+  let line = getline(nline)
+
+  if s:is_unchecked_checkbox(line)
+    call setline(nline, substitute(line, '- \[ \] ', '- [X] ', ''))
+    call s:process_parents(nline, 1)
+  endif
+  if s:is_checked_checkbox(line)
+    call setline(nline, substitute(line, '- \[X\] ', '- [ ] ', ''))
+    call s:process_parents(nline, 0)
+  endif
 endf
