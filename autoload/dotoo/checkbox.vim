@@ -1,59 +1,68 @@
 " better names for functions
+fun! s:is_checkbox(line)
+  return a:line =~ '^\s*- \[[ -X]\] '
+endf
 function! s:is_open_checkbox(line)
   return a:line =~ '^\s*- \[ \] \+'
 endfunction
 function! s:is_started_checkbox(line)
   return a:line =~ '^\s*- \[-\] \+'
 endfunction
-fun! s:is_checkbox(line)
-  return a:line =~ '^\s*- \[[ -X]\] '
-endf
+function! s:is_checked_checkbox(line)
+  return a:line =~ '^\s*- \[X\] \+'
+endfunction
 function! s:is_headline(line)
   return a:line =~ '^*\+ \+'
 endfunction
+
+fun! s:test_children(parent, checked)
+  let pind = indent(a:parent)
+  let nline = a:parent
+  while nline < line('$')
+    let nline = nline + 1
+    let line = getline(nline)
+    if s:is_headline(line)
+      break
+    endif
+    if !s:is_checkbox(line)
+      continue
+    endif
+    if pind >= indent(nline)
+      break
+    endif
+    if (a:checked && !s:is_checked_checkbox(line)) || (!a:checked && !s:is_unchecked_checkbox(line))
+      return 0
+    endif
+  endw
+  return 1
+endf
 
 " NOTE: nline has to contain a checkbox, else this fails
 " TODO: should update, also when unchecked
 fun! s:process_parents(nline)
   let nline = a:nline
-  let lastn = a:nline
+  let nlast = a:nline
+  let lind = indent(nlast)
   while nline > 1
-    let cind = indent(lastn)
-    let nind = indent(nline-1)
-    let line = getline(nline-1)
-    if s:is_headline(line)
-      return
-    endif
-    if s:is_checkbox(line)
-      if cind <= nind
-        let nline = nline - 1
-        continue
-      endif
-      let lastn = nline-1
-      if s:is_open_checkbox(line)
-        call setline(nline-1, substitute(line, '- \[ \] ', '- [-] ', ''))
-      endif
-      " TODO: separate function
-      let pline = lastn
-      let do_check = 1
-      while pline < 700 " TODO: testen of einde bereikt
-        let pline = pline + 1
-        if ! s:is_checkbox(getline(pline))
-          continue
-        endif
-        if cind > indent(pline)
-          break
-        endif
-        if getline(pline) !~ '- \[X\] ' " TODO: is_checked_checkbox
-          let do_check = 0
-          break
-        endif
-      endw
-      if do_check
-        call setline(lastn, substitute(getline(lastn), '- \[-\] ', '- [X] ', ''))
-      endif 
-    endif
     let nline = nline - 1
+    let line = getline(nline)
+    if s:is_headline(line)
+      break
+    endif
+    if !s:is_checkbox(line)
+      continue
+    endif
+    if lind <= indent(nline)
+      continue
+    endif
+    let nlast = nline
+    let lind = indent(nlast)
+    if s:is_open_checkbox(line)
+      call setline(nline, substitute(line, '- \[ \] ', '- [-] ', ''))
+    endif
+    if s:test_children(nlast, 1)
+      call setline(nlast, substitute(getline(nlast), '- \[-\] ', '- [X] ', ''))
+    endif 
   endw
 endf
 
