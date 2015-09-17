@@ -2,16 +2,19 @@ function! s:is_checkbox(line)
   return a:line =~ '^\s*- \[[ -X]\] '
 endfunction
 function! s:is_unchecked_checkbox(line)
-  return a:line =~ '^\s*- \[ \] \+'
+  return a:line =~ '^\s*- \[ \] '
 endfunction
 function! s:is_partial_checkbox(line)
-  return a:line =~ '^\s*- \[-\] \+'
+  return a:line =~ '^\s*- \[-\] '
 endfunction
 function! s:is_checked_checkbox(line)
-  return a:line =~ '^\s*- \[X\] \+'
+  return a:line =~ '^\s*- \[X\] '
+endfunction
+function s:is_list_item(line)
+  return a:line =~ '^\s*[-+*] ' && !s:is_headline(a:line)
 endfunction
 function! s:is_headline(line)
-  return a:line =~ '^*\+ \+'
+  return a:line =~ '^*\+ '
 endfunction
 
 function! s:count_children(parent)
@@ -26,11 +29,11 @@ function! s:count_children(parent)
     if s:is_headline(line)
       break
     endif
+    if pind >= indent(nline) && s:is_list_item(line)
+      break
+    endif
     if !s:is_checkbox(line)
       continue
-    endif
-    if pind >= indent(nline)
-      break
     endif
     if indent(nline) - pind > 6
       continue
