@@ -1,20 +1,20 @@
-function! s:is_checkbox(line)
-  return a:line =~ '^\s*- \[[ -X]\] '
+function! dotoo#checkbox#is_checkbox(line)
+  return a:line =~ '^\s*[-+] \[[ -X]\] '
 endfunction
-function! s:is_unchecked_checkbox(line)
-  return a:line =~ '^\s*- \[ \] '
+function! dotoo#checkbox#is_unchecked_checkbox(line)
+  return a:line =~ '^\s*[-+] \[ \] '
 endfunction
-function! s:is_partial_checkbox(line)
-  return a:line =~ '^\s*- \[-\] '
+function! dotoo#checkbox#is_partial_checkbox(line)
+  return a:line =~ '^\s*[-+] \[-\] '
 endfunction
-function! s:is_checked_checkbox(line)
-  return a:line =~ '^\s*- \[X\] '
+function! dotoo#checkbox#is_checked_checkbox(line)
+  return a:line =~ '^\s*[-+] \[X\] '
 endfunction
-function s:is_list_item(line)
-  return a:line =~ '^\s*[-+*] ' && !s:is_headline(a:line)
+function dotoo#checkbox#is_list_item(line)
+  return a:line =~ '^\s*[-+*] ' && !dotoo#checkbox#is_headline(a:line)
 endfunction
-function! s:is_headline(line)
-  return a:line =~ '^*\+ '
+function! dotoo#checkbox#is_headline(line)
+  return a:line =~ '^\*\+ '
 endfunction
 
 function! s:count_children(parent)
@@ -29,20 +29,20 @@ function! s:count_children(parent)
     if s:is_headline(line)
       break
     endif
-    if pind >= indent(nline) && s:is_list_item(line)
+    if pind >= indent(nline) && dotoo#checkbox#is_list_item(line)
       break
     endif
-    if !s:is_checkbox(line)
+    if !dotoo#checkbox#is_checkbox(line)
       continue
     endif
     if indent(nline) - pind > 6
       continue
     endif
-    if s:is_unchecked_checkbox(line)
+    if dotoo#checkbox#is_unchecked_checkbox(line)
       let childs_unchecked = childs_unchecked + 1
-    elseif s:is_partial_checkbox(line)
+    elseif dotoo#checkbox#is_partial_checkbox(line)
       let childs_partial = childs_partial + 1
-    elseif s:is_checked_checkbox(line)
+    elseif dotoo#checkbox#is_checked_checkbox(line)
       let childs_checked = childs_checked + 1
     endif
   endwhile
@@ -56,21 +56,21 @@ function! s:process_parents(nline)
   while nline > 1
     let nline = nline - 1
     let line = getline(nline)
-    if s:is_headline(line)
+    if dotoo#checkbox#is_headline(line)
       break
     endif
-    if !s:is_checkbox(line)
+    if lind <= indent(nline) && dotoo#checkbox#is_list_item(line)
       continue
     endif
-    if lind <= indent(nline)
+    if !dotoo#checkbox#is_checkbox(line)
       continue
     endif
     let nlast = nline
     let lind = indent(nlast)
-    if s:is_unchecked_checkbox(line)
+    if dotoo#checkbox#is_unchecked_checkbox(line)
       call setline(nline, substitute(line, '- \[ \] ', '- [-] ', ''))
     endif
-    if s:is_checked_checkbox(line)
+    if dotoo#checkbox#is_checked_checkbox(line)
       call setline(nline, substitute(line, '- \[X\] ', '- [-] ', ''))
     endif
     let counts = s:count_children(nlast)
@@ -86,15 +86,15 @@ endfunction
 function! dotoo#checkbox#toggle()
   let pos = getcurpos()
   let nline = pos[1]
-  while nline > 0 && !s:is_checkbox(getline(nline))
+  while nline > 0 && !dotoo#checkbox#is_checkbox(getline(nline))
     let nline = nline - 1
   endwhile
   let line = getline(nline)
 
-  if s:is_unchecked_checkbox(line)
+  if dotoo#checkbox#is_unchecked_checkbox(line)
     call setline(nline, substitute(line, '- \[ \] ', '- [X] ', ''))
     call s:process_parents(nline)
-  elseif s:is_checked_checkbox(line)
+  elseif dotoo#checkbox#is_checked_checkbox(line)
     call setline(nline, substitute(line, '- \[X\] ', '- [ ] ', ''))
     call s:process_parents(nline)
   endif
