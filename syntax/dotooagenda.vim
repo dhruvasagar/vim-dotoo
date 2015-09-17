@@ -146,7 +146,7 @@ if !exists('g:loaded_dotooagenda_syntax')
           break
         endif
       endfor
-      exec 'syntax match dotootodo_todo_keyword_' . l:_i . ' /' . l:_i .'/ ' . a:todo_headings
+      exec 'syntax match dotootodo_todo_keyword_' . l:_i . ' /' . l:_i .'/ ' . a:todo_headings . ' contains=@NoSpell'
       exec 'hi def link dotootodo_todo_keyword_' . l:_i . ' ' . l:group
     endfor
   endfunction
