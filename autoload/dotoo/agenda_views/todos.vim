@@ -23,11 +23,13 @@ function! s:build_todos(dotoos, ...)
     let headlines = s:todos_deadlines[file]
     call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
-      let todo = printf('%s %10s: %-70s %s', '',
-            \ headline.key,
-            \ headline.todo_title(),
-            \ headline.tags)
-      call add(todos, todo)
+      if !headline.done()
+        let todo = printf('%s %10s: %-70s %s', '',
+              \ headline.key,
+              \ headline.todo_title(),
+              \ headline.tags)
+        call add(todos, todo)
+      endif
     endfor
   endfor
   if empty(todos)
