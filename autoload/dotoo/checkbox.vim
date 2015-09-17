@@ -1,10 +1,10 @@
-fun! s:is_checkbox(line)
+function! s:is_checkbox(line)
   return a:line =~ '^\s*- \[[ -X]\] '
-endf
+endfunction
 function! s:is_unchecked_checkbox(line)
   return a:line =~ '^\s*- \[ \] \+'
 endfunction
-function! s:is_partial(line)
+function! s:is_partial_checkbox(line)
   return a:line =~ '^\s*- \[-\] \+'
 endfunction
 function! s:is_checked_checkbox(line)
@@ -14,9 +14,12 @@ function! s:is_headline(line)
   return a:line =~ '^*\+ \+'
 endfunction
 
-fun! s:test_children(parent, checked)
+function! s:count_children(parent)
   let pind = indent(a:parent)
   let nline = a:parent
+  let childs_unchecked = 0
+  let childs_partial = 0
+  let childs_checked = 0
   while nline < line('$')
     let nline = nline + 1
     let line = getline(nline)
@@ -29,14 +32,18 @@ fun! s:test_children(parent, checked)
     if pind >= indent(nline)
       break
     endif
-    if (a:checked && !s:is_checked_checkbox(line)) || (!a:checked && !s:is_unchecked_checkbox(line))
-      return 0
+    if s:is_unchecked_checkbox(line)
+      let childs_unchecked = childs_unchecked + 1
+    elseif s:is_partial_checkbox(line)
+      let childs_partial = childs_partial + 1
+    elseif s:is_checked_checkbox(line)
+      let childs_checked = childs_checked + 1
     endif
-  endw
-  return 1
-endf
+  endwhile
+  return [childs_unchecked, childs_partial, childs_checked]
+endfunction
 
-fun! s:process_parents(nline, checked)
+function! s:process_parents(nline)
   let nline = a:nline
   let nlast = a:nline
   let lind = indent(nlast)
@@ -60,29 +67,29 @@ fun! s:process_parents(nline, checked)
     if s:is_checked_checkbox(line)
       call setline(nline, substitute(line, '- \[X\] ', '- [-] ', ''))
     endif
-    if s:test_children(nlast, a:checked)
-      if a:checked
-        call setline(nlast, substitute(getline(nlast), '- \[-\] ', '- [X] ', ''))
-      else
-        call setline(nlast, substitute(getline(nlast), '- \[-\] ', '- [ ] ', ''))
-      endif
-    endif 
-  endw
-endf
+    let counts = s:count_children(nlast)
+    if counts[0] + counts[1] == 0
+      call setline(nlast, substitute(getline(nlast), '- \[-\] ', '- [X] ', ''))
+    elseif counts[1] + counts[2] == 0
+      call setline(nlast, substitute(getline(nlast), '- \[-\] ', '- [ ] ', ''))
+    endif
+  endwhile
+endfunction
 
-fun! ToggleCheckbox(nline)
-  let nline = a:nline
+function! dotoo#checkbox#toggle()
+  let pos = getcurpos()
+  let nline = pos[1]
   while nline > 0 && !s:is_checkbox(getline(nline))
     let nline = nline - 1
-  endw
+  endwhile
   let line = getline(nline)
 
   if s:is_unchecked_checkbox(line)
     call setline(nline, substitute(line, '- \[ \] ', '- [X] ', ''))
-    call s:process_parents(nline, 1)
-  endif
-  if s:is_checked_checkbox(line)
+    call s:process_parents(nline)
+  elseif s:is_checked_checkbox(line)
     call setline(nline, substitute(line, '- \[X\] ', '- [ ] ', ''))
-    call s:process_parents(nline, 0)
+    call s:process_parents(nline)
   endif
-endf
+  call setpos('.', pos)
+endfunction
