@@ -79,7 +79,7 @@ function! s:process_parents(nline)
     elseif counts[1] + counts[2] == 0
       call setline(nlast, substitute(getline(nlast), '\([-+*]\) \[-\] ', '\1 [ ] ', ''))
     endif
-    call setline(nlast, substitute(getline(nlast), '\[[0-9]*\/[0-9]*\]$', '[' . counts[2] . '/' . (counts[0] + counts[1] + counts[2]) . ']', ''))
+    call setline(nlast, substitute(getline(nlast), '\[\([0-9]*\/[0-9]*\|%\)\]$', '[' . counts[2] . '/' . (counts[0] + counts[1] + counts[2]) . ']', ''))
   endwhile
 endfunction
 
