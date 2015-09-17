@@ -32,6 +32,9 @@ function! s:count_children(parent)
     if pind >= indent(nline)
       break
     endif
+    if indent(nline) - pind > 6
+      continue
+    endif
     if s:is_unchecked_checkbox(line)
       let childs_unchecked = childs_unchecked + 1
     elseif s:is_partial_checkbox(line)
@@ -73,6 +76,7 @@ function! s:process_parents(nline)
     elseif counts[1] + counts[2] == 0
       call setline(nlast, substitute(getline(nlast), '- \[-\] ', '- [ ] ', ''))
     endif
+    call setline(nlast, substitute(getline(nlast), '\[[0-9]*\/[0-9]*\]$', '[' . counts[2] . '/' . (counts[0] + counts[1] + counts[2]) . ']', ''))
   endwhile
 endfunction
 
