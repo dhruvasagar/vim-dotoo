@@ -11,7 +11,7 @@ function! s:build_todos(dotoos, ...)
     let s:todos_deadlines = {}
     call dotoo#agenda#headlines([])
     for dotoo in values(a:dotoos)
-      let headlines = dotoo.filter('empty(v:val.metadate()) && !empty(v:val.todo)')
+      let headlines = dotoo.filter('empty(v:val.metadate()) && !empty(v:val.todo) && !v:val.done()')
       call dotoo#agenda#apply_filters(headlines)
       let s:todos_deadlines[dotoo.file] = headlines
     endfor
@@ -23,13 +23,11 @@ function! s:build_todos(dotoos, ...)
     let headlines = s:todos_deadlines[file]
     call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
-      if !headline.done()
-        let todo = printf('%s %10s: %-70s %s', '',
-              \ headline.key,
-              \ headline.todo_title(),
-              \ headline.tags)
-        call add(todos, todo)
-      endif
+      let todo = printf('%s %10s: %-70s %s', '',
+            \ headline.key,
+            \ headline.todo_title(),
+            \ headline.tags)
+      call add(todos, todo)
     endfor
   endfor
   if empty(todos)
