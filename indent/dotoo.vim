@@ -10,17 +10,7 @@ setlocal autoindent
 " Only define the function once
 if exists("*GetDotooIndent") | finish | endif
 
-function! s:is_list_start(line)
-  return a:line =~ '^\s*[-+] \+'
-endfunction
-function! s:is_checkbox_start(line)
-  return a:line =~ '^\s*- \[[ -X]\] \+'
-endfunction
-function! s:is_headline(line)
-  return a:line =~ '^*\+ \+'
-endfunction
-
-function! s:item_depth(line)
+function! s:headline_depth(line)
   return strlen(substitute(a:line, '^\(\*\+\) .*$', '\1', ''))
 endfunction
 
@@ -33,15 +23,15 @@ function GetDotooIndent()
   let line = getline(lnum)    " Last line
   let cline = getline(v:lnum) " Current line
   " Current line is the first line of a list item or headline, do not change indent
-  if s:is_list_start(cline) || s:is_headline(cline)
+  if dotoo#checkbox#is_list_item(cline) || dotoo#checkbox#is_headline(cline)
     return indent(v:lnum)
   " Last line is the first line of a list item or headline, increase indent
-  elseif s:is_checkbox_start(line)
+  elseif dotoo#checkbox#is_checkbox(line)
     return ind + 6
-  elseif s:is_list_start(line)
+  elseif dotoo#checkbox#is_list_item(line)
     return ind + 2
-  elseif s:is_headline(line)
-    return s:item_depth(line) + 1
+  elseif dotoo#checkbox#is_headline(line)
+    return s:headline_depth(line) + 1
   else
     return ind
   endif
