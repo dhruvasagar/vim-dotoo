@@ -47,7 +47,7 @@ nnoremap <silent> gC :<C-U>call dotoo#capture#capture()<CR>
 augroup dotoo
   au!
 
-  autocmd BufNewFile,BufRead *.dotoo call dotoo#parser#parsefile({'force': 1})
+  autocmd FileType dotoo call dotoo#parser#parsefile({'force': 1})
 augroup END
 
 " Register Agenda Views
