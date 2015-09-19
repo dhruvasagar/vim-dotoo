@@ -84,7 +84,7 @@ function! dotoo#parser#parsefile(options) abort
   let lines = []
   if expand('%:p') ==# fnamemodify(opts.file, ':p') && &filetype ==# 'dotoo'
     let lines = getline(1,'$')
-  elseif filereadable(opts.file) && fnamemodify(opts.file, ':e') ==# 'dotoo'
+  elseif filereadable(opts.file) && fnamemodify(opts.file, ':e') =~# '\v^(dotoo|org)$'
     let lines = s:readfile(opts.file)
   else
     return

@@ -61,7 +61,7 @@ function! s:add_agenda_file(...)
 endfunction
 
 function! s:add_agenda_file_menu()
-  if expand('%:e') ==# 'dotoo' && !s:has_agenda_file()
+  if &filetype ==# 'dotoo' && !s:has_agenda_file()
     if dotoo#utils#getchar('Do you wish to add the current file in agenda files? (y/n): ', '[yn]') == 'y'
       call s:add_agenda_file()
       return 1
@@ -185,7 +185,7 @@ function! dotoo#agenda#get_headline_by_title(file_title)
   if a:file_title =~# ':'
     let [filekey, title] = split(a:file_title, ':')
     let bufname = bufname(filekey)
-    let bufname = empty(bufname) ? bufname(filekey . '.dotoo') : bufname
+    let bufname = empty(bufname) ? bufname(filekey . '.{dotoo,org}') : bufname
     let dotoo = get(s:agenda_dotoos, bufname, '')
     if !empty(dotoo)
       let headlines = dotoo.filter("v:val.title =~# '" . title . "'")
