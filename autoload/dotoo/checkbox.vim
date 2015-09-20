@@ -49,6 +49,10 @@ function! s:count_children(parent)
   return [childs_unchecked, childs_partial, childs_checked]
 endfunction
 
+function s:update_progress(nline, counts)
+    call setline(a:nline, substitute(getline(a:nline), '\[\([0-9]*\/[0-9]*\|%\)\]$', '[' . a:counts[2] . '/' . (a:counts[0] + a:counts[1] + a:counts[2]) . ']', ''))
+endfunction
+
 function! s:process_parents(nline)
   let nline = a:nline
   let nlast = a:nline
@@ -57,6 +61,8 @@ function! s:process_parents(nline)
     let nline = nline - 1
     let line = getline(nline)
     if dotoo#checkbox#is_headline(line)
+      let counts = s:count_children(nline)
+      call s:update_progress(nline, counts)
       break
     endif
     if lind <= indent(nline) && dotoo#checkbox#is_list_item(line)
@@ -79,7 +85,7 @@ function! s:process_parents(nline)
     elseif counts[1] + counts[2] == 0
       call setline(nlast, substitute(getline(nlast), '\([-+*]\) \[-\] ', '\1 [ ] ', ''))
     endif
-    call setline(nlast, substitute(getline(nlast), '\[\([0-9]*\/[0-9]*\|%\)\]$', '[' . counts[2] . '/' . (counts[0] + counts[1] + counts[2]) . ']', ''))
+    call s:update_progress(nlast, counts)
   endwhile
 endfunction
 
