@@ -29,15 +29,15 @@ let s:todo_keywords_todo = g:dotoo#parser#todo_keywords[:index(g:dotoo#parser#to
 let s:todo_keywords_done = g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords,'|'):]
 let s:todo_keywords_regex = join(s:todo_keywords_todo+s:todo_keywords_done, '|')
 call s:define('blank', '\v^$')
-call s:define('directive', '\v^#\+(\w+): (.*)$')
+call s:define('directive', '\v^#\+(\w+): (.*)$') " ik denk van wel
 call s:define('headline', '\v^(\*+)\s?('.s:todo_keywords_regex.')?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
-call s:define('metadata', '\v^(DEADLINE|CLOSED|SCHEDULED): ([\<\[])(.*)([\>\]])$')
-call s:define('properties', '\v^:PROPERTIES:$')
-call s:define('logbook', '\v^:LOGBOOK:$')
-call s:define('properties_content', '\v^:(END)@!([^:]+):\s*(.*)$')
-call s:define('logbook_clock', '\v^CLOCK: \[([^\]]*)\](--\[([^\]]*)\])?( \=\>\s+(\d{1,2}:\d{2}))?')
-call s:define('logbook_state_change', '\v^- State "([^"]*)"\s+from "([^"]*)"\s+\[([^\]]*)\]')
-call s:define('drawer_end', '\v^:END:$')
+call s:define('metadata', '\v^\s*(DEADLINE|CLOSED|SCHEDULED): ([\<\[])(.*)([\>\]])$')
+call s:define('properties', '\v^\s*:PROPERTIES:$')
+call s:define('logbook', '\v^\s*:LOGBOOK:$')
+call s:define('properties_content', '\v^\s*:(END)@!([^:]+):\s*(.*)$')
+call s:define('logbook_clock', '\v^\s*CLOCK: \[([^\]]*)\](--\[([^\]]*)\])?( \=\>\s+(\d{1,2}:\d{2}))?')
+call s:define('logbook_state_change', '\v^\s*- State "([^"]*)"\s+from "([^"]*)"\s+\[([^\]]*)\]')
+call s:define('drawer_end', '\v^\s*:END:$')
 call s:define('line', '\v^(.*)$')
 
 function! s:type_order(a, b)
