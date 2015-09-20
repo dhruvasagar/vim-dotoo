@@ -94,7 +94,7 @@ function! s:headline_methods.serialize() dict
   call add(lines, self.line())
   call extend(lines, self.content)
   let metadata = self.metadata.serialize()
-  if metadata != ''
+  if !empty(metadata)
     call add(lines, self.metadata.serialize())
   endif
   call extend(lines, self.properties.serialize())
