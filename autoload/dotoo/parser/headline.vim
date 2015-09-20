@@ -219,7 +219,7 @@ function! dotoo#parser#headline#new(...) abort
     let blanks = []
     while len(tokens)
       let token = remove(tokens, 0)
-      if token.type != s:syntac.blank.type
+      if token.type != s:syntax.blank.type
         call extend(headline.content, blanks)
         let blanks = []
       endif
