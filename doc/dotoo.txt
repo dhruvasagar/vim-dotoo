@@ -42,13 +42,14 @@ GETTING STARTED                                           *dotoo-getting-started
 
                                                       *dotoo-document-structure*
       1. Document Structure: The docment structure is borrowed from emacs'
-         Org Mode, without support for indentation.
+         Org Mode.
 
          These are the dotoo document mappings :
               `gI`:         clock-in headline under cursor
               `gO`:         clock-out headline under cursor
               `gM`:         move headline under cursor to selected target
               `cit`:        change TODO of headline under cursor
+              `cic`:        toggle checkbox under cursor
               `<C-A>`:      Increment date under cursor by 1 day, can be preceded
                           with a [count]
               `<C-X>`:      Decrement date under cursor by 1 day, can be preceded

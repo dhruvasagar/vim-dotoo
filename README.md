@@ -3,13 +3,14 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Getting Started
 1. Document Structure: The docment structure is borrowed from emacs'
-   Org Mode, without support for indentation.
+   Org Mode.
 
    These are the dotoo document mappings :
    * <kbd>gI</kbd>:      clock-in headline under cursor
    * <kbd>gO</kbd>:      clock-out headline under cursor
    * <kbd>gM</kbd>:      move headline under cursor to selected target
    * <kbd>cit</kbd>:     change TODO of headline under cursor
+   * <kbd>cic</kbd>:     toggle checkbox under cursor
    * <kbd>\<C-A\></kbd>:   Increment date under cursor by 1 day, can be preceded with a [count]
    * <kbd>\<C-X\></kbd>:   Decrement date under cursor by 1 day, can be preceded with a [count]
    * <kbd>\<C-C\>\<C-C\></kbd>: Normalize a date (fixes day name if incorrect)
