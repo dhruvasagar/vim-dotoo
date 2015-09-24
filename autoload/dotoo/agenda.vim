@@ -132,14 +132,12 @@ function! dotoo#agenda#start_headline_clock()
   let headline = s:agenda_headlines[line('.')-2]
   call dotoo#clock#start(headline)
   call s:agenda_modified(1)
-  wincmd k
 endfunction
 
 function! dotoo#agenda#stop_headline_clock()
   let headline = s:agenda_headlines[line('.')-2]
   call dotoo#clock#stop(headline)
   call s:agenda_modified(1)
-  wincmd k
 endfunction
 
 function! dotoo#agenda#change_headline_todo()
