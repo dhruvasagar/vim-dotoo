@@ -29,7 +29,7 @@ let s:todo_keywords_todo = g:dotoo#parser#todo_keywords[:index(g:dotoo#parser#to
 let s:todo_keywords_done = g:dotoo#parser#todo_keywords[index(g:dotoo#parser#todo_keywords,'|'):]
 let s:todo_keywords_regex = join(s:todo_keywords_todo+s:todo_keywords_done, '|')
 call s:define('blank', '\v^$')
-call s:define('directive', '\v^\s*#\+(\w+): (.*)$') " ik denk van wel
+call s:define('directive', '\v^\s*#\+(\w+): (.*)$')
 call s:define('headline', '\v^(\*+)\s?('.s:todo_keywords_regex.')?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
 call s:define('metadata', '\v^\s*(DEADLINE|CLOSED|SCHEDULED): ([\<\[])(.*)([\>\]])$')
 call s:define('properties', '\v^\s*:PROPERTIES:$')

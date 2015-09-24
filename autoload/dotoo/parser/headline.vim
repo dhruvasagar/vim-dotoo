@@ -91,11 +91,12 @@ endfunction
 
 function! s:headline_methods.serialize() dict
   let lines = []
+  let indent = repeat(' ', self.level + 1)
   call add(lines, self.line())
   call extend(lines, self.content)
-  call add(lines, self.metadata.serialize())
-  call extend(lines, self.properties.serialize())
-  call extend(lines, self.logbook.serialize())
+  call add(lines, indent . self.metadata.serialize())
+  call extend(lines, map(self.properties.serialize(), 'indent . v:val'))
+  call extend(lines, map(self.logbook.serialize(), 'indent . v:val'))
   let child_headlines = map(deepcopy(self.headlines), 'v:val.serialize()')
   call map(child_headlines, 'extend(lines, v:val)')
   call filter(lines, '!empty(v:val)')
