@@ -219,11 +219,9 @@ function! dotoo#parser#headline#new(...) abort
     let blanks = []
     while len(tokens)
       let token = remove(tokens, 0)
-      if token.type != s:syntax.blank.type
+      if token.type ==# s:syntax.line.type
         call extend(headline.content, blanks)
         let blanks = []
-      endif
-      if token.type ==# s:syntax.line.type
         call add(headline.content, token.content[0])
       elseif token.type == s:syntax.metadata.type
         call extend(headline.metadata, dotoo#parser#metadata#new(token))
@@ -246,7 +244,11 @@ function! dotoo#parser#headline#new(...) abort
   endif
 
   call extend(headline, s:headline_methods)
-  let headline.last_lnum = headline.lnum + len(headline.serialize()) - 1
+  if empty(tokens)
+    let headline.last_lnum = line('$')
+  else
+    let headline.last_lnum = get(tokens, 0).lnum - 1
+  endif
   let headline.id = sha256(string(headline))
 
   " Has side-effects
