@@ -215,7 +215,9 @@ function! dotoo#parser#headline#new(...) abort
         \ 'headlines': []
         \ }
 
+  let last_token_lnum = token.lnum
   if has_key(token, 'type')
+    let last_token_lnum = get(tokens, -1, token).lnum
     let blanks = []
     while len(tokens)
       let token = remove(tokens, 0)
@@ -245,7 +247,7 @@ function! dotoo#parser#headline#new(...) abort
 
   call extend(headline, s:headline_methods)
   if empty(tokens)
-    let headline.last_lnum = line('$')
+    let headline.last_lnum = last_token_lnum
   else
     let headline.last_lnum = get(tokens, 0).lnum - 1
   endif
