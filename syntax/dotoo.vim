@@ -261,9 +261,9 @@ hi def link dotoo_title           Title
 " TODO: http://vim.wikia.com/wiki/Different_syntax_highlighting_within_regions_of_a_file
 syntax match  dotoo_verbatim /^\s*>.*/
 syntax match  dotoo_code     /^\s*:.*/
-syntax region dotoo_verbatim start="^#+BEGIN_.*"      end="^#+END_.*"      keepend contains=dotoo_block_delimiter
-syntax region dotoo_code     start="^#+BEGIN_SRC"     end="^#+END_SRC"     keepend contains=dotoo_block_delimiter
-syntax region dotoo_code     start="^#+BEGIN_EXAMPLE" end="^#+END_EXAMPLE" keepend contains=dotoo_block_delimiter
+syntax region dotoo_verbatim start="^\s*#+BEGIN_.*"      end="^\s*#+END_.*"      keepend contains=dotoo_block_delimiter
+syntax region dotoo_code     start="^\s*#+BEGIN_SRC"     end="^\s*#+END_SRC"     keepend contains=dotoo_block_delimiter
+syntax region dotoo_code     start="^\s*#+BEGIN_EXAMPLE" end="^\s*#+END_EXAMPLE" keepend contains=dotoo_block_delimiter
 hi def link dotoo_code     String
 hi def link dotoo_verbatim String
 " }}}
