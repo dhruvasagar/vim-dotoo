@@ -240,7 +240,6 @@ hi def link dotoo_list_def PreProc
 " Bullet Lists: {{{
 syntax match dotoo_list_item /.*$/ contained contains=dotoo_subtask_percent,dotoo_subtask_number,dotoo_subtask_percent_100,dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_bold,dotoo_italic,dotoo_underline,dotoo_code,dotoo_verbatim,dotoo_timestamp,dotoo_timestamp_inactive,dotoo_list_def 
 syntax match dotoo_list_checkbox /\[[ X-]]/ contained
-hi def link dotoo_list_bullet Identifier
 hi def link dotoo_list_checkbox     PreProc
 
 " }}}
