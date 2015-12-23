@@ -41,7 +41,7 @@ let s:contains = ' contains=dotoo_timestamp,dotoo_subtask_percent,dotoo_subtask_
 if g:dotoo_heading_shade_leading_stars == 1
   let s:contains .= ',dotoo_shade_stars'
   syntax match dotoo_shade_stars /^\*\{2,\}/me=e-1 contained
-  hi def link dotoo_shade_stars NonText
+  hi def link dotoo_shade_stars Ignore
 else
   hi clear dotoo_shade_stars
 endif
