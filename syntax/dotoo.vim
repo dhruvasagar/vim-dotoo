@@ -36,12 +36,12 @@ hi def dotoo_underline term=underline cterm=underline gui=underline
 " Headings: {{{
 "" Enable Syntax HL: {{{
 let s:contains = ' contains=dotoo_timestamp,dotoo_subtask_percent,dotoo_subtask_number,dotoo_subtask_percent_100,'.
-      \ 'dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_list_dt,dotoo_bold,dotoo_italic,dotoo_underline,' .
+      \ 'dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_bold,dotoo_italic,dotoo_underline,' .
       \ 'dotoo_code,dotoo_verbatim'
 if g:dotoo_heading_shade_leading_stars == 1
   let s:contains .= ',dotoo_shade_stars'
   syntax match dotoo_shade_stars /^\*\{2,\}/me=e-1 contained
-  hi def link dotoo_shade_stars NonText
+  hi def link dotoo_shade_stars Ignore
 else
   hi clear dotoo_shade_stars
 endif
@@ -196,34 +196,6 @@ syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d\]--\[\d\d\d\d
 syn match dotoo_timestamp /\(\[%%(diary-float.\+\]\)/
 
 hi def link dotoo_timestamp SpecialKey
-" }}}
-" Lists: {{{
-
-" Ordered Lists:
-" 1. list item
-" 1) list item
-syn match dotoo_list_ordered "^\s*\d\+[.)]\s"
-hi def link dotoo_list_ordered Identifier
-
-" Unordered Lists:
-" - list item
-" * list item
-" + list item
-" + and - don't need a whitespace prefix
-syn match dotoo_list_unordered "^\s*[-+]\s"
-" * must have a whitespace prefix, otherwise it's a heading
-syn match dotoo_list_unordered "^\s\+\*\s"
-hi def link dotoo_list_unordered Identifier
-
-" Definition Lists:
-" - Term :: expl.
-" 1) Term :: expl.
-syntax region dotoo_list_def start="^\s*\d[.)]\s" end=" ::" keepend oneline contains=dotoo_list_unordered
-" + and - don't need a whitespace prefix
-syntax region dotoo_list_def start="^\s*[-+]\s" end=" ::" keepend oneline contains=dotoo_list_ordered
-" * must have a whitespace prefix, otherwise it's a heading
-syntax region dotoo_list_def start="^\s\+\*\s" end=" ::" keepend oneline contains=dotoo_list_ordered
-hi def link dotoo_list_def Identifier
 
 " }}}
 " Deadline And Schedule: {{{
@@ -240,21 +212,34 @@ hi def link hyperlink Underlined
 " Comments: {{{
 syntax match dotoo_comment /^#.*/
 hi def link dotoo_comment Comment
+
+" }}}
+" Lists: {{{
+
+" Ordered Lists:
+" 1. list item
+" 1) list item
+syn match dotoo_list_ordered "^\s*\(\a\|\d\+\)[.)]\(\s\|$\)" nextgroup=dotoo_list_item 
+hi def link dotoo_list_ordered Identifier
+
+" Unordered Lists:
+" - list item
+" * list item
+" + list item
+" + and - don't need a whitespace prefix
+syn match dotoo_list_unordered "^\(\s*[-+]\|\s\+\*\)\(\s\|$\)" nextgroup=dotoo_list_item 
+hi def link dotoo_list_unordered Identifier
+
+" Definition Lists:
+" - Term :: expl.
+" 1) Term :: expl.
+syntax match dotoo_list_def /.*\s\+::/ contained
+hi def link dotoo_list_def PreProc
+"
 " }}}
 " Bullet Lists: {{{
-" * list item (note there must be a whitespace prefix)
-syntax match dotoo_list_bullet /^\s\+\*\s/ nextgroup=dotoo_list_item
-" - list item (no whitespace required)
-" + list item (no whitespace required)
-syntax match  dotoo_list_bullet   /^\s*[+-]\s/ nextgroup=dotoo_list_item
-" 1) list item
-" 2. list item
-syntax match dotoo_list_bullet /^\s*\w\+[.)]\s/ nextgroup=dotoo_list_item
-syntax match dotoo_list_item     /.*$/ contained contains=dotoo_subtask_percent,dotoo_subtask_number,dotoo_subtask_percent_100,dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_list_dt,dotoo_bold,dotoo_italic,dotoo_underline,dotoo_code,dotoo_verbatim,dotoo_timestamp
+syntax match dotoo_list_item /.*$/ contained contains=dotoo_subtask_percent,dotoo_subtask_number,dotoo_subtask_percent_100,dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_bold,dotoo_italic,dotoo_underline,dotoo_code,dotoo_verbatim,dotoo_timestamp,dotoo_timestamp_inactive,dotoo_list_def 
 syntax match dotoo_list_checkbox /\[[ X-]]/ contained
-syntax match dotoo_list_dt /.*\s\+::/ contained
-hi def link dotoo_list_bullet Identifier
-hi def link dotoo_list_dt     PreProc
 hi def link dotoo_list_checkbox     PreProc
 
 " }}}
@@ -276,9 +261,9 @@ hi def link dotoo_title           Title
 " TODO: http://vim.wikia.com/wiki/Different_syntax_highlighting_within_regions_of_a_file
 syntax match  dotoo_verbatim /^\s*>.*/
 syntax match  dotoo_code     /^\s*:.*/
-syntax region dotoo_verbatim start="^#+BEGIN_.*"      end="^#+END_.*"      keepend contains=dotoo_block_delimiter
-syntax region dotoo_code     start="^#+BEGIN_SRC"     end="^#+END_SRC"     keepend contains=dotoo_block_delimiter
-syntax region dotoo_code     start="^#+BEGIN_EXAMPLE" end="^#+END_EXAMPLE" keepend contains=dotoo_block_delimiter
+syntax region dotoo_verbatim start="^\s*#+BEGIN_.*"      end="^\s*#+END_.*"      keepend contains=dotoo_block_delimiter
+syntax region dotoo_code     start="^\s*#+BEGIN_SRC"     end="^\s*#+END_SRC"     keepend contains=dotoo_block_delimiter
+syntax region dotoo_code     start="^\s*#+BEGIN_EXAMPLE" end="^\s*#+END_EXAMPLE" keepend contains=dotoo_block_delimiter
 hi def link dotoo_code     String
 hi def link dotoo_verbatim String
 " }}}
