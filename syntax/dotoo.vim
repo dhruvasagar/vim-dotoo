@@ -219,7 +219,7 @@ hi def link dotoo_comment Comment
 " Ordered Lists:
 " 1. list item
 " 1) list item
-syn match dotoo_list_ordered "^\s*\(\a\|\d\+\)[.)]\s" nextgroup=dotoo_list_item 
+syn match dotoo_list_ordered "^\s*\(\a\|\d\+\)[.)]\(\s\|$\)" nextgroup=dotoo_list_item 
 hi def link dotoo_list_ordered Identifier
 
 " Unordered Lists:
@@ -227,7 +227,7 @@ hi def link dotoo_list_ordered Identifier
 " * list item
 " + list item
 " + and - don't need a whitespace prefix
-syn match dotoo_list_unordered "^\(\s*[-+]\|\s\+\*\)\s" nextgroup=dotoo_list_item 
+syn match dotoo_list_unordered "^\(\s*[-+]\|\s\+\*\)\(\s\|$\)" nextgroup=dotoo_list_item 
 hi def link dotoo_list_unordered Identifier
 
 " Definition Lists:

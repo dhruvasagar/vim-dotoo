@@ -1,17 +1,17 @@
 function! dotoo#checkbox#is_checkbox(line)
-  return a:line =~ '^\s*[-+*] \[[ -X]\] ' && !dotoo#checkbox#is_headline(a:line)
+  return a:line =~ '^\s*[-+*] \[[ -X]\]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
 endfunction
 function! dotoo#checkbox#is_unchecked_checkbox(line)
-  return a:line =~ '^\s*[-+*] \[ \] ' && !dotoo#checkbox#is_headline(a:line)
+  return a:line =~ '^\s*[-+*] \[ \]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
 endfunction
 function! dotoo#checkbox#is_partial_checkbox(line)
-  return a:line =~ '^\s*[-+*] \[-\] ' && !dotoo#checkbox#is_headline(a:line)
+  return a:line =~ '^\s*[-+*] \[-\]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
 endfunction
 function! dotoo#checkbox#is_checked_checkbox(line)
-  return a:line =~ '^\s*[-+*] \[X\] ' && !dotoo#checkbox#is_headline(a:line)
+  return a:line =~ '^\s*[-+*] \[X\]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
 endfunction
 function dotoo#checkbox#is_list_item(line)
-  return a:line =~ '^\s*[-+*] ' && !dotoo#checkbox#is_headline(a:line)
+  return a:line =~ '^\s*[-+*]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
 endfunction
 function! dotoo#checkbox#is_headline(line)
   return a:line =~ '^\*\+ '
@@ -74,16 +74,16 @@ function! s:process_parents(nline)
     let nlast = nline
     let lind = indent(nlast)
     if dotoo#checkbox#is_unchecked_checkbox(line)
-      call setline(nline, substitute(line, '\([-+*]\) \[ \] ', '\1 [-] ', ''))
+      call setline(nline, substitute(line, '\([-+*]\) \[ \]\(\s\|$\)', '\1 [-]\2', ''))
     endif
     if dotoo#checkbox#is_checked_checkbox(line)
-      call setline(nline, substitute(line, '\([-+*]\) \[X\] ', '\1 [-] ', ''))
+      call setline(nline, substitute(line, '\([-+*]\) \[X\]\(\s\|$\)', '\1 [-]\2', ''))
     endif
     let counts = s:count_children(nlast)
     if counts[0] + counts[1] == 0
-      call setline(nlast, substitute(getline(nlast), '\([-+*]\) \[-\] ', '\1 [X] ', ''))
+      call setline(nlast, substitute(getline(nlast), '\([-+*]\) \[-\]\(\s\|$\)', '\1 [X]\2', ''))
     elseif counts[1] + counts[2] == 0
-      call setline(nlast, substitute(getline(nlast), '\([-+*]\) \[-\] ', '\1 [ ] ', ''))
+      call setline(nlast, substitute(getline(nlast), '\([-+*]\) \[-\]\(\s\|$\)', '\1 [ ]\2', ''))
     endif
     call s:update_progress(nlast, counts)
   endwhile
@@ -98,10 +98,10 @@ function! dotoo#checkbox#toggle()
   let line = getline(nline)
 
   if dotoo#checkbox#is_unchecked_checkbox(line)
-    call setline(nline, substitute(line, '\([-+*]\) \[ \] ', '\1 [X] ', ''))
+    call setline(nline, substitute(line, '\([-+*]\) \[ \]\(\s\|$\)', '\1 [X]\2', ''))
     call s:process_parents(nline)
   elseif dotoo#checkbox#is_checked_checkbox(line)
-    call setline(nline, substitute(line, '\([-+*]\) \[X\] ', '\1 [ ] ', ''))
+    call setline(nline, substitute(line, '\([-+*]\) \[X\]\(\s\|$\)', '\1 [ ]\2', ''))
     call s:process_parents(nline)
   endif
   call setpos('.', pos)
