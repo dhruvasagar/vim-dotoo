@@ -102,24 +102,33 @@ function! s:headline_methods.serialize() dict
   return lines
 endfunction
 
-function! s:headline_methods.open() dict
-  if expand('%:p') !=# self.file
-    silent exe 'noauto tabedit' self.file
-    return 1
-  endif
-  return 0
+function! s:headline_methods.is_split_open() dict
+  return get(self, 'split_open', 0)
 endfunction
 
-function! s:headline_methods.close(force) dict
-  if a:force | quit | endif
+function! s:headline_methods.open() dict
+  if expand('%:p') !=# self.file
+    let self.split_open = 1
+    let self.split_winnr = winnr()
+    silent exe 'noauto split' self.file
+  endif
+endfunction
+
+function! s:headline_methods.close() dict
+  if self.is_split_open()
+    quit
+    exec self.split_winnr . 'wincmd w'
+    call remove(self, 'split_open')
+    call remove(self, 'split_winnr')
+  endif
 endfunction
 
 function! s:headline_methods.save() dict
   let old_view = winsaveview()
-  let splitted = self.open()
+  call self.open()
   call self.delete()
   call append(self.lnum-1, self.serialize())
-  call self.close(splitted)
+  call self.close()
   call winrestview(old_view)
 endfunction
 
@@ -128,9 +137,9 @@ function! s:headline_methods.delete() dict
 endfunction
 
 function! s:headline_methods.undo() dict
-  let splitted = self.open()
+  call self.open()
   normal! u
-  call self.close(splitted)
+  call self.close()
 endfunction
 
 function! s:headline_methods.is_clocking() dict
