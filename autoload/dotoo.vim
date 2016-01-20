@@ -12,10 +12,10 @@ function! dotoo#move_headline(headline)
   let target_title = input('Enter target: ', '', 'customlist,dotoo#agenda#headline_complete')
   redraw!
   let target_hl = dotoo#agenda#get_headline_by_title(target_title)
-  let splitted = a:headline.open()
+  call a:headline.open()
   call a:headline.delete()
   silent write
-  call a:headline.close(splitted)
+  call a:headline.close()
   if type(target_hl) == type({})
     call target_hl.add_headline(a:headline)
     call target_hl.save()
