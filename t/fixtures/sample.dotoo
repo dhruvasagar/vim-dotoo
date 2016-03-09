@@ -1,0 +1,30 @@
+#+TITLE: Dotoo Tasks
+#+AUTHOR: Dhruva Sagar
+#+EMAIL: dhruva.sagar@gmail.com
+
+* TODO Support for Checkboxes
+* TODO Shortcut for checkboxes completion (count and progress)
+* TODO Shortcut for headline promotions
+* TODO Shortcut for priority changes
+* TODO Agenda clock summary
+* TODO Agenda weekly / monthly views
+* TODO Add archiving
+* TODO Add support for anniversaries
+* TODO Improve documentation
+DEADLINE: <2014-08-03 Sun 18:00>
+* TODO Test Task with Deadline
+DEADLINE: <2014-07-28 Mon 14:23>
+* TODO Test Task with Repeatable Deadline
+DEADLINE: [2014-07-28 Mon 14:23 +1m]
+* DONE Add documentation
+CLOSED: [2014-07-02 Wed 20:45]
+* DONE Actual headline tree
+CLOSED: [2014-07-02 Wed 20:44]
+* DONE Date manipulations
+CLOSED: [2014-07-01 Tue 17:22]
+* DONE Shortcut to change todo state
+CLOSED: [2014-07-01 Tue 07:48]
+* DONE Finish clocking & statusline feature
+CLOSED: [2014-06-30 Mon 14:31]
+* DONE Ensure when agenda is invoked it also additionally parses current file if it's a dotoo file.
+CLOSED: [2014-06-30 Mon 14:31]
