@@ -113,7 +113,7 @@ function! s:to_seconds(time)
       let seconds += s:days_to_seconds(s:jd(y, m, d) - s:epoch_jd)
     endif
   endif
-  let seconds -= s:localtime().stzoffset
+  let seconds -= s:localtime(seconds).stzoffset
   return seconds
 endfunction
 
