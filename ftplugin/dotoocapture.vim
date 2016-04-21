@@ -8,7 +8,7 @@ function! s:RefileAndClose()
   let headline = dotoo.headlines[0]
   if g:dotoo#capture#clock | call dotoo#clock#stop(headline) | endif
   set nomodified
-  silent exe 'edit' g:dotoo#capture#refile
+  silent exe 'split' g:dotoo#capture#refile
   call append('$', headline.serialize())
   wq
 endfunction
@@ -16,5 +16,5 @@ endfunction
 augroup BufWrite
   au!
 
-  autocmd BufWriteCmd <buffer> call s:RefileAndClose()
+  autocmd BufLeave <buffer> call s:RefileAndClose()
 augroup END
