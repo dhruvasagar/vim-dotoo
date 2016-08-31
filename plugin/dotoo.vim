@@ -31,14 +31,14 @@ call s:SetGlobalOpts('dotoo#parser#todo_keywords', [
       \ 'DONE'
       \ ])
 call s:SetGlobalOpts('dotoo_todo_keyword_faces', [
-      \ ['TODO', [':foreground 160', ':weight bold']],
-      \ ['NEXT', [':foreground 27', ':weight bold']],
-      \ ['DONE', [':foreground 22', ':weight bold']],
-      \ ['WAITING', [':foreground 202', ':weight bold']],
-      \ ['HOLD', [':foreground 53', ':weight bold']],
-      \ ['CANCELLED', [':foreground 22', ':weight bold']],
-      \ ['MEETING', [':foreground 22', ':weight bold']],
-      \ ['PHONE', [':foreground 22', ':weight bold']]
+      \ ['TODO', [':foreground 160,#df0000', ':weight bold']],
+      \ ['NEXT', [':foreground 27,#005fff', ':weight bold']],
+      \ ['DONE', [':foreground 22,#005f00', ':weight bold']],
+      \ ['WAITING', [':foreground 202,#ff5f00', ':weight bold']],
+      \ ['HOLD', [':foreground 53,#5f005f', ':weight bold']],
+      \ ['CANCELLED', [':foreground 22,#005f00', ':weight bold']],
+      \ ['MEETING', [':foreground 22,#005f00', ':weight bold']],
+      \ ['PHONE', [':foreground 22,#005f00', ':weight bold']]
       \ ])
 
 nnoremap <silent> gA :<C-U>call dotoo#agenda#agenda()<CR>
