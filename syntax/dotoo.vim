@@ -94,7 +94,9 @@ if !exists('g:loaded_dotoo_syntax')
                   let l:found_gui_color = 1
                   let l:res_faces = l:res_faces . ' guifg=' . l:color
                 elseif l:color != ''
-                  let l:gui_color = l:color
+                  if l:color !~ '^\d\+$'
+                    let l:gui_color = l:color
+                  endif
                   let l:res_faces = l:res_faces . ' ctermfg=' . l:color
                 endif
               endfor
@@ -109,7 +111,9 @@ if !exists('g:loaded_dotoo_syntax')
                   let l:found_gui_color = 1
                   let l:res_faces = l:res_faces . ' guibg=' . l:color
                 elseif l:color != ''
-                  let l:gui_color = l:color
+                  if l:color !~ '^\d\+$'
+                    let l:gui_color = l:color
+                  endif
                   let l:res_faces = l:res_faces . ' ctermbg=' . l:color
                 endif
               endfor
