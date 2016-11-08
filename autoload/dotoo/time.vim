@@ -48,8 +48,8 @@ function! s:datetime_methods.to_seconds() dict
 endfunction
 
 function! s:localtime(...)
-  let ts  = a:0 ? a:1 : localtime()
-  let rp = a:0 > 1 ? a:2 : ''
+  let ts  = a:0 && !empty(a:1) ? a:1 : localtime()
+  let rp = a:0 == 2 && !empty(a:2) ? a:2 : ''
   " sepoch    = seconds since epoch (Jan 1, 1970)
   " depoch    = days since epoch
   " stzoffset = timezone offset from UTC in seconds
@@ -64,7 +64,8 @@ function! s:localtime(...)
         \, 'minute' : +strftime('%M', ts)
         \, 'second' : +strftime('%S', ts)
         \, 'sepoch' : +strftime('%s', ts)
-        \, 'repeat' : rp}
+        \, 'repeat' : rp
+        \}
   let datetime.depoch = s:jd(datetime.year, datetime.month, datetime.day)
         \ - s:epoch_jd
   let real_ts = s:days_to_seconds(datetime.depoch)
@@ -149,8 +150,8 @@ endfunction
 
 let s:time_methods = {}
 function! s:time_methods.init(...) dict
-  let dt = a:0 ? a:1 : ''
-  let rp = a:0 == 2 ? a:2 : ''
+  let dt = a:0 && !empty(a:1) ? a:1 : ''
+  let rp = a:0 == 2 && !empty(a:2) ? a:2 : ''
   if type(dt) == type('')
     if dt =~# g:dotoo#time#repeatable_date_regex . '$'
       let rp = matchlist(dt, g:dotoo#time#repeatable_date_regex)[5]
@@ -200,7 +201,7 @@ function! s:time_methods.diff(other) dict
 endfunction
 
 function! s:time_methods.diff_in_words(other, ...) dict
-  let short = a:0 ? a:1 : 0
+  let short = a:0 && !empty(a:1) ? a:1 : 0
   let diff = self.diff(a:other)
   let adiff = abs(diff)
   let diffs = []
@@ -255,7 +256,7 @@ function! s:time_methods.time_ago(...) dict
 endfunction
 
 function! s:time_methods.to_string(...) dict
-  let format = a:0 ? a:1 : g:dotoo#time#date_day_format
+  let format = a:0 && !empty(a:1) ? a:1 : g:dotoo#time#date_day_format
   if format ==# g:dotoo#time#date_day_format && strftime(g:dotoo#time#time_format, self.to_seconds()) !=# '00:00'
     let format = g:dotoo#time#datetime_format
   endif
@@ -350,8 +351,8 @@ function! s:time_methods.repeatable()
 endfunction
 
 function! dotoo#time#new(...)
-  let dt = a:0 ? a:1 : ''
-  let rp = a:0 == 2 ? a:2 : ''
+  let dt = a:0 && !empty(a:1) ? a:1 : ''
+  let rp = a:0 == 2 && !empty(a:2) ? a:2 : ''
   let obj = {}
   call extend(obj, s:time_methods)
   return obj.init(dt, rp)
