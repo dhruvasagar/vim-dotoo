@@ -16,5 +16,5 @@ endfunction
 augroup BufWrite
   au!
 
-  autocmd BufLeave <buffer> call s:RefileAndClose()
+  autocmd BufHidden <buffer> call s:RefileAndClose()
 augroup END
