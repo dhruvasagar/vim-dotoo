@@ -63,7 +63,7 @@ function! s:localtime(...)
         \, 'hour'   : +strftime('%H', ts)
         \, 'minute' : +strftime('%M', ts)
         \, 'second' : +strftime('%S', ts)
-        \, 'sepoch' : +strftime('%s', ts)
+        \, 'sepoch' : ts
         \, 'repeat' : rp
         \}
   let datetime.depoch = s:jd(datetime.year, datetime.month, datetime.day)
