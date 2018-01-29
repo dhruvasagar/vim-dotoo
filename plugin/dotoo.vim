@@ -41,8 +41,14 @@ call s:SetGlobalOpts('dotoo_todo_keyword_faces', [
       \ ['PHONE', [':foreground 22,#005f00', ':weight bold']]
       \ ])
 
-nnoremap <silent> gA :<C-U>call dotoo#agenda#agenda()<CR>
-nnoremap <silent> gC :<C-U>call dotoo#capture#capture()<CR>
+nnoremap <silent> <Plug>(dotoo-agenda) :<C-U>call dotoo#agenda#agenda()<CR>
+if !hasmapto('<Plug>(dotoo-agenda)')
+  nmap gA <Plug>(dotoo-agenda)
+endif
+nnoremap <Plug>(dotoo-capture) :<C-U>call dotoo#capture#capture()<CR>
+if !hasmapto('<Plug>(dotoo-capture)')
+  nmap gC <Plug>(dotoo-capture)
+endif
 
 augroup dotoo
   au!
