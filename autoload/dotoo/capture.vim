@@ -46,7 +46,7 @@ endfunction
 
 let s:capture_tmp_file = tempname()
 function! s:capture_edit(cmd)
-  silent exe a:cmd s:capture_tmp_file
+  silent exe 'keepalt' a:cmd s:capture_tmp_file
   :%delete
   setl nobuflisted nofoldenable
   setf dotoocapture

@@ -72,7 +72,7 @@ endfunction
 
 let s:tmpfile = tempname()
 function! s:edit(cmd)
-  silent exe a:cmd s:tmpfile
+  silent exe 'keepalt' a:cmd s:tmpfile
   if a:cmd =~# 'pedit' | wincmd P | endif
   setl winheight=20
   setl buftype=acwrite nobuflisted
