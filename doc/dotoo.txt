@@ -203,6 +203,16 @@ OPTIONS                                                          *dotoo-options*
             captures templates into. >
                 let g:dotoo#capture#refile = expand('~/Documents/dotoo-files/refile.dotoo')
 <
+                                                      *g:dotoo#capture#files*
+      |g:dotoo#capture#files|
+            This setting defines the a specific file to store a specific 
+			capture template if none are set g:dotoo#capture#refile is used. >
+			let g:dotoo#capture#files = [
+				\ ['t', 'Todo', '~/Documents/dotoo-files/gym.dotoo'],
+				\ ['m', 'Meeting', '~/Documents/dotoo-files/refile.dotoo']
+				\ ]
+
+<
                                                          *g:dotoo#capture#clock*
       |g:dotoo#capture#clock|
             This setting enables clocking while capturing. >

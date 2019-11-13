@@ -33,6 +33,13 @@ function! s:get_selected_template(short_key)
   return []
 endfunction
 
+function! s:get_selected_file(short_key)
+  for filespec in deepcopy(g:dotoo#capture#files)
+    if filespec[0] ==# a:short_key | return filespec | endif
+  endfor
+  return []
+endfunction
+
 function! s:capture_template_eval_line(template)
   if a:template =~# '%(.*)'
     return substitute(a:template, '%(\(.*\))', '\=eval(submatch(1))', 'g')
@@ -45,10 +52,11 @@ function! s:capture_template_eval(template)
 endfunction
 
 let s:capture_tmp_file = tempname()
-function! s:capture_edit(cmd)
+function! s:capture_edit(cmd, file)
   silent exe 'keepalt' a:cmd s:capture_tmp_file
   :%delete
   setl nobuflisted nofoldenable
+  let g:dotoo#capture#refile_to = a:file
   setf dotoocapture
 endfunction
 
@@ -65,7 +73,13 @@ function! dotoo#capture#capture()
     let template = s:get_selected_template(selected)
     let template_lines = template[2]
     let template_lines = s:capture_template_eval(template_lines)
-    call s:capture_edit('split')
+    let filespec = s:get_selected_file(selected)
+	if empty(filespec)
+		call s:capture_edit('split', g:dotoo#capture#refile)
+	else
+		let filename = filespec[2]
+		call s:capture_edit('split', filename)
+	endif
     let dotoo = dotoo#parser#parse({'lines': template_lines, 'force': 1})
     let headline = dotoo.headlines[0]
     let todo = headline.todo
