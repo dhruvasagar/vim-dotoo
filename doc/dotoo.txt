@@ -205,8 +205,8 @@ OPTIONS                                                          *dotoo-options*
 <
                                                       *g:dotoo#capture#files*
       |g:dotoo#capture#files|
-            This setting defines the a specific file to store a specific 
-			capture template if none are set g:dotoo#capture#refile is used. >
+            This setting defines the a specific file to store a specific capture 
+            template if none are set g:dotoo#capture#refile is used. >
 			let g:dotoo#capture#files = [
 				\ ['t', 'Todo', '~/Documents/dotoo-files/gym.dotoo'],
 				\ ['m', 'Meeting', '~/Documents/dotoo-files/refile.dotoo']
