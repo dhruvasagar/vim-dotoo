@@ -18,5 +18,8 @@ augroup BufWrite
 
   autocmd BufHidden <buffer> call s:RefileAndClose()
 augroup END
-nnoremap <buffer> <silent> <C-A> :<C-U>call dotoo#increment_date()<CR>
-nnoremap <buffer> <silent> <C-X> :<C-U>call dotoo#decrement_date()<CR>
+
+nnoremap <silent> <Plug>DotooIncrementDate :<C-U>call dotoo#increment_date(v:count1)<CR>
+nnoremap <silent> <Plug>DotooDecrementDate :<C-U>call dotoo#decrement_date(v:count1)<CR>
+nmap <buffer> <C-A> <Plug>DotooIncrementDate
+nmap <buffer> <C-X> <Plug>DotooIncrementDate

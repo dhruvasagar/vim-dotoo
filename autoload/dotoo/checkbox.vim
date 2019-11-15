@@ -105,4 +105,5 @@ function! dotoo#checkbox#toggle()
     call s:process_parents(nline)
   endif
   call setpos('.', pos)
+  silent! call repeat#set("\<Plug>DotooCheckboxToggle")
 endfunction
