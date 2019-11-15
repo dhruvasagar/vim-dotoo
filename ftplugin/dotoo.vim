@@ -32,10 +32,6 @@ autocmd! BufWritePost <buffer> call dotoo#parser#parsefile({'force': 1})
 iabbrev <expr> <buffer> <silent> :date: '['.strftime(g:dotoo#time#date_day_format).']'
 iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#datetime_format).']'
 
-nnoremap <silent> <Plug>DotooIncrementDate  :<C-U>call dotoo#increment_date(v:count1)<CR>
-nnoremap <silent> <Plug>DotooDecrementDate  :<C-U>call dotoo#decrement_date(v:count1)<CR>
-nnoremap <silent> <Plug>DotooCheckboxToggle :<C-U>call dotoo#checkbox#toggle()<CR>
-
 nnoremap <buffer> <silent> gI         :<C-U>call dotoo#clock#start()<CR>
 nnoremap <buffer> <silent> gO         :<C-U>call dotoo#clock#stop()<CR>
 nnoremap <buffer> <silent> gM         :<C-U>call dotoo#move_headline(dotoo#get_headline())<CR>
