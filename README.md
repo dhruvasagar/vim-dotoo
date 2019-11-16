@@ -15,6 +15,9 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    * <kbd>\<C-X\></kbd>:   Decrement date under cursor by 1 day, can be preceded with a [count]
    * <kbd>\<C-C\>\<C-C\></kbd>: Normalize a date (fixes day name if incorrect)
 
+   The <kbd>\<C-X\></kbd>, <kbd>\<C-A\></kbd>, and  <kbd>cic</kbd> commands all work with <kbd>.</kbd>
+   if you have [repeat.vim](http://github.com/tpope/vim-repeat) installed
+
    A few helpful `:iabbrev` :
    * `:date:` Enters the current date
    * `:time:` Enters the current date & time

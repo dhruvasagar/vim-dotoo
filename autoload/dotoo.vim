@@ -65,12 +65,14 @@ function! s:adjust_date(amount)
   endif
 endfunction
 
-function! dotoo#increment_date()
-  if !s:adjust_date('+'.v:count1.'d') | exe "normal! \<C-A>" | endif
+function! dotoo#increment_date(days)
+  if !s:adjust_date('+'.a:days.'d') | exe "normal! \<C-A>" | endif
+  silent! call repeat#set("\<Plug>DotooIncrementDate", a:days)
 endfunction
 
-function! dotoo#decrement_date()
-  if !s:adjust_date('-'.v:count1.'d') | exe "normal! \<C-X>" | endif
+function! dotoo#decrement_date(days)
+  if !s:adjust_date('-'.a:days.'d') | exe "normal! \<C-X>" | endif
+  silent! call repeat#set("\<Plug>DotooDecrementDate", a:days)
 endfunction
 
 let s:syntax = dotoo#parser#lexer#syntax()
