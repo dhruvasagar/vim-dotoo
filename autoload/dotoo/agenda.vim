@@ -286,8 +286,23 @@ function! dotoo#agenda#filter_complete(A,L,P)
   return filter(ops, 'v:val =~? a:A')
 endfunction
 
+function! s:dotoo#agenda#load()
+  let s:dotoo_agenda_loaded = 1
+  " Register Agenda Views
+  call dotoo#agenda_views#todos#register()
+  call dotoo#agenda_views#notes#register()
+  call dotoo#agenda_views#agenda#register()
+  call dotoo#agenda_views#refiles#register()
+  
+  " Register Agenda View Plugins
+  call dotoo#agenda_views#plugins#log_summary#register()
+endfunction
+
 let s:current_view = ''
 function! dotoo#agenda#agenda()
+  if !exists('s:dotoo_agenda_loaded')
+  	call dotoo#agenda#load()
+  endif
   let force = 1
   let old_view = s:current_view
   let s:current_view = s:agenda_views_menu()
