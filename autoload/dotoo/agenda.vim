@@ -286,7 +286,7 @@ function! dotoo#agenda#filter_complete(A,L,P)
   return filter(ops, 'v:val =~? a:A')
 endfunction
 
-function! s:dotoo#agenda#load()
+function! dotoo#agenda#load()
   let s:dotoo_agenda_loaded = 1
   " Register Agenda Views
   call dotoo#agenda_views#todos#register()
