@@ -3,6 +3,8 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
+setl commentstring=#\ %s
+
 function! s:RefileAndClose()
   let dotoo = dotoo#parser#parse({'lines': getline(1,'$'), 'force': 1})
   let headline = dotoo.headlines[0]
