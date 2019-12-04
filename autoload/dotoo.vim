@@ -8,22 +8,30 @@ function! dotoo#get_headline(...)
   return call('dotoo#parser#headline#get', a:000)
 endfunction
 
-function! dotoo#move_headline(headline)
-  let target_title = input('Enter target: ', '', 'customlist,dotoo#agenda#headline_complete')
-  redraw!
-  let target_hl = dotoo#agenda#get_headline_by_title(target_title)
+function! dotoo#move_headline(headline, target)
   call a:headline.open()
   call a:headline.delete()
   silent write
   call a:headline.close()
-  if type(target_hl) == type({})
-    call target_hl.add_headline(a:headline)
-    call target_hl.save()
+  if type(a:target) == type({})
+    call a:target.add_headline(a:headline)
+    call a:target.save()
   else
-    silent exe 'noauto split' bufname(target_hl)
+    if bufname(a:target)
+      silent exe 'noauto split' bufname(a:target)
+    else
+      silent exec 'noauto split' a:target
+    endif
     call append('$', a:headline.serialize())
-    quit
+    wq
   endif
+endfunction
+
+function! dotoo#move_headline_menu(headline)
+  let target_title = input('Enter target: ', '', 'customlist,dotoo#agenda#headline_complete')
+  redraw!
+  let target = dotoo#parser#headline#get_by_title(target_title)
+  call dotoo#move_headline(a:headline, target)
 endfunction
 
 function! dotoo#change_todo(...)

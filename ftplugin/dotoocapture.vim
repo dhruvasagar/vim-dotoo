@@ -10,8 +10,7 @@ function! s:RefileAndClose()
   let headline = dotoo.headlines[0]
   if g:dotoo#capture#clock | call dotoo#clock#stop(headline) | endif
   set nomodified
-  silent exe 'keepalt' 'split' g:dotoo#capture#refile
-  call append('$', headline.serialize())
+  call dotoo#move_headline(headline, b:capture_target)
   wq
 endfunction
 

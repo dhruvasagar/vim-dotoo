@@ -7,7 +7,9 @@ call dotoo#utils#set('dotoo#capture#refile', expand('~/Documents/dotoo-files/ref
 call dotoo#utils#set('dotoo#capture#clock', 1)
 call dotoo#utils#set('dotoo#capture#templates', [
       \ ['t', 'Todo', ['* TODO %?',
-      \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
+      \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]'],
+      \  'refile:Tasks'
+      \ ],
       \ ['n', 'Note', ['* %? :NOTE:']],
       \ ['m', 'Meeting', ['* MEETING with %? :MEETING:']],
       \ ['p', 'Phone call', ['* PHONE %? :PHONE:']],
@@ -64,6 +66,8 @@ function! dotoo#capture#capture()
   if !empty(selected)
     let template = s:get_selected_template(selected)
     let template_lines = template[2]
+    let capture_target = get(template, 3, g:dotoo#capture#refile)
+    let capture_target_headline = dotoo#agenda#get_headline_by_title(capture_target)
     let template_lines = s:capture_template_eval(template_lines)
     call s:capture_edit('split')
     let dotoo = dotoo#parser#parse({'lines': template_lines, 'force': 1})
@@ -72,6 +76,7 @@ function! dotoo#capture#capture()
     if g:dotoo#capture#clock | call dotoo#clock#start(headline, 0) | endif
     call headline.change_todo(todo) " work around clocking todo state change
     call setline(1, headline.serialize())
+    let b:capture_target = capture_target_headline
     call s:capture_select()
   endif
 endfunction

@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.8.4
+                                Version 0.9.0
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -213,7 +213,9 @@ OPTIONS                                                          *dotoo-options*
             This setting defines the capture templates the capture menu uses. >
                 let g:dotoo#capture#templates = [
                   \ ['t', 'Todo', ['* TODO %?',
-                  \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
+                  \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']
+                  \  'todo:Tasks'
+                  \ ],
                   \ ['n', 'Note', '* %? :NOTE:'],
                   \ ['m', 'Meeting', '* MEETING with %? :MEETING:'],
                   \ ['p', 'Phone call', '* PHONE %? :PHONE:'],
@@ -225,11 +227,18 @@ OPTIONS                                                          *dotoo-options*
                   \                ':END:']]
                   \ ]
 <
-            NOTE: The first option defines the key press to be used for the item,
-            second is the description and third is a list for each line of the
-            template. You can use `%?` as a placeholder for where the cursor
-            will be editing the template immidiately after selecting it and
-            `%(...)` to inline viml code that will be evaluated.
+            A template is declared using an array of options, each value has
+            a special meaning as described below.
+
+            1. The first option defines the key press to be used for the item
+            2. The second is the description
+            3. The third is a list for each line of the template. You can use
+               `%?` as a placeholder for where the cursor will be while editing
+               the template immidiately after selecting it and `%(...)` to
+               inline viml code that will be evaluated.
+            4. The fourth option (optional) defines the target for this template
+               which can either be a dotoo file name or a dotoo move target such
+               as `todo:Tasks`
 
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*
