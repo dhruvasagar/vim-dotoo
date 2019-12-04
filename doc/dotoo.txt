@@ -261,6 +261,34 @@ OPTIONS                                                          *dotoo-options*
                target such as `todo:Tasks` which represents a dotoo file
                headline to use as the parent for this captured headline.
 
+            For easier customization this allows you to be able to add new or
+            override the provided templates easily. >
+                let g:dotoo#capture#templates = {
+                      \ 't': {
+                      \   'target': 'refile-personal:Todos'
+                      \ }
+                      \}
+
+                " Or add new template
+                let g:dotoo#capture#templates = {
+                      \ 'x': {
+                      \   'description': 'eXtra template',
+                      \   'lines': ['* eXtra %? :EXTRA:'],
+                      \ }
+                      \}
+
+                " Or both
+                let g:dotoo#capture#templates = {
+                      \ 't': {
+                      \   'target': 'refile-personal:Todos'
+                      \ },
+                      \ 'x': {
+                      \   'description': 'eXtra template',
+                      \   'lines': ['* eXtra %? :EXTRA:'],
+                      \ }
+                      \}
+<
+
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*
 

@@ -3,9 +3,21 @@ if exists('g:autoloaded_dotoo_utils')
 endif
 let g:autoloaded_dotoo_utils = 1
 
+function! s:extend_dict(dict1, dict2) abort
+  let dict3 = {}
+  for key in keys(a:dict1)
+    let dict3[key] = extend(get(a:dict1, key, {}), get(a:dict2, key, {}))
+  endfor
+  return dict3
+endfunction
+
 function! dotoo#utils#set(opt, val)
   if !exists('g:'.a:opt)
     let g:{a:opt} = a:val
+  else
+    if type(a:val) == v:t_dict
+      let g:{a:opt} = s:extend_dict(a:val, g:{a:opt})
+    endif
   endif
 endfunction
 
