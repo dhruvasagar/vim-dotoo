@@ -250,13 +250,13 @@ OPTIONS                                                          *dotoo-options*
 
             It has the following structure
 
-            1. `description` provides a human friendly explanation of what this
+            * `description` provides a human friendly explanation of what this
                template represents
-            2. `lines` is a list for each line of the template. You can use
+            * `lines` is a list for each line of the template. You can use
                `%?` as a placeholder for where the cursor will be while editing
                the template immidiately after selecting it and `%(...)` to
                inline viml code that will be evaluated.
-            3. `target` defines the target for  this capture template should be
+            * `target` defines the target for  this capture template should be
                saved to, it can either be a dotoo file path or a dotoo move
                target such as `todo:Tasks` which represents a dotoo file
                headline to use as the parent for this captured headline.
