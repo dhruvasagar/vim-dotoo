@@ -16,7 +16,7 @@ endfunction
 
 function! s:TestIsCheckbox()
   let tests = [
-        \ {'line': ' - To do or not to do', 'result': 1},
+        \ {'line': ' - To do or not to do', 'result': 0},
         \ {'line': ' - [ ] To do or not to do', 'result': 1},
         \ {'line': ' * [ ] To do or not to do', 'result': 1},
         \ {'line': ' + [ ] To do or not to do', 'result': 1},
