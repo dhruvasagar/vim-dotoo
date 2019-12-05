@@ -5,16 +5,20 @@ jobs:
       - image: waynema/alpine-vim:latest
     steps:
       - run:
-        name: Install git
-        command: apk --no-cache add git
+          name: Install git
+          command: apk --no-cache add git
+
       - run:
-        name: Setup VIM
-        command: mkdir -p ~/.vim/pack/plugins/start/
+          name: Setup VIM
+          command: mkdir -p ~/.vim/pack/plugins/start/
+
       - run:
-        name: Install dhruvasagar/vim-testify
-        command: git clone git@github.com:dhruvasagar/vim-testify.git ~/.vim/pack/plugins/start/
+          name: Install dhruvasagar/vim-testify
+          command: git clone git@github.com:dhruvasagar/vim-testify.git ~/.vim/pack/plugins/start/
+
       - checkout ~/.vim/pack/plugins/start/
+
       - run:
-        name: Run tests
-        command: vim +TestifySuite
+          name: Run tests
+          command: vim +TestifySuite
 
