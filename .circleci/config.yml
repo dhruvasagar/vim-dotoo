@@ -4,9 +4,6 @@ jobs:
     docker:
       - image: alpine:latest
     steps:
-      - setup_remote_docker:
-          docker_layer_caching: true
-
       - run:
           name: Install git & vim
           command: apk --no-cache add git vim
