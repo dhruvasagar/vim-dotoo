@@ -2,11 +2,11 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: waynema/alpine-vim:latest
+      - image: alpine:latest
     steps:
       - run:
           name: Install git
-          command: apk --no-cache add git
+          command: apk --no-cache add git vim
 
       - run:
           name: Setup VIM
