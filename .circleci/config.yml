@@ -5,7 +5,7 @@ jobs:
       - image: alpine:latest
     steps:
       - run:
-          name: Install git
+          name: Install git & vim
           command: apk --no-cache add git vim
 
       - run:
