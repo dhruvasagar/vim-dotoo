@@ -1,5 +1,3 @@
-call testify#describe('Checkbox')
-
 function! s:TestIsHeadline()
   let line = '* TODO Headline Test'
   let result = dotoo#checkbox#is_headline(line)

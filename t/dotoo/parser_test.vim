@@ -1,5 +1,3 @@
-call testify#describe('Parser')
-
 function! s:TestHeadlines()
   let dotoos = dotoo#parser#parsefile({'file': 't/fixtures/sample.dotoo'})
   call testify#assert#equals(dotoos.file, 't/fixtures/sample.dotoo')
