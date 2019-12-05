@@ -16,7 +16,7 @@ jobs:
           name: Install dhruvasagar/vim-testify
           command: git clone git@github.com:dhruvasagar/vim-testify.git ~/.vim/pack/plugins/start/
 
-      - checkout ~/.vim/pack/plugins/start/
+      - checkout '~/.vim/pack/plugins/start/'
 
       - run:
           name: Run tests
