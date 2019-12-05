@@ -28,3 +28,5 @@ CLOSED: [2014-07-01 Tue 07:48]
 CLOSED: [2014-06-30 Mon 14:31]
 * DONE Ensure when agenda is invoked it also additionally parses current file if it's a dotoo file.
 CLOSED: [2014-06-30 Mon 14:31]
+* CANCELLED Cancelled dotoo
+CLOSED: [2019-12-04 Wed 17:52]

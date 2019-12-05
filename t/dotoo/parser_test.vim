@@ -1,16 +1,26 @@
-function! s:ParseFileTest1()
-  let dotoos = dotoo#parser#parsefile({'file': 't/fixtures/sample.dotoo'})
+call testify#describe('Parser')
 
+function! s:TestHeadlines()
+  let dotoos = dotoo#parser#parsefile({'file': 't/fixtures/sample.dotoo'})
   call testify#assert#equals(dotoos.file, 't/fixtures/sample.dotoo')
-  call testify#assert#equals(len(dotoos.headlines), 17)
+  call testify#assert#equals(len(dotoos.headlines), 18)
 endfunction
-call testify#it('dotoo#parser#parsefile should parse headlines', function('s:ParseFileTest1'))
+call testify#it('Should parse headlines', function('s:TestHeadlines'))
 
-function! s:ParseFileTest2()
+function! s:TestDirectives()
   let dotoos = dotoo#parser#parsefile({'file': 't/fixtures/sample.dotoo'})
-
   call testify#assert#equals(dotoos.directives['TITLE'], 'Dotoo Tasks')
   call testify#assert#equals(dotoos.directives['EMAIL'], 'dhruva.sagar@gmail.com')
-  call testify#assert#equals(dotoos.directives['AUTHOR'], 'Dhruva Saga')
+  call testify#assert#equals(dotoos.directives['AUTHOR'], 'Dhruva Sagar')
 endfunction
-call testify#it('dotoo#parser#parsefile should have right directives', function('s:ParseFileTest2'))
+call testify#it('Should have right directives', function('s:TestDirectives'))
+
+function! s:TestFilter()
+  let dotoos = dotoo#parser#parsefile({'file': 't/fixtures/sample.dotoo'})
+  call testify#assert#equals(len(dotoos.filter('v:val.done()')), 7)
+  call testify#assert#equals(len(dotoos.filter('v:val.todo ==# "TODO"')), 11)
+  call testify#assert#equals(len(dotoos.filter('v:val.todo ==# "CANCELLED"')), 1)
+  call testify#assert#equals(len(dotoos.filter('empty(v:val.metadate())')), 8)
+  call testify#assert#equals(len(dotoos.filter('!empty(v:val.metadate()) && !v:val.done()')), 3)
+endfunction
+call testify#it('Should filter dotoos', function('s:TestFilter'))
