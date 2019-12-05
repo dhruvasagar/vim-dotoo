@@ -14,12 +14,12 @@ jobs:
 
       - run:
           name: Install dhruvasagar/vim-testify
-          command: git clone https://github.com/dhruvasagar/vim-testify.git ~/.vim/pack/plugins/start/
+          command: git clone https://github.com/dhruvasagar/vim-testify.git ~/.vim/pack/plugins/start/vim-testify
 
       - checkout:
-          path: '~/.vim/pack/plugins/start/'
+          path: '~/.vim/pack/plugins/start/vim-dotoo'
 
       - run:
           name: Run tests
-          command: vim +TestifySuite
+          command: cd ~/.vim/pack/plugins/start/vim-dotoo; vim +TestifySuite
 
