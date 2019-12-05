@@ -12,19 +12,9 @@ jobs:
           name: Setup VIM
           command: mkdir -p ~/.vim/pack/plugins/start/
 
-      - restore_cache:
-          name: Restore vim-testify from cache
-          keys:
-            - testify-cache-{{ arch }}-{{ .Branch }}-{{ checksum "~/.vim/pack/plugins/start/vim-testify/README.md" }}
-            - testify-cache-{{ arch }}-
-            - testify-cache-
       - run:
           name: Install dhruvasagar/vim-testify
           command: git clone https://github.com/dhruvasagar/vim-testify.git ~/.vim/pack/plugins/start/vim-testify
-      - save_cache:
-          key: testify-cache-{{ arch }}-{{ .Branch }}-{{ checksum "~/.vim/pack/plugins/start/vim-testify/README.md" }}
-          paths:
-            - ~/.vim/pack/plugins/start/vim-testify
 
       - checkout:
           path: '~/.vim/pack/plugins/start/vim-dotoo'
