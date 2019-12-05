@@ -21,5 +21,5 @@ jobs:
 
       - run:
           name: Run tests
-          command: cd ~/.vim/pack/plugins/start/vim-dotoo; vim +TestifySuite
+          command: cd ~/.vim/pack/plugins/start/vim-dotoo; vim +"set hidden" +TestifySuite
 
