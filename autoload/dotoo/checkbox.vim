@@ -1,20 +1,25 @@
+function! dotoo#checkbox#is_headline(line)
+  return a:line =~ '^\*\+ '
+endfunction
+
 function! dotoo#checkbox#is_checkbox(line)
   return a:line =~ '^\s*[-+*] \[[ -X]\]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
 endfunction
+
 function! dotoo#checkbox#is_unchecked_checkbox(line)
   return a:line =~ '^\s*[-+*] \[ \]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
 endfunction
+
 function! dotoo#checkbox#is_partial_checkbox(line)
   return a:line =~ '^\s*[-+*] \[-\]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
 endfunction
+
 function! dotoo#checkbox#is_checked_checkbox(line)
   return a:line =~ '^\s*[-+*] \[X\]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
 endfunction
+
 function dotoo#checkbox#is_list_item(line)
   return a:line =~ '^\s*[-+*]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
-endfunction
-function! dotoo#checkbox#is_headline(line)
-  return a:line =~ '^\*\+ '
 endfunction
 
 function! s:count_children(parent)

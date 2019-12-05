@@ -1,0 +1,25 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run:
+          name: Install git & vim
+          command: apk --no-cache add git vim
+
+      - run:
+          name: Setup VIM
+          command: mkdir -p ~/.vim/pack/plugins/start/
+
+      - run:
+          name: Install dhruvasagar/vim-testify
+          command: git clone https://github.com/dhruvasagar/vim-testify.git ~/.vim/pack/plugins/start/vim-testify
+
+      - checkout:
+          path: '~/.vim/pack/plugins/start/vim-dotoo'
+
+      - run:
+          name: Run tests
+          command: cd ~/.vim/pack/plugins/start/vim-dotoo; vim +"set hidden" +TestifySuite
+
