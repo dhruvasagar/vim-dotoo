@@ -35,7 +35,7 @@ iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#datetime_forma
 
 nnoremap <buffer> <silent> gI         :<C-U>call dotoo#clock#start()<CR>
 nnoremap <buffer> <silent> gO         :<C-U>call dotoo#clock#stop()<CR>
-nnoremap <buffer> <silent> gM         :<C-U>call dotoo#move_headline(dotoo#get_headline())<CR>
+nnoremap <buffer> <silent> gM         :<C-U>call dotoo#move_headline_menu(dotoo#get_headline())<CR>
 nnoremap <buffer> <silent> cit        :<C-U>call dotoo#change_todo()<CR>
 nnoremap <buffer> <silent> <C-C><C-C> :<C-U>call dotoo#normalize()<CR>
 nmap     <buffer> cic      <Plug>DotooCheckboxToggle

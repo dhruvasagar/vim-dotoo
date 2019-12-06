@@ -128,6 +128,7 @@ function! s:headline_methods.save() dict
   call self.open()
   call self.delete()
   call append(self.lnum-1, self.serialize())
+  silent write
   call self.close()
   call winrestview(old_view)
 endfunction

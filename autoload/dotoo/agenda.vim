@@ -183,6 +183,7 @@ endfunction
 
 function! dotoo#agenda#get_headline_by_title(file_title)
   if a:file_title =~# ':'
+    call s:load_agenda_files()
     let [filekey, title] = split(a:file_title, ':')
     let bufname = bufname(filekey)
     let bufname = empty(bufname) ? bufname(filekey . '.{dotoo,org}') : bufname
@@ -198,7 +199,7 @@ endfunction
 
 function! dotoo#agenda#move_headline()
   let headline = s:agenda_headlines[line('.')-2]
-  call dotoo#move_headline(headline)
+  call dotoo#move_headline_menu(headline)
   call dotoo#agenda#refresh_view()
 endfunction
 

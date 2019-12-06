@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.8.4
+                                Version 0.9.0
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -211,25 +211,83 @@ OPTIONS                                                          *dotoo-options*
                                                    *g:dotoo#capture#templates*
       |g:dotoo#capture#templates|
             This setting defines the capture templates the capture menu uses. >
-                let g:dotoo#capture#templates = [
-                  \ ['t', 'Todo', ['* TODO %?',
-                  \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
-                  \ ['n', 'Note', '* %? :NOTE:'],
-                  \ ['m', 'Meeting', '* MEETING with %? :MEETING:'],
-                  \ ['p', 'Phone call', '* PHONE %? :PHONE:'],
-                  \ ['h', 'Habit', ['* NEXT %?',
-                  \                'SCHEDULED: [%(strftime(g:dotoo#time#date_day_format)) +1m]',
-                  \                ':PROPERTIES:',
-                  \                ':STYLE: habit',
-                  \                ':REPEAT_TO_STATE: NEXT',
-                  \                ':END:']]
-                  \ ]
+                let g:dotoo#capture#templates = {
+                      \ 't': {
+                      \   'description': 'Todo',
+                      \   'lines': [
+                      \     '* TODO %?',
+                      \     'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]'
+                      \   ],
+                      \  'target': 'refile:Tasks'
+                      \ },
+                      \ 'n': {
+                      \   'description': 'Note',
+                      \   'lines': ['* %? :NOTE:'],
+                      \ },
+                      \ 'm': {
+                      \   'description': 'Meeting',
+                      \   'lines': ['* MEETING with %? :MEETING:'],
+                      \ },
+                      \ 'p': {
+                      \   'description': 'Phone call',
+                      \   'lines': ['* PHONE %? :PHONE:'],
+                      \ },
+                      \ 'h': {
+                      \   'description': 'Habit',
+                      \   'lines': [
+                      \     '* NEXT %?',
+                      \     'SCHEDULED: [%(strftime(g:dotoo#time#date_day_format)) +1m]',
+                      \     ':PROPERTIES:',
+                      \     ':STYLE: habit',
+                      \     ':REPEAT_TO_STATE: NEXT',
+                      \     ':END:'
+                      \   ]
+                      \ }
+                      \})
 <
-            NOTE: The first option defines the key press to be used for the item,
-            second is the description and third is a list for each line of the
-            template. You can use `%?` as a placeholder for where the cursor
-            will be editing the template immidiately after selecting it and
-            `%(...)` to inline viml code that will be evaluated.
+            Templates are represented by a dictionary where the key is the
+            short_key used to select the template from the capture menu.
+
+            It has the following structure
+
+            * `description` provides a human friendly explanation of what this
+               template represents
+            * `lines` is a list for each line of the template. You can use
+               `%?` as a placeholder for where the cursor will be while editing
+               the template immidiately after selecting it and `%(...)` to
+               inline viml code that will be evaluated.
+            * `target` defines the target for  this capture template should be
+               saved to, it can either be a dotoo file path or a dotoo move
+               target such as `todo:Tasks` which represents a dotoo file
+               headline to use as the parent for this captured headline.
+
+            For easier customization this allows you to be able to add new or
+            override the provided templates easily. >
+                let g:dotoo#capture#templates = {
+                      \ 't': {
+                      \   'target': 'refile-personal:Todos'
+                      \ }
+                      \}
+
+                " Or add new template
+                let g:dotoo#capture#templates = {
+                      \ 'x': {
+                      \   'description': 'eXtra template',
+                      \   'lines': ['* eXtra %? :EXTRA:'],
+                      \ }
+                      \}
+
+                " Or both
+                let g:dotoo#capture#templates = {
+                      \ 't': {
+                      \   'target': 'refile-personal:Todos'
+                      \ },
+                      \ 'x': {
+                      \   'description': 'eXtra template',
+                      \   'lines': ['* eXtra %? :EXTRA:'],
+                      \ }
+                      \}
+<
 
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*

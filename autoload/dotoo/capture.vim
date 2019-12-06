@@ -5,32 +5,50 @@ let g:autoloaded_dotoo_capture = 1
 
 call dotoo#utils#set('dotoo#capture#refile', expand('~/Documents/dotoo-files/refile.dotoo'))
 call dotoo#utils#set('dotoo#capture#clock', 1)
-call dotoo#utils#set('dotoo#capture#templates', [
-      \ ['t', 'Todo', ['* TODO %?',
-      \                'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]']],
-      \ ['n', 'Note', ['* %? :NOTE:']],
-      \ ['m', 'Meeting', ['* MEETING with %? :MEETING:']],
-      \ ['p', 'Phone call', ['* PHONE %? :PHONE:']],
-      \ ['h', 'Habit', ['* NEXT %?',
-      \                'SCHEDULED: [%(strftime(g:dotoo#time#date_day_format)) +1m]',
-      \                ':PROPERTIES:',
-      \                ':STYLE: habit',
-      \                ':REPEAT_TO_STATE: NEXT',
-      \                ':END:']]
-      \ ])
+call dotoo#utils#set('dotoo#capture#templates', {
+      \ 't': {
+      \   'description': 'Todo',
+      \   'lines': [
+      \     '* TODO %?',
+      \     'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]'
+      \   ],
+      \  'target': 'refile:Tasks'
+      \ },
+      \ 'n': {
+      \   'description': 'Note',
+      \   'lines': ['* %? :NOTE:'],
+      \ },
+      \ 'm': {
+      \   'description': 'Meeting',
+      \   'lines': ['* MEETING with %? :MEETING:'],
+      \ },
+      \ 'p': {
+      \   'description': 'Phone call',
+      \   'lines': ['* PHONE %? :PHONE:'],
+      \ },
+      \ 'h': {
+      \   'description': 'Habit',
+      \   'lines': [
+      \     '* NEXT %?',
+      \     'SCHEDULED: [%(strftime(g:dotoo#time#date_day_format)) +1m]',
+      \     ':PROPERTIES:',
+      \     ':STYLE: habit',
+      \     ':REPEAT_TO_STATE: NEXT',
+      \     ':END:'
+      \   ]
+      \ }
+      \})
 
 function! s:capture_menu()
-  let menu_lines = map(deepcopy(g:dotoo#capture#templates), '"(".v:val[0].") ".v:val[1]')
-  let acceptable_input = '[' . join(map(deepcopy(g:dotoo#capture#templates), 'v:val[0]'),'') . ']'
+  let ts = deepcopy(g:dotoo#capture#templates)
+  let menu_lines = values(map(deepcopy(ts), {k, t -> "(".k.") ".t.description}))
+  let acceptable_input = '[' . join(keys(ts),'') . ']'
   call add(menu_lines, 'Select capture template: ')
   return dotoo#utils#getchar(join(menu_lines, "\n"), acceptable_input)
 endfunction
 
 function! s:get_selected_template(short_key)
-  for template in deepcopy(g:dotoo#capture#templates)
-    if template[0] ==# a:short_key | return template | endif
-  endfor
-  return []
+  return get(g:dotoo#capture#templates, a:short_key, '')
 endfunction
 
 function! s:capture_template_eval_line(template)
@@ -63,7 +81,9 @@ function! dotoo#capture#capture()
   let selected = s:capture_menu()
   if !empty(selected)
     let template = s:get_selected_template(selected)
-    let template_lines = template[2]
+    let template_lines = template.lines
+    let capture_target = get(template, 'target', g:dotoo#capture#refile)
+    let capture_target_headline = dotoo#agenda#get_headline_by_title(capture_target)
     let template_lines = s:capture_template_eval(template_lines)
     call s:capture_edit('split')
     let dotoo = dotoo#parser#parse({'lines': template_lines, 'force': 1})
@@ -72,6 +92,7 @@ function! dotoo#capture#capture()
     if g:dotoo#capture#clock | call dotoo#clock#start(headline, 0) | endif
     call headline.change_todo(todo) " work around clocking todo state change
     call setline(1, headline.serialize())
+    let b:capture_target = capture_target_headline
     call s:capture_select()
   endif
 endfunction
