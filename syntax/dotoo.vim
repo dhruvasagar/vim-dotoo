@@ -309,6 +309,7 @@ if exists('g:loaded_SyntaxRange')
   call SyntaxRange#Include('\\begin[.*]{.*}', '\\end{.*}', 'tex')
   call SyntaxRange#Include('\\begin{.*}', '\\end{.*}', 'tex')
   call SyntaxRange#Include('\\\[', '\\\]', 'tex')
+  call SyntaxRange#Include('\$[^$]', '\$', 'tex')
 endif
 " }}}
 
