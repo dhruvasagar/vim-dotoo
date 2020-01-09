@@ -36,7 +36,7 @@ endfunction
 function! s:agenda_views_menu()
   let views = keys(s:agenda_views)
   let acceptable_input = '['.join(map(copy(views), 'v:val[0]'),'').']'
-  call map(views, '"(".tolower(v:val[0]).") ".v:val')
+  call map(views, '"(".v:val[0].") ".v:val')
   call add(views, 'Select agenda view: ')
   let selected = dotoo#utils#getchar(join(views, "\n"), acceptable_input)
   let sel = []
@@ -294,7 +294,8 @@ function! dotoo#agenda#load()
   call dotoo#agenda_views#notes#register()
   call dotoo#agenda_views#agenda#register()
   call dotoo#agenda_views#refiles#register()
-  
+  call dotoo#agenda_views#tagged#register()
+
   " Register Agenda View Plugins
   call dotoo#agenda_views#plugins#log_summary#register()
 endfunction
