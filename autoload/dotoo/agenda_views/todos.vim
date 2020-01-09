@@ -40,13 +40,15 @@ function! s:build_todos(dotoos, ...)
   return todos
 endfunction
 
-let s:view_name = 'todos' "{{{1
-let s:todos_view = {}
+let s:todos_view = {
+      \ 'key': 't',
+      \ 'name': 'Todos',
+      \}
 function! s:todos_view.content(dotoos, ...) dict "{{{1
   let force = a:0 ? a:1 : 0
   return s:build_todos(a:dotoos, force)
 endfunction
 
 function! dotoo#agenda_views#todos#register() "{{{1
-  call dotoo#agenda#register_view(s:view_name, s:todos_view)
+  call dotoo#agenda#register_view(s:todos_view)
 endfunction

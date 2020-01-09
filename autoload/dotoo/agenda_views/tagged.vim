@@ -38,8 +38,10 @@ function! s:build_tagged(dotoos, ...)
   return tagged
 endfunction
 
-let s:view_name = 'Tagged'
-let s:tagged_view = {}
+let s:tagged_view = {
+      \ 'key': 'T',
+      \ 'name': 'Tagged',
+      \}
 function! s:tagged_view.content(dotoos, ...) dict
   let force = a:0 ? a:1 : 0
   return s:build_tagged(a:dotoos, force)
@@ -50,5 +52,5 @@ function! s:tagged_view.short_key() dict
 endfunction
 
 function! dotoo#agenda_views#tagged#register()
-  call dotoo#agenda#register_view(s:view_name, s:tagged_view)
+  call dotoo#agenda#register_view(s:tagged_view)
 endfunction

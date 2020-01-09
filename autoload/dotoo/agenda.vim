@@ -35,15 +35,15 @@ endfunction
 
 function! s:agenda_views_menu()
   let views = keys(s:agenda_views)
-  let acceptable_input = '['.join(map(copy(views), 'v:val[0]'),'').']'
-  call map(views, '"(".v:val[0].") ".v:val')
+  let acceptable_input = '['.join(copy(views),'').']'
+  call map(views, '"(".s:agenda_views[v:val].key.") ".s:agenda_views[v:val].name')
   call add(views, 'Select agenda view: ')
   let selected = dotoo#utils#getchar(join(views, "\n"), acceptable_input)
   let sel = []
   if !empty(selected)
-    let sel = filter(keys(s:agenda_views), "v:val =~# '^'.selected.'.*'")
+    let sel = s:agenda_views[selected]
   endif
-  return !empty(sel) ? sel[0] : ''
+  return !empty(sel) ? sel : ''
 endfunction
 
 function! s:has_agenda_file(...)
@@ -80,25 +80,23 @@ function! s:edit(cmd)
   setf dotooagenda
 endfunction
 
-function! s:view_cleanup(view_name)
-  let view = get(s:agenda_views, a:view_name, {})
-  if has_key(view, 'cleanup')
+function! s:view_cleanup(view)
+  if has_key(a:view, 'cleanup')
     call s:edit('pedit!')
-    call view.cleanup()
+    call a:view.cleanup()
   endif
 endfunction
 
-function! s:show_view(view_name, force)
-  let view = get(s:agenda_views, a:view_name, {})
-  if has_key(view, 'content')
-    let content = view.content(s:agenda_dotoos, a:force)
+function! s:show_view(view, force)
+  if has_key(a:view, 'content')
+    let content = a:view.content(s:agenda_dotoos, a:force)
     let old_view = winsaveview()
     call s:edit('pedit!')
     setl modifiable
     silent normal! ggdG
     silent call setline(1, content)
     setl nomodified nomodifiable
-    if has_key(view, 'setup') | call view.setup() | endif
+    if has_key(a:view, 'setup') | call a:view.setup() | endif
     call winrestview(old_view)
   endif
 endfunction
@@ -162,9 +160,9 @@ function! dotoo#agenda#undo_headline_change()
 endfunction
 
 let s:agenda_views = {}
-function! dotoo#agenda#register_view(name, plugin) abort
+function! dotoo#agenda#register_view(plugin) abort
   if type(a:plugin) == type({})
-    let s:agenda_views[a:name] = a:plugin
+    let s:agenda_views[a:plugin.key] = a:plugin
   endif
 endfunction
 
@@ -300,7 +298,7 @@ function! dotoo#agenda#load()
   call dotoo#agenda_views#plugins#log_summary#register()
 endfunction
 
-let s:current_view = ''
+let s:current_view = {}
 function! dotoo#agenda#agenda()
   if !exists('s:dotoo_agenda_loaded')
   	call dotoo#agenda#load()
@@ -308,7 +306,7 @@ function! dotoo#agenda#agenda()
   let force = 1
   let old_view = s:current_view
   let s:current_view = s:agenda_views_menu()
-  if old_view !=# s:current_view | call s:view_cleanup(old_view) | endif
+  if !empty(old_view) && old_view !=# s:current_view | call s:view_cleanup(old_view) | endif
   call s:add_agenda_file_menu()
   call s:load_agenda_files(force)
   call s:show_view(s:current_view, force)

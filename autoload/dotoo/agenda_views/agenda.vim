@@ -82,8 +82,10 @@ function! s:change_span()
   call dotoo#agenda#refresh_view()
 endfunction
 
-let s:view_name = 'agenda'
-let s:agenda_view = {}
+let s:agenda_view = {
+      \ 'key': 'a',
+      \ 'name': 'Agenda',
+      \}
 function! s:agenda_view.map() dict
   nnoremap <buffer> <silent> <nowait> . :<C-U>call <SID>adjust_current_date('.')<CR>
   nnoremap <buffer> <silent> <nowait> f :<C-U>call <SID>adjust_current_date('+1')<CR>
@@ -108,6 +110,10 @@ endfunction
 function! s:agenda_view.content(dotoos, ...) dict
   let force = a:0 ? a:1 : 0
   return s:build_agendas(a:dotoos, force)
+endfunction
+
+function! s:agenda_view.short_key() dict
+  return "a"
 endfunction
 
 function! s:agenda_view.cleanup() dict
@@ -135,5 +141,5 @@ function! dotoo#agenda_views#agenda#toggle_plugin(name)
 endfunction
 
 function! dotoo#agenda_views#agenda#register()
-  call dotoo#agenda#register_view(s:view_name, s:agenda_view)
+  call dotoo#agenda#register_view(s:agenda_view)
 endfunction

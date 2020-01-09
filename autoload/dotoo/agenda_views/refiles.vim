@@ -39,13 +39,15 @@ function! s:build_refiles(dotoos, ...)
   return refiles
 endfunction
 
-let s:view_name = 'refiles'
-let s:refile_view = {}
+let s:refile_view = {
+      \ 'key': 'r',
+      \ 'name': 'Refile',
+      \}
 function! s:refile_view.content(dotoos, ...) dict
   let force = a:0 ? a:1 : 0
   return s:build_refiles(a:dotoos, force)
 endfunction
 
 function! dotoo#agenda_views#refiles#register()
-  call dotoo#agenda#register_view(s:view_name, s:refile_view)
+  call dotoo#agenda#register_view(s:refile_view)
 endfunction

@@ -38,13 +38,15 @@ function! s:build_notes(dotoos, ...)
   return notes
 endfunction
 
-let s:view_name = 'notes'
-let s:notes_view = {}
+let s:notes_view = {
+      \ 'key': 'n',
+      \ 'name': 'Notes',
+      \}
 function! s:notes_view.content(dotoos, ...) dict
   let force = a:0 ? a:1 : 0
   return s:build_notes(a:dotoos, force)
 endfunction
 
 function! dotoo#agenda_views#notes#register()
-  call dotoo#agenda#register_view(s:view_name, s:notes_view)
+  call dotoo#agenda#register_view(s:notes_view)
 endfunction
