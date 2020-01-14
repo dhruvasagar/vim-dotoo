@@ -30,7 +30,7 @@ endfunction
 function! dotoo#move_headline_menu(headline)
   let target_title = input('Enter target: ', '', 'customlist,dotoo#agenda#headline_complete')
   redraw!
-  let target = dotoo#parser#headline#get_by_title(target_title)
+  let target = dotoo#agenda#get_headline_by_title(target_title)
   call dotoo#move_headline(a:headline, target)
 endfunction
 
