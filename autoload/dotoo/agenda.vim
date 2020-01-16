@@ -183,6 +183,9 @@ function! dotoo#agenda#get_headline_by_title(file_title)
   if a:file_title =~# ':'
     call s:load_agenda_files()
     let [filekey, title] = split(a:file_title, ':')
+    if filekey !~# '\.dotoo$'
+      let filekey += '.dotoo'
+    endif
     let bufname = bufname(filekey)
     let bufname = empty(bufname) ? bufname(filekey . '.{dotoo,org}') : bufname
     let dotoo = get(s:agenda_dotoos, bufname, '')
