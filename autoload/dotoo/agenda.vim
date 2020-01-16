@@ -43,7 +43,7 @@ function! s:agenda_views_menu()
   if !empty(selected)
     let sel = s:agenda_views[selected]
   endif
-  return !empty(sel) ? sel : ''
+  return !empty(sel) ? sel : {}
 endfunction
 
 function! s:has_agenda_file(...)
