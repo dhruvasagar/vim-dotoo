@@ -194,7 +194,11 @@ function! dotoo#agenda#get_headline_by_title(file_title)
       if !empty(headlines) | return headlines[0] | endif
     endif
   else
-    return a:file_title
+    let bufname = bufname(a:file_title . '.{dotoo,org}')
+    if empty(bufname)
+      return a:file_title
+    endif
+    return bufname
   endif
 endfunction
 
