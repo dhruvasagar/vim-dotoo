@@ -8,6 +8,11 @@ function! s:extend_dict(dict1, dict2) abort
   for key in keys(a:dict1)
     let dict3[key] = extend(get(a:dict1, key, {}), get(a:dict2, key, {}))
   endfor
+  for key in keys(a:dict2)
+    if !has_key(a:dict1, key)
+      let dict3[key] = get(a:dict2, key, {})
+    endif
+  endfor
   return dict3
 endfunction
 
