@@ -13,7 +13,7 @@ call dotoo#utils#set('dotoo#time#date_day_regex', g:dotoo#time#date_regex . ' ' 
 call dotoo#utils#set('dotoo#time#time_regex', '(\d{2}):(\d{2})')
 call dotoo#utils#set('dotoo#time#datetime_regex', g:dotoo#time#date_day_regex . ' ' . g:dotoo#time#time_regex)
 
-call dotoo#utils#set('dotoo#time#repeatable_regex', '(\+?\d+[hdmy])')
+call dotoo#utils#set('dotoo#time#repeatable_regex', '(\+?\d+[hdwmy])')
 call dotoo#utils#set('dotoo#time#repeatable_date_regex', g:dotoo#time#date_day_regex . ' ' . g:dotoo#time#repeatable_regex)
 call dotoo#utils#set('dotoo#time#repeatable_datetime_regex', g:dotoo#time#datetime_regex . ' ' . g:dotoo#time#repeatable_regex)
 
