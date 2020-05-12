@@ -49,6 +49,10 @@ function! s:get_date()
   normal! di[
   let dt = @@
   if empty(dt)
+    normal! di<
+    let dt = @@
+  endif
+  if empty(dt)
     return ''
   else
     return dotoo#time#new(dt)
