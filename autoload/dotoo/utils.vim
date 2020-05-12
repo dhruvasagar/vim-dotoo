@@ -5,7 +5,7 @@ let g:autoloaded_dotoo_utils = 1
 
 function! s:extend_dict(dict1, dict2) abort
   let dict3 = {}
-  for key in keys(a:dict1)
+  for key in keys(a:dict1)+keys(a:dict2)
     let dict3[key] = extend(get(a:dict1, key, {}), get(a:dict2, key, {}))
   endfor
   return dict3
