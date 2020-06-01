@@ -21,5 +21,5 @@ augroup BufWrite
 augroup END
 
 nmap <buffer> <C-A> <Plug>DotooIncrementDate
-nmap <buffer> <C-X> <Plug>DotooIncrementDate
+nmap <buffer> <C-X> <Plug>DotooDecrementDate
 nmap <buffer> cic   <Plug>DotooCheckboxToggle
