@@ -13,7 +13,6 @@ function! s:build_agendas(dotoos, ...)
     for dotoo in values(a:dotoos)
       let _deadlines = dotoo.filter('!v:val.done() && !empty(v:val.deadline())',1)
       if s:current_span ==# 'day' && s:current_date.is_today()
-        let s:current_date = dotoo#time#new()
         let _deadlines = filter(_deadlines, 'v:val.deadline().before(warning_limit)')
       else
         let _deadlines = filter(_deadlines,

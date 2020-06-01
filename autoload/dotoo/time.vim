@@ -63,7 +63,7 @@ function! s:localtime(...)
         \, 'hour'   : +strftime('%H', ts)
         \, 'minute' : +strftime('%M', ts)
         \, 'second' : +strftime('%S', ts)
-        \, 'sepoch' : ts
+        \, 'sepoch' : +strftime('%s', ts)
         \, 'repeat' : rp
         \}
   let datetime.depoch = s:jd(datetime.year, datetime.month, datetime.day)
@@ -120,20 +120,20 @@ endfunction
 
 function! dotoo#time#start_of(time, span)
   if type(a:time) == type(1) || type(a:time) == type('')
-    let time = a:time
+    let time = dotoo#time#new(a:time)
   elseif type(a:time) == type({})
-    let time = a:time.to_seconds()
+    let time = a:time
   endif
   if a:span ==# 'month'
-    return dotoo#time#new(printf('%s-%02s-%02s', strftime('%Y', time), strftime('%m', time), '1'))
+    return dotoo#time#new(printf('%s-%02s-%02s', time.to_string('%Y'), time.to_string('%m'), '1'))
   elseif a:span ==# 'week'
-    let now = dotoo#time#new(time)
+    let now = time.start_of('day')
     while now.to_string('%a') !=# 'Mon'
       let now = now.adjust('-1d')
     endwhile
     return now
   elseif a:span ==# 'day'
-    return dotoo#time#new(strftime('%Y-%m-%d', time))
+    return dotoo#time#new(time.to_string('%Y-%m-%d'))
   endif
 endfunction
 
@@ -142,7 +142,7 @@ function! dotoo#time#end_of(time, span) abort
   if a:span ==# 'month'
     return dotoo#time#new(printf('%s-%02s-%02s', strftime('%Y'), strftime('%m')+1, '1')).adjust('-1d')
   elseif a:span ==# 'week'
-    return start_of.adjust('+1w -1d')
+    return start_of.adjust('+1w')
   elseif a:span ==# 'day'
     return start_of.adjust('+1d')
   endif
