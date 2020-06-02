@@ -140,7 +140,7 @@ endfunction
 function! dotoo#time#end_of(time, span) abort
   let start_of = dotoo#time#start_of(a:time, a:span)
   if a:span ==# 'month'
-    return dotoo#time#new(printf('%s-%02s-%02s', strftime('%Y'), strftime('%m')+1, '1')).adjust('-1d')
+    return start_of.adjust('+1m')
   elseif a:span ==# 'week'
     return start_of.adjust('+1w')
   elseif a:span ==# 'day'
