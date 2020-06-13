@@ -23,3 +23,6 @@ augroup END
 nmap <buffer> <C-A> <Plug>DotooIncrementDate
 nmap <buffer> <C-X> <Plug>DotooDecrementDate
 nmap <buffer> cic   <Plug>DotooCheckboxToggle
+
+iabbrev <expr> <buffer> <silent> :date: '['.strftime(g:dotoo#time#date_day_format).']'
+iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#datetime_format).']'
