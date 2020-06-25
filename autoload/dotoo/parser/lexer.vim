@@ -30,7 +30,7 @@ let s:todo_keywords_done = g:dotoo#parser#todo_keywords[index(g:dotoo#parser#tod
 let s:todo_keywords_regex = join(s:todo_keywords_todo+s:todo_keywords_done, '|')
 call s:define('blank', '\v^$')
 call s:define('directive', '\v^#\+(\w+): (.*)$')
-call s:define('headline', '\v^(\*+)\s?('.s:todo_keywords_regex.')?\s?(\[\d+\])? ([^:]*)( :.*:)?$')
+call s:define('headline', '\v^(\*+)\s?('.s:todo_keywords_regex.')?\s?(\[\d+\])? (.*)( :.*:)?$')
 call s:define('metadata', '\v^(DEADLINE|CLOSED|SCHEDULED): ([\<\[])(.*)([\>\]])$')
 call s:define('properties', '\v^:PROPERTIES:$')
 call s:define('logbook', '\v^:LOGBOOK:$')
