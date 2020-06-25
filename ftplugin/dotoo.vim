@@ -6,7 +6,14 @@ let b:did_ftplugin = 1
 setl commentstring=#\ %s
 setl foldexpr=DotooFoldExpr()
 setl foldmethod=expr
-setl foldtext=getline(v:foldstart)
+setl foldtext=DotooFoldText()
+
+function! DotooFoldText()
+	let line = getline(v:foldstart)
+	let sub = substitute(line,'[[.\{-}\][\(.\{-}\)', '', 'g' )
+	let sub = substitute(sub,']]', '', 'g' )
+	return sub
+endfunction
 
 let s:syntax = dotoo#parser#lexer#syntax()
 function! DotooFoldExpr()
