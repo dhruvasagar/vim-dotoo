@@ -9,10 +9,10 @@ setl foldmethod=expr
 setl foldtext=DotooFoldText()
 
 function! DotooFoldText()
-	let line = getline(v:foldstart)
-	let sub = substitute(line,'[[.\{-}\][\(.\{-}\)', '', 'g' )
-	let sub = substitute(sub,']]', '', 'g' )
-	return sub
+  let line = getline(v:foldstart)
+  let sub = substitute(line,'[[.\{-}\][\(.\{-}\)', '', 'g' )
+  let sub = substitute(sub,']]', '', 'g' )
+  return sub
 endfunction
 
 let s:syntax = dotoo#parser#lexer#syntax()
