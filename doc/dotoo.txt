@@ -21,8 +21,9 @@ CONTENTS                                                         *dotoo-contents
             3. Capture .............................. |dotoo-capture|
       3. Options .................................... |dotoo-options|
       4. Mappings ................................... |dotoo-mappings|
-      5. Contributing ............................... |dotoo-contributing|
-      6. Credits .................................... |dotoo-credits|
+      5. Commands ................................... |dotoo-commands|
+      6. Contributing ............................... |dotoo-contributing|
+      7. Credits .................................... |dotoo-credits|
 
 -------------------------------------------------------------------------------
 INSTALLATION                                                 *dotoo-installation*
@@ -88,8 +89,8 @@ GETTING STARTED                                           *dotoo-getting-started
          There are 4 views available currently :
                                                              *dotoo-agenda-view*
          1. Agenda View : This displays all TODOs that are nearing deadline.
-            deadline. It provides a variety of mappings to manipulate the TODO items
-            from the agenda view itself.
+            deadline. It provides a variety of mappings to manipulate the TODO
+            items from the agenda view itself.
 
             These are mappings specific to agenda view:
                `f`:     go forward by 1 day
@@ -99,12 +100,12 @@ GETTING STARTED                                           *dotoo-getting-started
                `R`:     Report of clocking summary for the current span
 
                                                                *dotoo-todo-view*
-         2. TODOs View : This displays all unscheduled TODO items from your agenda
-            files.
+         2. TODOs View : This displays all unscheduled TODO items from your
+            agenda files.
 
                                                             *dotoo-refiles-view*
-         3. Refiles : This displays all headlines in the refile file that you should
-            then move to an appropriate target file / project / headline.
+         3. Refiles : This displays all headlines in the refile file that you
+            should move to an appropriate target file / project / headline.
 
                                                               *dotoo-notes-view*
          4. Notes : This displays all the notes from all the agenda files.
@@ -292,11 +293,44 @@ OPTIONS                                                          *dotoo-options*
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*
 
-                                                *gA* *dotoo-options-agenda-view*
+                                                                            *gA*
+                                                     *dotoo-options-agenda-view*
       `gA`: Open Agenda View
 
-                       *gC* *dotoo-options-capture* *dotoo-options-capture-menu*
+                                                                            *gC*
+                                                         *dotoo-options-capture*
+                                                    *dotoo-options-capture-menu*
       `gC`: Trigger Capture Menu
+
+-------------------------------------------------------------------------------
+COMMANDS                                                        *dotoo-commands*
+
+                                                              *:DotooAdjustDate*
+                                                        *dotoo-:DotooAdjustDate*
+      :DotooAdjustDate
+            Adjust Date under cursor by an arbitrary amount. This command is
+            only available within dotoo & dotoocapture buffers.
+
+            Examples: >
+                :DotooAdjustDate +1y " Increment date by 1 year
+                :DotooAdjustDate +1m " Increment date by 1 month
+                :DotooAdjustDate +1w " Increment date by 1 week
+                :DotooAdjustDate +1d " Increment date by 1 day
+                :DotooAdjustDate +1h " Increment date by 1 hour
+                :DotooAdjustDate +1M " Increment date by 1 minute
+                :DotooAdjustDate +1s " Increment date by 1 second
+
+                :DotooAdjustDate -1y " Decrement date by 1 year
+                :DotooAdjustDate -1m " Decrement date by 1 month
+                :DotooAdjustDate -1w " Decrement date by 1 week
+                :DotooAdjustDate -1d " Decrement date by 1 day
+                :DotooAdjustDate -1h " Decrement date by 1 hour
+                :DotooAdjustDate -1M " Decrement date by 1 minute
+                :DotooAdjustDate -1s " Decrement date by 1 second
+<
+            The argument to this command is optional. If you do not provide an
+            argument it will prompt you to provide the amount by which the
+            date should be adjusted.
 
 -------------------------------------------------------------------------------
 CONTRIBUTING                                                 *dotoo-contributing*

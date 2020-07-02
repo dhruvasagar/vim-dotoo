@@ -26,3 +26,5 @@ nmap <buffer> cic   <Plug>DotooCheckboxToggle
 
 iabbrev <expr> <buffer> <silent> :date: '['.strftime(g:dotoo#time#date_day_format).']'
 iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#datetime_format).']'
+
+command! -buffer -nargs=? DotooAdjustDate call dotoo#adjust_date(<q-args>)

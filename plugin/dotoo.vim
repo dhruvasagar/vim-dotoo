@@ -58,3 +58,5 @@ augroup END
 nnoremap <silent> <Plug>DotooIncrementDate  :<C-U>call dotoo#increment_date(v:count1)<CR>
 nnoremap <silent> <Plug>DotooDecrementDate  :<C-U>call dotoo#decrement_date(v:count1)<CR>
 nnoremap <silent> <Plug>DotooCheckboxToggle :<C-U>call dotoo#checkbox#toggle()<CR>
+
+command! -buffer -nargs=? DotooAdjustDate call dotoo#adjust_date(<q-args>)

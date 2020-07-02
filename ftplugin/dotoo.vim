@@ -41,3 +41,5 @@ nnoremap <buffer> <silent> <C-C><C-C> :<C-U>call dotoo#normalize()<CR>
 nmap     <buffer> cic      <Plug>DotooCheckboxToggle
 nmap     <buffer> <C-A>    <Plug>DotooIncrementDate
 nmap     <buffer> <C-X>    <Plug>DotooDecrementDate
+
+command! -buffer -nargs=? DotooAdjustDate call dotoo#adjust_date(<q-args>)

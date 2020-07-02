@@ -77,6 +77,14 @@ function! s:adjust_date(amount)
   endif
 endfunction
 
+function! dotoo#adjust_date(...)
+  let amount = a:0 ? a:1 : ''
+  if (empty(amount))
+    let amount = input('Adjust by amount: ')
+  endif
+  return call('s:adjust_date', [amount])
+endfunction
+
 function! dotoo#increment_date(days)
   if !s:adjust_date('+'.a:days.'d') | exe "normal! \<C-A>" | endif
   silent! call repeat#set("\<Plug>DotooIncrementDate", a:days)
