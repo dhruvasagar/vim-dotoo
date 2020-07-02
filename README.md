@@ -1,10 +1,10 @@
-# VIM Do Too v0.9.0 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
+# VIM Do Too v0.9.1 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Getting Started
 1. Document Structure: The docment structure is borrowed from emacs'
    Org Mode.
-   
+
    > NOTE : Check out the file `dotoo.dotoo` in this repo as an example
 
    These are the dotoo document mappings :
