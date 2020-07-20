@@ -50,6 +50,11 @@ endfunction
 function! s:localtime(...)
   let ts  = a:0 && !empty(a:1) ? a:1 : localtime()
   let rp = a:0 == 2 && !empty(a:2) ? a:2 : ''
+
+  " On some systems, especially windows `strftime('%s', ts)` doesn't work
+  let sepoch = +strftime('%s', ts)
+  if empty(sepoch) | let sepoch = ts | endif
+
   " sepoch    = seconds since epoch (Jan 1, 1970)
   " depoch    = days since epoch
   " stzoffset = timezone offset from UTC in seconds
@@ -63,7 +68,7 @@ function! s:localtime(...)
         \, 'hour'   : +strftime('%H', ts)
         \, 'minute' : +strftime('%M', ts)
         \, 'second' : +strftime('%S', ts)
-        \, 'sepoch' : +strftime('%s', ts)
+        \, 'sepoch' : sepoch
         \, 'repeat' : rp
         \}
   let datetime.depoch = s:jd(datetime.year, datetime.month, datetime.day)
