@@ -26,13 +26,10 @@ function! dotoo#utils#strip(string)
 endfunction
 
 function! dotoo#utils#getchar(prompt, accept)
-  let old_cmdheight = &cmdheight
-  let &cmdheight = len(split(a:prompt, "\n"))
   echon a:prompt
   let char = nr2char(getchar())
-  let &cmdheight = old_cmdheight
   redraw!
-  if char =~? a:accept | return char | endif
+  if char =~# a:accept | return char | endif
   return ''
 endfunction
 
