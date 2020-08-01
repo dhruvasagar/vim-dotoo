@@ -34,7 +34,6 @@ function! s:dotoo_methods.filter(expr,...) dict
   call filter(headlines, a:expr)
   if sort | call sort(headlines, 's:sort_by_deadline') | endif
   return headlines
-endif
 endfunction
 
 function! s:dotoo_methods.log_summary(time, span) dict
