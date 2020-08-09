@@ -29,7 +29,7 @@ function! dotoo#utils#getchar(prompt, accept)
   echon a:prompt
   let char = nr2char(getchar())
   redraw!
-  if char =~# a:accept | return char | endif
+  if char =~? a:accept | return char | endif
   return ''
 endfunction
 
