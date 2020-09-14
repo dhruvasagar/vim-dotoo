@@ -50,7 +50,7 @@ An awesome task manager & clocker inspired by org-mode written in pure viml.
    There are 4 views available currently :
 
    1. Agenda View : This displays all TODOs that are nearing deadline.
-      deadline. It provides a variety of mappings to manipulate the TODO items
+      It provides a variety of mappings to manipulate the TODO items
       from the agenda view itself.
 
       These are mappings specific to agenda view:
