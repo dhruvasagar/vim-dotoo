@@ -35,12 +35,11 @@ endfunction
 
 function! s:agenda_views_menu()
   let views = keys(s:agenda_views)
-  let acceptable_input = '['.join(copy(views),'').']'
-  call map(views, '"(".s:agenda_views[v:val].key.") ".s:agenda_views[v:val].name')
-  call add(views, 'Select agenda view: ')
-  let selected = dotoo#utils#getchar(join(views, "\n"), acceptable_input)
+  call map(views, '"&".s:agenda_views[v:val].key." ".s:agenda_views[v:val].name')
+  let confnum = confirm('Select agenda view: ', join(views, "\n") )
   let sel = []
-  if !empty(selected)
+  if confnum != 0
+    let selected = keys(s:agenda_views)[confnum - 1]
     let sel = s:agenda_views[selected]
   endif
   return !empty(sel) ? sel : {}
