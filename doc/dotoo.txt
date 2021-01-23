@@ -45,7 +45,8 @@ GETTING STARTED                                           *dotoo-getting-started
       1. Document Structure: The docment structure is borrowed from emacs'
          Org Mode.
 
-         These are the dotoo document mappings :
+         These are the default dotoo document mappings (which can be turned off
+         using |g:dotoo_use_default_mappings|) :
               `gI`:         clock-in headline under cursor
               `gO`:         clock-out headline under cursor
               `gM`:         move headline under cursor to selected target
@@ -141,6 +142,21 @@ OPTIONS                                                          *dotoo-options*
             This setting defines whether the leading stars of the headlines
             will be shaded. Set this to 0 if you don't want them to be shaded. >
                 let g:dotoo_headline_shade_leading_stars = 1
+<
+                                                  *g:dotoo_use_default_mappings*
+      |g:dotoo_use_default_mappings|
+            This setting defaults to 1, and disables the default dotoo file
+            mappings when set to 0. These mappings can be manually rebound and
+            customized, as shown below. >
+                let g:dotoo_use_default_mappings = 0
+                nmap <buffer> gI          <Plug>DotooClockIn
+                nmap <buffer> gO          <Plug>DotooClockOut
+                nmap <buffer> gM          <Plug>DotooMoveHeadline
+                nmap <buffer> cit         <Plug>DotooChangeTodo
+                nmap <buffer> <C-C><C-C>  <Plug>DotooNormalizeDate
+                nmap <buffer> cic         <Plug>DotooCheckboxToggle
+                nmap <buffer> <C-A>       <Plug>DotooIncrementDate
+                nmap <buffer> <C-X>       <Plug>DotooDecrementDate
 <
                                                   *g:dotoo_todo_keyword_faces*
       |g:dotoo_todo_keyword_faces|
