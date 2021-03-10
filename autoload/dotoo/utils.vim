@@ -53,3 +53,7 @@ function! dotoo#utils#change_todo_menu()
   call add(todo_keywords, 'Select todo state: ')
   return dotoo#utils#getchar(join(todo_keywords, "\n"), acceptable_input)
 endfunction
+
+function! dotoo#utils#is_dotoo_file(file) abort
+  return fnamemodify(a:file, ':e') =~# '\v^(dotoo|org)$'
+endfunction

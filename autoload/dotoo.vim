@@ -17,11 +17,15 @@ function! dotoo#move_headline(headline, target)
     call a:target.add_headline(a:headline)
     call a:target.save()
   else
-    if bufname(a:target)
-      silent exe 'noauto split' bufname(a:target)
-    else
-      silent exec 'noauto split' a:target
+    let target = bufname(a:target)
+    if empty(target) " file hasn't been loaded in vim
+      if dotoo#utils#is_dotoo_file(a:target)
+        let target = a:target
+      else
+        let target = g:dotoo#capture#refile
+      end
     endif
+    silent exe 'noauto split' target
     call append('$', a:headline.serialize())
     wq
   endif
