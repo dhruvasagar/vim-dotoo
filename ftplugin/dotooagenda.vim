@@ -3,18 +3,40 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
-nnoremap <buffer> <silent> <nowait> q :<C-U>quit<CR>
-nnoremap <buffer> <silent> <nowait> C :<C-U>call dotoo#capture#capture()<CR>
-nnoremap <buffer> <silent> <nowait> s :<C-U>call dotoo#agenda#save_files()<CR>
-nnoremap <buffer> <silent> <nowait> r :<C-U>call dotoo#agenda#refresh_view()<CR>
-nnoremap <buffer> <silent> <nowait> m :<C-U>call dotoo#agenda#move_headline()<CR>
-nnoremap <buffer> <silent> <nowait> c :<C-U>call dotoo#agenda#change_headline_todo()<CR>
-nnoremap <buffer> <silent> <nowait> u :<C-U>call dotoo#agenda#undo_headline_change()<CR>
-nnoremap <buffer> <silent> <nowait> i :<C-U>call dotoo#agenda#start_headline_clock()<CR>
-nnoremap <buffer> <silent> <nowait> o :<C-U>call dotoo#agenda#stop_headline_clock()<CR>
-nnoremap <buffer> <silent> <nowait> / :<C-U>call dotoo#agenda#filter_agendas()<CR>
-nnoremap <buffer> <silent> <nowait> <CR> :<C-U>call dotoo#agenda#goto_headline('edit')<CR>
-nnoremap <buffer> <silent> <nowait> <C-S> :<C-U>call dotoo#agenda#goto_headline('split')<CR>
-nnoremap <buffer> <silent> <nowait> <C-V> :<C-U>call dotoo#agenda#goto_headline('vsplit')<CR>
-nnoremap <buffer> <silent> <nowait> <C-T> :<C-U>call dotoo#agenda#goto_headline('tabe')<CR>
-nmap <buffer> <silent> <Tab> <C-V>
+if !g:dotoo_disable_mappings
+  nmap <buffer> <nowait> q :<C-U>quit<CR>
+
+  if !hasmapto('<Plug>(dotoo-capture)')
+    nmap <buffer> <nowait> C <Plug>(dotoo-capture)
+  endif
+  if !hasmapto('<Plug>(dotoo-agenda-refresh)')
+    nmap <buffer> <nowait> r <Plug>(dotoo-agenda-refresh)
+  endif
+  if !hasmapto('<Plug>(dotoo-agenda-save-files)')
+    nmap <buffer> <nowait> s <Plug>(dotoo-agenda-save-files)
+  endif
+  if !hasmapto('<Plug>(dotoo-agenda-headline-move)')
+    nmap <buffer> <nowait> m <Plug>(dotoo-agenda-headline-move)
+  endif
+  if !hasmapto('<Plug>(dotoo-agenda-headline-change-todo)')
+    nmap <buffer> <nowait> c <Plug>(dotoo-agenda-headline-change-todo)
+  endif
+  if !hasmapto('<Plug>(dotoo-agenda-headline-undo-change)')
+    nmap <buffer> <nowait> u <Plug>(dotoo-agenda-headline-undo-change)
+  endif
+  if !hasmapto('<Plug>(dotoo-agenda-headline-clock-start)')
+    nmap <buffer> <nowait> i <Plug>(dotoo-agenda-headline-clock-start)
+  endif
+  if !hasmapto('<Plug>(dotoo-agenda-headline-clock-stop)')
+    nmap <buffer> <nowait> o <Plug>(dotoo-agenda-headline-clock-stop)
+  endif
+  if !hasmapto('<Plug>(dotoo-agenda-filter)')
+    nmap <buffer> <nowait> / <Plug>(dotoo-agenda-filter)
+  endif
+
+  nmap <buffer> <nowait> <CR> :<C-U>call dotoo#agenda#goto_headline('edit')<CR>
+  nmap <buffer> <nowait> <C-S> :<C-U>call dotoo#agenda#goto_headline('split')<CR>
+  nmap <buffer> <nowait> <C-V> :<C-U>call dotoo#agenda#goto_headline('vsplit')<CR>
+  nmap <buffer> <nowait> <C-T> :<C-U>call dotoo#agenda#goto_headline('tabe')<CR>
+  nmap <buffer> <silent> <Tab> <C-V>
+endif

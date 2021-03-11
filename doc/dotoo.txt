@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.9.1
+                                Version 0.10.0
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -289,7 +289,12 @@ OPTIONS                                                          *dotoo-options*
                       \ }
                       \}
 <
-
+                                                      *g:dotoo_disable_mappings*
+      |g:dotoo_disable_mappings|
+            This setting sets whether to disable all default mappings (also
+            within dotoo, dotooagenda, dotoocapture filetypes). >
+                let g:dotoo_disable_mappings = 0
+<
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*
 
