@@ -110,7 +110,7 @@ who helped me a lot in building this.
 
 ### Code Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+This project exists thanks to all the people who contribute. [[Contribute](https://opencollective.com/vim-dotoo/contribute)].
 <a href="https://github.com/dhruvasagar/vim-dotoo/graphs/contributors"><img src="https://opencollective.com/vim-dotoo/contributors.svg?width=890&button=false" /></a>
 
 ### Financial Contributors
