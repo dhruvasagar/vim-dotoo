@@ -3,40 +3,52 @@ if exists('g:autoloaded_dotoo_agenda_views_agenda')
 endif
 let g:autoloaded_dotoo_agenda_views_agenda = 1
 
-let s:agendas = {}
-function! s:build_agendas(dotoos, ...)
-  let force = a:0 ? a:1 : 0
-  let warning_limit = s:current_date.adjust(g:dotoo#agenda#warning_days)
-  let filters_header = dotoo#agenda#filters_header()
-  if force || empty(s:agendas)
-    let s:agendas = {}
-    for dotoo in values(a:dotoos)
-      let _deadlines = dotoo.filter('!v:val.done() && !empty(v:val.deadline())',1)
-      if s:current_span ==# 'day' && s:current_date.is_today()
-        let _deadlines = filter(_deadlines, 'v:val.deadline().before(warning_limit)')
-      else
-        let _deadlines = filter(_deadlines,
-              \ 'v:val.deadline().between(s:current_date.start_of(s:current_span), s:current_date.end_of(s:current_span))')
-      endif
-      call dotoo#agenda#apply_filters(_deadlines)
-      let s:agendas[dotoo.file] = _deadlines
-    endfor
-  endif
-  let agendas = []
-  call dotoo#agenda#headlines([])
+function! s:build_day_agendas(dotoos, date) abort
+  let warning_limit = a:date.adjust(g:dotoo#agenda#warning_days)
   let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
-  for file in keys(s:agendas)
-    let headlines = s:agendas[file]
-    call dotoo#agenda#headlines(headlines, 1)
+
+  let agendas = []
+  for dotoo in values(a:dotoos)
+    let headlines = dotoo.filter('!v:val.done() && !empty(v:val.deadline())', 1)
+    if a:date.is_today()
+      let headlines = filter(headlines, 'v:val.deadline().before(warning_limit)')
+    else
+      let headlines = filter(headlines, 'v:val.deadline().next_repeat().eq_date(a:date)')
+    endif
+    call dotoo#agenda#apply_filters(headlines)
+
     for headline in headlines
       let agenda = printf('%s %10.10s:' . time_pf . '%-50.70s %s', '',
             \ headline.key,
-            \ headline.metadate().time_ago(s:current_date),
+            \ headline.metadate().time_ago(a:date),
             \ headline.todo_title(),
             \ headline.tags)
       call add(agendas, agenda)
     endfor
   endfor
+
+  let header = 'Date: ' . a:date.to_string('%A %d %B %Y')
+  if a:date.is_today()
+    let header = header . ' (Today)'
+  endif
+  call insert(agendas, header)
+  return agendas
+endfunction
+
+let s:agendas = {}
+function! s:build_agendas(dotoos, ...)
+  let force = a:0 ? a:1 : 0
+  let filters_header = dotoo#agenda#filters_header()
+
+  let agendas = []
+  let sdate = s:current_date.start_of(s:current_span)
+  let edate = s:current_date.end_of(s:current_span)
+  let date = sdate
+  while !date.eq(edate)
+    call extend(agendas, s:build_day_agendas(a:dotoos, date))
+    let date = date.adjust('1d')
+  endwhile
+
   if empty(agendas)
     call add(agendas, printf('%2s %s', '', 'No pending tasks!'))
   endif
@@ -46,7 +58,6 @@ function! s:build_agendas(dotoos, ...)
     endif
   endfor
   let header = []
-  call add(header, 'Date: ' . s:current_date.to_string('%A %d %B %Y'))
   call add(header, 'Span: ' . s:current_span)
   if !empty(filters_header) | call add(header, filters_header) | endif
   call insert(agendas, join(header, ', '))

@@ -101,25 +101,19 @@ function! s:show_view(view, force)
   endif
 endfunction
 
-" Public API {{{1
-let s:agenda_headlines = []
-function! dotoo#agenda#headlines(...)
-  if a:0
-    if a:0 == 1
-      let s:agenda_headlines = a:1
-    elseif a:0 == 2 && a:2
-      if type(a:1) == type([])
-        call extend(s:agenda_headlines, a:1)
-      else
-        call add(s:agenda_headlines, a:1)
-      endif
-    endif
-  endif
-  return s:agenda_headlines
+function! s:get_headline_under_cursor() abort
+  " Extract todo_title from the current line, also ignore tags
+  let htitle = trim(split(split(getline('.'), ':\s\+')[-1], ':')[0])
+  for dotoos in values(s:agenda_dotoos)
+    let headlines = dotoos.filter("v:val.todo_title() =~# '".htitle."'")
+    if !empty(headlines) | return headlines[0] | endif
+  endfor
 endfunction
 
+" Public API {{{1
 function! dotoo#agenda#goto_headline(cmd)
-  let headline = s:agenda_headlines[line('.')-2]
+  let headline = s:get_headline_under_cursor()
+  if empty(headline) | return | endif
   if a:cmd ==# 'edit' | quit | split | endif
   exec a:cmd '+'.headline.lnum headline.file
   if empty(&filetype) | edit | endif
@@ -127,19 +121,22 @@ function! dotoo#agenda#goto_headline(cmd)
 endfunction
 
 function! dotoo#agenda#start_headline_clock()
-  let headline = s:agenda_headlines[line('.')-2]
+  let headline = s:get_headline_under_cursor()
+  if empty(headline) | return | endif
   call dotoo#clock#start(headline)
   call s:agenda_modified(1)
 endfunction
 
 function! dotoo#agenda#stop_headline_clock()
-  let headline = s:agenda_headlines[line('.')-2]
+  let headline = s:get_headline_under_cursor()
+  if empty(headline) | return | endif
   call dotoo#clock#stop(headline)
   call s:agenda_modified(1)
 endfunction
 
 function! dotoo#agenda#change_headline_todo()
-  let headline = s:agenda_headlines[line('.')-2]
+  let headline = s:get_headline_under_cursor()
+  if empty(headline) | return | endif
   let selected = dotoo#utils#change_todo_menu()
   if !empty(selected)
     call headline.change_todo(selected)
@@ -152,7 +149,8 @@ function! dotoo#agenda#change_headline_todo()
 endfunction
 
 function! dotoo#agenda#undo_headline_change()
-  let headline = s:agenda_headlines[line('.')-2]
+  let headline = s:get_headline_under_cursor()
+  if empty(headline) | return | endif
   let old_view = winsaveview()
   call headline.undo()
   call dotoo#agenda#refresh_view()
@@ -203,7 +201,8 @@ function! dotoo#agenda#get_headline_by_title(file_title)
 endfunction
 
 function! dotoo#agenda#move_headline()
-  let headline = s:agenda_headlines[line('.')-2]
+  let headline = s:get_headline_under_cursor()
+  if empty(headline) | return | endif
   call dotoo#move_headline_menu(headline)
   call dotoo#agenda#refresh_view()
 endfunction
