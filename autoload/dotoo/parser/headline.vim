@@ -116,7 +116,7 @@ endfunction
 
 function! s:headline_methods.close() dict
   if self.is_split_open()
-    quit
+    hide
     exec self.split_winnr . 'wincmd w'
     call remove(self, 'split_open')
     call remove(self, 'split_winnr')

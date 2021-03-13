@@ -7,7 +7,7 @@ function! s:readfile(file)
   if !bufloaded(a:file)
     let old_view = winsaveview()
     silent exe 'noauto split' a:file
-    quit
+    hide
     call winrestview(old_view)
   endif
   return getbufline(a:file, 1, '$')
