@@ -1,5 +1,11 @@
-# VIM Do Too v0.10.0 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
+# VIM Do Too v0.10.1 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
 An awesome task manager & clocker inspired by org-mode written in pure viml.
+
+## Pre-requisites
+
+It is recommended that you enable the vim setting `'hidden'` which allows us
+to keep dotoo files hidden in the background for the purpose of showing
+accurate agenda information and also for faster updates to these files.
 
 ## Getting Started
 1. Document Structure: The docment structure is borrowed from emacs'
