@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.11.2
+                                Version 0.11.3
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -280,6 +280,12 @@ OPTIONS                                                          *dotoo-options*
             This setting sets whether to disable all default mappings (also
             within dotoo, dotooagenda, dotoocapture filetypes). >
                 let g:dotoo_disable_mappings = 0
+<
+                                        *g:dotoo#agenda_views#agenda#hide_empty*
+      |g:dotoo#agenda_views#agenda#hide_empty|
+            This setting, if enabled hides dates from the agenda view that have
+            no events, i.e. no scheduled / due tasks. >
+                let g:dotoo#agenda_views#agenda#hide_empty = 0
 <
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*
