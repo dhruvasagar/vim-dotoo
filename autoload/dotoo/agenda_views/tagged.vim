@@ -16,10 +16,8 @@ function! s:build_tagged(dotoos, ...)
     endfor
   endif
   let tagged = []
-  call dotoo#agenda#headlines([])
   for file in keys(s:tagged_deadlines)
     let headlines = s:tagged_deadlines[file]
-    call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
       let note = printf('%s %10s: %-70s %s', '',
             \ headline.key,

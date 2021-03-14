@@ -16,11 +16,9 @@ function! s:build_refiles(dotoos, ...)
     endfor
   endif
   let refiles = []
-  call dotoo#agenda#headlines([])
   for file in keys(s:refiles)
     let key = fnamemodify(file, ':p:t:r')
     let headlines = s:refiles[file]
-    call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
       let refile = printf('%s %10s: %-70s %s', '',
             \ headline.key,

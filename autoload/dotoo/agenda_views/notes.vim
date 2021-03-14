@@ -16,10 +16,8 @@ function! s:build_notes(dotoos, ...)
     endfor
   endif
   let notes = []
-  call dotoo#agenda#headlines([])
   for file in keys(s:notes_deadlines)
     let headlines = s:notes_deadlines[file]
-    call dotoo#agenda#headlines(headlines, 1)
     for headline in headlines
       let note = printf('%s %10s: %-70s %s', '',
             \ headline.key,
