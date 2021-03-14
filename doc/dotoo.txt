@@ -10,8 +10,7 @@
 -------------------------------------------------------------------------------
 CONTENTS                                                         *dotoo-contents*
 
-      1. Installation ............................... |dotoo-installation|
-      2. Getting Started ............................ |dotoo-getting-started|
+      1. Getting Started ............................ |dotoo-getting-started|
             1. Document Structure ................... |dotoo-document-structure|
             2. Agenda Views ......................... |dotoo-agenda-views|
                   1. Agenda View .................... |dotoo-agenda-view|
@@ -19,24 +18,11 @@ CONTENTS                                                         *dotoo-contents
                   3. Refiles View ................... |dotoo-refiles-view|
                   4. Notes View ..................... |dotoo-notes-view|
             3. Capture .............................. |dotoo-capture|
-      3. Options .................................... |dotoo-options|
-      4. Mappings ................................... |dotoo-mappings|
-      5. Commands ................................... |dotoo-commands|
-      6. Contributing ............................... |dotoo-contributing|
-      7. Credits .................................... |dotoo-credits|
-
--------------------------------------------------------------------------------
-INSTALLATION                                                 *dotoo-installation*
-
-      There are several ways to install this plugin based on the plugin
-      manager you use.
-
-      1. Pathogen: Clone repository in your bundle directory and restart vim. >
-             $ git clone git@github.com:dhruvasagar/vim-dotoo.git ~/.vim/bundle
-<
-      2. Vundle: Add this to your vimrc - `Plugin dhruvasagar/vim-dotoo`
-
-      3. NeoBundle: Add this to your vimrc - `NeoBundle dhruvasagar/vim-dotoo`
+      2. Options .................................... |dotoo-options|
+      3. Mappings ................................... |dotoo-mappings|
+      4. Commands ................................... |dotoo-commands|
+      5. Contributing ............................... |dotoo-contributing|
+      6. Credits .................................... |dotoo-credits|
 
 -------------------------------------------------------------------------------
 GETTING STARTED                                           *dotoo-getting-started*
