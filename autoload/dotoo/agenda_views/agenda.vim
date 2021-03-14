@@ -3,6 +3,8 @@ if exists('g:autoloaded_dotoo_agenda_views_agenda')
 endif
 let g:autoloaded_dotoo_agenda_views_agenda = 1
 
+call dotoo#utils#set('dotoo#agenda_views#agenda#hide_empty', 0)
+
 function! s:build_day_agendas(dotoos, date) abort
   let warning_limit = a:date.adjust(g:dotoo#agenda#warning_days)
   let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
@@ -26,6 +28,10 @@ function! s:build_day_agendas(dotoos, date) abort
       call add(agendas, agenda)
     endfor
   endfor
+
+  if empty(agendas) && g:dotoo#agenda_views#agenda#hide_empty
+    return agendas
+  endif
 
   let header = 'Date: ' . a:date.to_string('%A %d %B %Y')
   if a:date.is_today()
