@@ -98,7 +98,6 @@ function! s:headline_methods.serialize() dict
   call extend(lines, self.logbook.serialize())
   let child_headlines = map(deepcopy(self.headlines), 'v:val.serialize()')
   call map(child_headlines, 'extend(lines, v:val)')
-  call filter(lines, '!empty(v:val)')
   return lines
 endfunction
 
@@ -226,7 +225,7 @@ function! dotoo#parser#headline#new(...) abort
   if has_key(token, 'type')
     while len(tokens)
       let token = remove(tokens, 0)
-      if token.type ==# s:syntax.line.type
+      if token.type ==# s:syntax.line.type || token.type ==# s:syntax.blank.type
         call add(headline.content, token.content[0])
       elseif token.type == s:syntax.metadata.type
         call extend(headline.metadata, dotoo#parser#metadata#new(token))
