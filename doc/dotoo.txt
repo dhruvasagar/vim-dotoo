@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.11.3
+                                Version 0.11.4
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -286,6 +286,18 @@ OPTIONS                                                          *dotoo-options*
             This setting, if enabled hides dates from the agenda view that have
             no events, i.e. no scheduled / due tasks. >
                 let g:dotoo#agenda_views#agenda#hide_empty = 0
+<
+                                          *g:dotoo#agenda_views#agenda#start_of*
+      |g:dotoo#agenda_views#agenda#start_of|
+            This setting can be one of `span` or `today`.
+
+            When set to `span`, the agenda view starts at the beggining of the
+            span till the end of the span (day, week, month). This is the
+            default.
+
+            When set to `today`, the agenda view starts at today's date till the
+            number of days for the current span (day, week, month). >
+                let g:dotoo#agenda_views#agenda#start_of = 'span'
 <
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*

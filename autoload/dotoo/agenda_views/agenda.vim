@@ -4,6 +4,7 @@ endif
 let g:autoloaded_dotoo_agenda_views_agenda = 1
 
 call dotoo#utils#set('dotoo#agenda_views#agenda#hide_empty', 0)
+call dotoo#utils#set('dotoo#agenda_views#agenda#start_of', 'span')
 
 function! s:build_day_agendas(dotoos, date) abort
   let warning_limit = a:date.adjust(g:dotoo#agenda#warning_days)
@@ -41,19 +42,34 @@ function! s:build_day_agendas(dotoos, date) abort
   return agendas
 endfunction
 
+function! s:span_dates() abort
+  let dates = []
+  let date = s:current_date
+  let edate = s:current_date
+
+  if g:dotoo#agenda_views#agenda#start_of ==# 'span'
+    let date = date.start_of(s:current_span)
+    let edate = date.end_of(s:current_span)
+  elseif g:dotoo#agenda_views#agenda#start_of ==# 'today'
+    let edate = date.adjust('+1' . s:current_span[0])
+  endif
+
+  while !date.eq(edate)
+    call add(dates, date)
+    let date = date.adjust('+1d')
+  endwhile
+  return dates
+endfunction
+
 let s:agendas = {}
 function! s:build_agendas(dotoos, ...)
   let force = a:0 ? a:1 : 0
   let filters_header = dotoo#agenda#filters_header()
 
   let agendas = []
-  let sdate = s:current_date.start_of(s:current_span)
-  let edate = s:current_date.end_of(s:current_span)
-  let date = sdate
-  while !date.eq(edate)
+  for date in s:span_dates()
     call extend(agendas, s:build_day_agendas(a:dotoos, date))
-    let date = date.adjust('1d')
-  endwhile
+  endfor
 
   if empty(agendas)
     call add(agendas, printf('%2s %s', '', 'No pending tasks!'))
@@ -73,7 +89,7 @@ endfunction
 let s:current_date = dotoo#time#new()
 function! s:adjust_current_date(amount)
   if a:amount ==# '.'
-    let s:current_date = dotoo#time#new().start_of(s:current_span)
+    let s:current_date = dotoo#time#new()
   else
     let s:current_date = s:current_date.adjust(a:amount . s:current_span[0])
   endif
@@ -94,7 +110,7 @@ function! s:change_span()
   elseif span =~# '^m'
     let s:current_span = 'month'
   endif
-  let s:current_date = dotoo#time#new().start_of(s:current_span)
+  " let s:current_date = dotoo#time#new().start_of(s:current_span)
   call dotoo#agenda#refresh_view()
 endfunction
 
