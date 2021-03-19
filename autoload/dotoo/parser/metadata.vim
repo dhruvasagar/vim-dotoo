@@ -16,11 +16,35 @@ function! s:metadata_methods.serialize() dict
   return ''
 endfunction
 
+function! s:metadata_methods.is_deadline() dict
+  return has_key(self, 'deadline')
+endfunction
+
 function! s:metadata_methods.set_future_date() dict
   if has_key(self, 'deadline')
     let self.deadline = self.deadline.next_repeat()
   elseif has_key(self, 'scheduled')
     let self.scheduled = self.scheduled.next_repeat()
+  endif
+endfunction
+
+function! s:metadata_methods.due_date() dict
+  if has_key(self, 'deadline')
+    return self.deadline
+  elseif has_key(self, 'scheduled')
+    return self.scheduled
+  endif
+  return ''
+endfunction
+
+function! s:metadata_methods.due_label() dict
+  if has_key(self, 'deadline')
+    return 'Deadline'
+  elseif has_key(self, 'scheduled')
+    return 'Scheduled'
+  elseif has_key(self, 'closed')
+    return 'Closed'
+  else
   endif
 endfunction
 

@@ -54,12 +54,29 @@ function! s:headline_methods.change_todo(index) dict
 endfunction
 
 function! s:headline_methods.deadline() dict
-  if has_key(self.metadata, 'deadline')
-    return self.metadata.deadline
-  elseif has_key(self.metadata, 'scheduled')
-    return self.metadata.scheduled
-  endif
-  return ''
+  return self.metadata.due_date()
+endfunction
+
+function! s:headline_methods.due_time() dict
+  let due_time = self.metadate().to_string(g:dotoo#time#time_format)
+  if due_time ==# '00:00' | let due_time = '' | endif
+
+  return due_time
+endfunction
+
+function! s:headline_methods.is_deadline() dict
+  return self.metadata.is_deadline()
+endfunction
+
+function! s:headline_methods.due_label() dict
+  return self.metadata.due_label()
+endfunction
+
+function! s:headline_methods.is_due(date) dict
+  if empty(self.deadline()) | return 0 | endif
+
+  let ddate = self.deadline()
+  return ddate.eq_date(a:date) || ddate.next_repeat_ref(a:date).eq_date(a:date)
 endfunction
 
 function! s:headline_methods.metadate() dict

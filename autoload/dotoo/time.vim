@@ -266,7 +266,7 @@ function! s:time_methods.to_string(...) dict
     let format = g:dotoo#time#datetime_format
   endif
   let str = strftime(format, self.to_seconds())
-  if !empty(self.datetime.repeat) | let str .= ' ' . self.datetime.repeat | endif
+  if empty(format) && !empty(self.datetime.repeat) | let str .= ' ' . self.datetime.repeat | endif
   return str
 endfunction
 
@@ -323,14 +323,23 @@ function! s:time_methods.adjust(amount) dict
 endfunction
 
 function! s:time_methods.next_repeat() dict
-  let date = dotoo#time#new()
+  return self.next_repeat_ref(dotoo#time#new())
+endfunction
+
+function! s:time_methods.next_repeat_ref(date) dict
   if empty(self.datetime.repeat)
     return self
   else
     let time = self
-    if time.before(date)
-      while time.before(date)
+    let today = dotoo#time#new()
+    if time.before(a:date)
+      while time.before(today)
         let time = time.adjust(self.datetime.repeat)
+        if time.eq_date(today) | break | endif
+      endwhile
+      while time.before(a:date)
+        let time = time.adjust(self.datetime.repeat)
+        if time.eq_date(a:date) | break | endif
       endwhile
     else
       let time = time.adjust(self.datetime.repeat)

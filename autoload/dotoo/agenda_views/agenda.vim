@@ -6,9 +6,27 @@ let g:autoloaded_dotoo_agenda_views_agenda = 1
 call dotoo#utils#set('dotoo#agenda_views#agenda#hide_empty', 0)
 call dotoo#utils#set('dotoo#agenda_views#agenda#start_of', 'span')
 
+function! s:format_headline(headline, date) abort
+  let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
+  let time_ago = ''
+  if !empty(a:headline.due_time())
+    let time_ago .= a:headline.due_time() . '... '
+  endif
+  let time_ago .= a:headline.due_label()
+
+  if a:date.is_today() && a:headline.is_deadline()
+    let time_ago = a:headline.metadate().time_ago(a:date)
+  endif
+
+  return printf('%s %10.10s:' . time_pf . '%-50.70s %s', '',
+        \ a:headline.key,
+        \ time_ago,
+        \ a:headline.todo_title(),
+        \ a:headline.tags)
+endfunction
+
 function! s:build_day_agendas(dotoos, date) abort
   let warning_limit = a:date.adjust(g:dotoo#agenda#warning_days)
-  let time_pf = g:dotoo#time#time_ago_short ? ' %10s: ' : ' %20s: '
 
   let agendas = []
   for dotoo in values(a:dotoos)
@@ -16,16 +34,12 @@ function! s:build_day_agendas(dotoos, date) abort
     if a:date.is_today()
       let headlines = filter(headlines, 'v:val.deadline().before(warning_limit)')
     else
-      let headlines = filter(headlines, 'v:val.deadline().next_repeat().eq_date(a:date)')
+      let headlines = filter(headlines, 'v:val.is_due(a:date)')
     endif
     call dotoo#agenda#apply_filters(headlines)
 
     for headline in headlines
-      let agenda = printf('%s %10.10s:' . time_pf . '%-50.70s %s', '',
-            \ headline.key,
-            \ headline.metadate().time_ago(a:date),
-            \ headline.todo_title(),
-            \ headline.tags)
+      let agenda = s:format_headline(headline, a:date)
       call add(agendas, agenda)
     endfor
   endfor
@@ -34,9 +48,9 @@ function! s:build_day_agendas(dotoos, date) abort
     return agendas
   endif
 
-  let header = 'Date: ' . a:date.to_string('%A %d %B %Y')
+  let header = a:date.to_string('%A %d %B %Y')
   if a:date.is_today()
-    let header = header . ' (Today)'
+    let header = header . ' [Today]'
   endif
   call insert(agendas, header)
   return agendas
