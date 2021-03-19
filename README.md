@@ -1,4 +1,4 @@
-# VIM Do Too v0.11.4 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
+# VIM Do Too v0.12.0 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Pre-requisites
