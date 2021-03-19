@@ -43,6 +43,8 @@ GETTING STARTED                                           *dotoo-getting-started
                           with a [count]
               `<C-C><C-C>`: Normalize a date (fixes day name if incorrect)
 
+              They `<C-X>`, `<C-A>` and `cic` commands are repeatable using |.|
+
          A few helpful |:iabbrev| :
               :date:      Enter the current date
               :time:      Enter the current date and time
@@ -104,7 +106,8 @@ GETTING STARTED                                           *dotoo-getting-started
          clocks the tasks to log the time spent while capturing, this works
          best with MEETING captures where you can just launch capture mode and
          leave it open till the duration of the meeting to log the meeting,
-         though it can be used with any capture.
+         though it can be used with any capture. You can disable clocking with
+         capture by setting |g:dotoo#capture#clock| to `0`
 
 -------------------------------------------------------------------------------
 OPTIONS                                                          *dotoo-options*
@@ -304,7 +307,7 @@ MAPPINGS                                                        *dotoo-mappings*
 
                                                                             *gA*
                                                      *dotoo-options-agenda-view*
-      `gA`: Open Agenda View
+      `gA`: Open Agenda Menu
 
                                                                             *gC*
                                                          *dotoo-options-capture*
@@ -359,5 +362,6 @@ CREDITS                                                           *dotoo-credits
 
       I have taken bits of the syntax definitions & ideas from `jceb/vim-orgmode`
 
-      I will also like to shout out for bairui who helped me a lot in building
+      I will also like to shout out for bairui
+      (http://of-vim-and-vigor.blogspot.in) who helped me a lot in building
       this.
