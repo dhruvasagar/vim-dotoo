@@ -303,6 +303,7 @@ function! dotoo#agenda#load()
   call dotoo#agenda_views#agenda#register()
   call dotoo#agenda_views#refiles#register()
   call dotoo#agenda_views#tagged#register()
+  call dotoo#agenda_views#search#register()
 
   " Register Agenda View Plugins
   call dotoo#agenda_views#plugins#log_summary#register()
