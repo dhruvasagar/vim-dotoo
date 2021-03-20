@@ -253,7 +253,11 @@ function! dotoo#agenda#apply_filters(headlines, ...)
   let exceptions = a:000
   for key in keys(s:filters)
     if index(exceptions, key) >= 0 | continue | endif
-    call filter(a:headlines, "v:val[key] =~? '" . s:filters[key] . "'")
+    if key ==# 'content'
+      call filter(a:headlines, "join(v:val[key], '\n') =~? '" . s:filters[key] . "'")
+    else
+      call filter(a:headlines, "v:val[key] =~? '" . s:filters[key] . "'")
+    endif
   endfor
 endfunction
 
@@ -287,7 +291,7 @@ function! dotoo#agenda#filter_todo_complete(A,L,P)
 endfunction
 
 function! dotoo#agenda#filter_complete(A,L,P)
-  let ops = ['file', 'tags', 'todo']
+  let ops = ['file', 'tags', 'todo', 'title', 'content']
   return filter(ops, 'v:val =~? a:A')
 endfunction
 
