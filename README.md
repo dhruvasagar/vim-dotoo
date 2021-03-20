@@ -1,4 +1,4 @@
-# VIM Do Too v0.12.0 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
+# VIM Do Too v0.12.1 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Pre-requisites
@@ -53,8 +53,6 @@ accurate agenda information and also for faster updates to these files.
    * <kbd>\<C-V\></kbd>: Open headline under cursor in `vsplit`
    * <kbd>\<Tab\></kbd>: same as <kbd>\<C-V\></kbd>
 
-   There are 4 views available currently :
-
    1. Agenda View : This displays all TODOs that are nearing deadline.
       It provides a variety of mappings to manipulate the TODO items
       from the agenda view itself.
@@ -73,6 +71,11 @@ accurate agenda information and also for faster updates to these files.
       then move to an appropriate target file / project / headline.
 
    4. Notes : This displays all the notes from all the agenda files.
+
+   5. Tagged : This lists all headlines that have tags.
+
+   6. Search : This lists all headlines that match an input search
+   term.
 
 
 3. Capture: This launches the capture menu that you can use to quickly

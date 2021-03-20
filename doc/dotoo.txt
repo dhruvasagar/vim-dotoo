@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.12.0
+                                Version 0.12.1
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -74,10 +74,9 @@ GETTING STARTED                                           *dotoo-getting-started
                `<C-V>`: Open headline under cursor in `vsplit`
                `<Tab>`: same as `<C-V>`
 
-         There are 4 views available currently :
                                                              *dotoo-agenda-view*
-         1. Agenda View : This displays all TODOs that are nearing deadline.
-            deadline. It provides a variety of mappings to manipulate the TODO
+         1. Agenda View : This lists all TODOs that are nearing deadline or are
+            scheduled. It provides a variety of mappings to manipulate the TODO
             items from the agenda view itself.
 
             These are mappings specific to agenda view:
@@ -88,15 +87,22 @@ GETTING STARTED                                           *dotoo-getting-started
                `R`:     Report of clocking summary for the current span
 
                                                                *dotoo-todo-view*
-         2. TODOs View : This displays all unscheduled TODO items from your
+         2. TODOs View : This lists all unscheduled TODO items from your
             agenda files.
 
                                                             *dotoo-refiles-view*
-         3. Refiles : This displays all headlines in the refile file that you
+         3. Refiles : This lists all headlines in the refile file that you
             should move to an appropriate target file / project / headline.
 
                                                               *dotoo-notes-view*
-         4. Notes : This displays all the notes from all the agenda files.
+         4. Notes : This lists all the notes from all the agenda files.
+
+                                                             *dotoo-tagged-view*
+         5. Tagged : This lists all headlines that have tags.
+
+                                                             *dotoo-search-view*
+         6. Search : This lists all headlines that match an input search
+            term.
 
                                                                  *dotoo-capture*
       3. Capture: This launches the capture menu that you can use to quickly
