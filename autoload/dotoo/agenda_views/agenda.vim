@@ -14,11 +14,11 @@ function! s:format_headline(headline, date) abort
   endif
   let time_ago .= a:headline.due_label()
 
-  if a:date.is_today() && a:headline.is_deadline()
+  if a:date.is_today() && a:headline.is_deadline() && !a:headline.is_due_today()
     let time_ago = a:headline.metadate().time_ago(a:date)
   endif
 
-  return printf('%s %10.10s:' . time_pf . '%-50.70s %s', '',
+  return printf('%s %10.10s:' . time_pf . '%-70.70s %s', '',
         \ a:headline.key,
         \ time_ago,
         \ a:headline.todo_title(),
@@ -26,16 +26,10 @@ function! s:format_headline(headline, date) abort
 endfunction
 
 function! s:build_day_agendas(dotoos, date) abort
-  let warning_limit = a:date.adjust(g:dotoo#agenda#warning_days)
-
   let agendas = []
   for dotoo in values(a:dotoos)
     let headlines = dotoo.filter('!v:val.done() && !empty(v:val.deadline())', 1)
-    if a:date.is_today()
-      let headlines = filter(headlines, 'v:val.deadline().before(warning_limit)')
-    else
-      let headlines = filter(headlines, 'v:val.is_due(a:date)')
-    endif
+    let headlines = filter(headlines, 'v:val.is_due(a:date)')
     call dotoo#agenda#apply_filters(headlines)
 
     for headline in headlines

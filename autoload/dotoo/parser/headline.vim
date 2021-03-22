@@ -72,11 +72,27 @@ function! s:headline_methods.due_label() dict
   return self.metadata.due_label()
 endfunction
 
-function! s:headline_methods.is_due(date) dict
+function! s:headline_methods.is_due_by(date) dict
   if empty(self.deadline()) | return 0 | endif
 
   let ddate = self.deadline()
   return ddate.eq_date(a:date) || ddate.next_repeat_ref(a:date).eq_date(a:date)
+endfunction
+
+function! s:headline_methods.is_due_today() dict
+  return self.is_due_by(dotoo#time#new())
+endfunction
+
+function! s:headline_methods.is_due(date) dict
+  if empty(self.deadline()) | return 0 | endif
+
+  let ddate = self.deadline()
+  if a:date.is_today() && self.is_deadline()
+    let warning_limit = a:date.adjust(g:dotoo#agenda#warning_days)
+    return ddate.before(warning_limit)
+  else
+    return self.is_due_by(a:date)
+  endif
 endfunction
 
 function! s:headline_methods.metadate() dict
