@@ -122,11 +122,14 @@ function! s:headline_methods.is_split_open() dict
   return get(self, 'split_open', 0)
 endfunction
 
-function! s:headline_methods.open() dict
+function! s:headline_methods.open(...) dict
+  let cmd = a:0 ? a:1 : 'split'
   if expand('%:p') !=# self.file
-    let self.split_open = 1
-    let self.split_winnr = winnr()
-    silent exe 'noauto split' self.file
+    if cmd ==# 'split'
+      let self.split_open = 1
+      let self.split_winnr = winnr()
+    endif
+    silent exec 'noauto' cmd self.file
   endif
 endfunction
 
@@ -139,9 +142,10 @@ function! s:headline_methods.close() dict
   endif
 endfunction
 
-function! s:headline_methods.save() dict
+function! s:headline_methods.save(...) dict
+  let cmd = a:0 ? a:1 : 'split'
   let old_view = winsaveview()
-  call self.open()
+  call self.open(cmd)
   call self.delete()
   call append(self.lnum-1, self.serialize())
   silent write

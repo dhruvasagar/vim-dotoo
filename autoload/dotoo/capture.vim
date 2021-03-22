@@ -77,6 +77,27 @@ function! s:capture_select()
   let @/ = old_search
 endfunction
 
+function! dotoo#capture#refile_now() abort
+  let dotoo = dotoo#parser#parse({'lines': getline(1,'$'), 'force': 1})
+  let headline = dotoo.headlines[0]
+  let target = b:capture_target
+  if type(target) == v:t_dict
+    call target.add_headline(headline)
+    call target.save('edit')
+  else
+    let btarget = bufname(target)
+    if empty(btarget)
+      if dotoo#utils#is_dotoo_file(target)
+        let btarget = target
+      else
+        let btarget = g:dotoo#capture#refile
+      endif
+    endif
+    silent exec 'noauto edit' target
+    call append('$', headline.serialize())
+  endif
+endfunction
+
 function! dotoo#capture#capture()
   let selected = s:capture_menu()
   if !empty(selected)
