@@ -95,6 +95,7 @@ function! dotoo#capture#refile_now() abort
     endif
     silent exec 'noauto edit' target
     call append('$', headline.serialize())
+    silent write
   endif
 endfunction
 
