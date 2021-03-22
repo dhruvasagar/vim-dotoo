@@ -102,9 +102,11 @@ function! s:show_view(view, force)
 endfunction
 
 function! s:get_headline_under_cursor() abort
-  " Extract todo_title from the current line, also ignore tags
-  let htitle = trim(split(split(getline('.'), ':\s\+')[-1], ':')[0])
+  let csplit = split(getline('.'), ':\s\+')
+  let fkey = trim(csplit[0])
+  let htitle = trim(split(csplit[-1], ':')[0])
   for dotoos in values(s:agenda_dotoos)
+    if dotoos.file !~# '\v'.fkey.'.{-}\.(dotoo|org)$' | continue | endif
     let headlines = dotoos.filter("v:val.todo_title() =~# '".htitle."'")
     if !empty(headlines) | return headlines[0] | endif
   endfor
