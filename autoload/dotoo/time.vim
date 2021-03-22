@@ -186,7 +186,7 @@ function! s:time_methods.eq(other) dict
 endfunction
 
 function! s:time_methods.eq_date(other) dict
-  return self.to_string(g:dotoo#time#date_format) ==# a:other.to_string(g:dotoo#time#date_format)
+  return self.to_string(g:dotoo#time#date_format, 0) ==# a:other.to_string(g:dotoo#time#date_format, 0)
 endfunction
 
 function! s:time_methods.before(other) dict
@@ -262,11 +262,14 @@ endfunction
 
 function! s:time_methods.to_string(...) dict
   let format = a:0 && !empty(a:1) ? a:1 : g:dotoo#time#date_day_format
+  let include_repeat = a:0 == 2 ? a:2 : 1
   if format ==# g:dotoo#time#date_day_format && strftime(g:dotoo#time#time_format, self.to_seconds()) !=# '00:00'
     let format = g:dotoo#time#datetime_format
   endif
   let str = strftime(format, self.to_seconds())
-  if empty(format) && !empty(self.datetime.repeat) | let str .= ' ' . self.datetime.repeat | endif
+  if include_repeat && !empty(self.datetime.repeat)
+    let str .= ' ' . self.datetime.repeat
+  endif
   return str
 endfunction
 

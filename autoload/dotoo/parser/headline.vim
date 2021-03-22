@@ -58,7 +58,7 @@ function! s:headline_methods.deadline() dict
 endfunction
 
 function! s:headline_methods.due_time() dict
-  let due_time = self.metadate().to_string(g:dotoo#time#time_format)
+  let due_time = self.metadate().to_string(g:dotoo#time#time_format, 0)
   if due_time ==# '00:00' | let due_time = '' | endif
 
   return due_time
