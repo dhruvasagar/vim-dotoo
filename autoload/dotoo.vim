@@ -27,7 +27,7 @@ function! dotoo#move_headline(headline, target)
     endif
     silent exe 'noauto split' target
     call append('$', a:headline.serialize())
-    wq
+    silent wq
   endif
 endfunction
 
