@@ -80,6 +80,9 @@ endfunction
 function! dotoo#capture#refile_now() abort
   let dotoo = dotoo#parser#parse({'lines': getline(1,'$'), 'force': 1})
   let headline = dotoo.headlines[0]
+  if g:dotoo#capture#clock
+    call dotoo#clock#stop(headline)
+  endif
   let target = b:capture_target
   if type(target) == v:t_dict
     call target.add_headline(headline)
