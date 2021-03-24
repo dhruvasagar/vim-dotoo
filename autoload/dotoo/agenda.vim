@@ -171,7 +171,7 @@ function! dotoo#agenda#save_files()
   for _file in s:dotoo_files
     if bufexists(_file)
       exec 'buffer' _file
-      write
+      silent write
     endif
   endfor
   setl nomodified

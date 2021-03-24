@@ -125,10 +125,18 @@ endfunction
 function! s:headline_methods.serialize() dict
   let lines = []
   call add(lines, self.line())
-  call extend(lines, self.content)
-  call add(lines, self.metadata.serialize())
-  call extend(lines, self.properties.serialize())
-  call extend(lines, self.logbook.serialize())
+  if !empty(self.content)
+    call extend(lines, self.content)
+  endif
+  if !empty(self.metadata.serialize())
+    call add(lines, self.metadata.serialize())
+  endif
+  if !empty(self.properties.serialize())
+    call extend(lines, self.properties.serialize())
+  endif
+  if !empty(self.logbook.serialize())
+    call extend(lines, self.logbook.serialize())
+  endif
   let child_headlines = map(deepcopy(self.headlines), 'v:val.serialize()')
   call map(child_headlines, 'extend(lines, v:val)')
   return lines
