@@ -12,7 +12,6 @@ call dotoo#utils#set('dotoo#capture#templates', {
       \     '* TODO %?',
       \     'DEADLINE: [%(strftime(g:dotoo#time#datetime_format))]'
       \   ],
-      \  'target': 'refile'
       \ },
       \ 'n': {
       \   'description': 'Note',
