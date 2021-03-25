@@ -30,7 +30,7 @@ function! s:build_tagged(dotoos, ...)
     call add(tagged, printf('%2s %s', '', 'No Headlines!'))
   endif
   let header = []
-  call add(header, 'All headlines without a Deadline')
+  call add(header, 'All headlines with Tags')
   if !empty(filters_header) | call add(header, filters_header) | endif
   call insert(tagged, join(header, ', '))
   return tagged
