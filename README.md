@@ -98,6 +98,10 @@ accurate agenda information and also for faster updates to these files.
 6. Refile View - <img src="http://i.imgur.com/HoSJkEu.png"/>
 7. Notes View - <img src="http://i.imgur.com/TyEeNWa.png"/>
 
+## Screencast
+
+https://www.youtube.com/watch?v=nsv33iOnH34
+
 ## Credits
 
 This plugin was inspired by the original emacs org-mode and the workflow
