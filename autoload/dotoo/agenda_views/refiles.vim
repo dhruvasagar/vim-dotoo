@@ -10,7 +10,7 @@ function! s:build_refiles(dotoos, ...)
   if force || empty(s:refiles)
     let s:refiles = {}
     for dotoo in values(a:dotoos)
-      let headlines = dotoo.filter("v:val.file =~# 'refile'")
+      let headlines = dotoo.filter("v:val.file =~# '".g:dotoo#capture#refile."'")
       call dotoo#agenda#apply_filters(headlines, 'file')
       let s:refiles[dotoo.file] = headlines
     endfor
