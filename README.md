@@ -1,4 +1,4 @@
-# VIM Do Too v0.12.6 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
+# VIM Do Too v0.12.7 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Pre-requisites
@@ -19,9 +19,10 @@ accurate agenda information and also for faster updates to these files.
    * <kbd>gM</kbd>:      move headline under cursor to selected target
    * <kbd>cit</kbd>:     change TODO of headline under cursor
    * <kbd>cic</kbd>:     toggle checkbox under cursor
-   * <kbd>\<C-A\></kbd>:   Increment date under cursor by 1 day, can be preceded with a [count]
-   * <kbd>\<C-X\></kbd>:   Decrement date under cursor by 1 day, can be preceded with a [count]
+   * <kbd>\<C-A\></kbd>: Increment date under cursor by 1 day, can be preceded with a [count]
+   * <kbd>\<C-X\></kbd>: Decrement date under cursor by 1 day, can be preceded with a [count]
    * <kbd>\<C-C\>\<C-C\></kbd>: Normalize a date (fixes day name if incorrect)
+   * <kbd>\<Tab></kbd>:  Cycle headline visibility similar to Org mode
 
    The <kbd>\<C-X\></kbd>, <kbd>\<C-A\></kbd>, and  <kbd>cic</kbd> commands all work with <kbd>.</kbd>
    if you have [repeat.vim](http://github.com/tpope/vim-repeat) installed

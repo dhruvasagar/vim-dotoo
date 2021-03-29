@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.12.6
+                                Version 0.12.7
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -42,6 +42,7 @@ GETTING STARTED                                           *dotoo-getting-started
               `<C-X>`:      Decrement date under cursor by 1 day, can be preceded
                           with a [count]
               `<C-C><C-C>`: Normalize a date (fixes day name if incorrect)
+              `<Tab>`:      Cycle headline visibility similar to Org mode
 
               They `<C-X>`, `<C-A>` and `cic` commands are repeatable using |.|
 

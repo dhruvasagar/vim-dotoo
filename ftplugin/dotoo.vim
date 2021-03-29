@@ -27,6 +27,27 @@ function! DotooFoldExpr()
   endif
 endfunction
 
+function! s:DotooCycle() abort
+  if foldclosed('.') == -1
+    let cflvl = foldlevel('.')
+    normal! zj
+    let nflvl = foldlevel('.')
+    let nfc = foldclosed('.')
+    exec "normal! \<C-o>"
+    if nflvl > cflvl
+      if nfc != -1
+        normal! zxzczO
+      else
+        normal! zc
+      endif
+    endif
+  else
+    normal! zxzczo
+  endif
+endfunction
+
+nnoremap <silent> <buffer> <Plug>(dotoo-cycle) :<C-U>call <SID>DotooCycle()<CR>
+
 " autocmd! TextChanged,TextChangedI <buffer> call dotoo#parser#parsefile({})
 autocmd! BufWritePost <buffer> call dotoo#parser#parsefile({'force': 1})
 
@@ -57,6 +78,9 @@ if !g:dotoo_disable_mappings
   endif
   if !hasmapto('<Plug>(dotoo-date-normalize)')
     nmap <buffer> <C-C><C-C> <Plug>(dotoo-date-normalize)
+  endif
+  if !hasmapto('<Plug>(dotoo-cycle)')
+    nmap <Tab> <Plug>(dotoo-cycle)
   endif
 endif
 
