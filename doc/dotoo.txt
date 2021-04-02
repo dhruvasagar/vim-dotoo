@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.12.7
+                                Version 0.12.8
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -308,6 +308,12 @@ OPTIONS                                                          *dotoo-options*
             When set to `today`, the agenda view starts at today's date till the
             number of days for the current span (day, week, month). >
                 let g:dotoo#agenda_views#agenda#start_of = 'span'
+<
+                                              *g:dotoo#agenda_views#agenda#span*
+      |g:dotoo#agenda_views#agenda#span|
+            This setting defines the default span of the agenda agenda view.
+            This can be one of `day` (default), `week` or `month`. >
+                let g:dotoo#agenda_views#agenda#span = 'day'
 <
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*
