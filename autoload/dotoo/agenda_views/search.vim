@@ -62,7 +62,9 @@ let s:search_view = {
 
 function! s:search_view.content(dotoos, ...) dict
   let force = a:0 ? a:1 : 1
-  let self.term = input('Search: ', self.term)
+  if force
+    let self.term = input('Search: ', self.term)
+  endif
   return s:build_search(a:dotoos, force)
 endfunction
 
