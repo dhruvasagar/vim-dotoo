@@ -309,6 +309,12 @@ OPTIONS                                                          *dotoo-options*
             number of days for the current span (day, week, month). >
                 let g:dotoo#agenda_views#agenda#start_of = 'span'
 <
+                                              *g:dotoo#agenda_views#agenda#span*
+      |g:dotoo#agenda_views#agenda#span|
+            This setting defines the default span of the agenda agenda view.
+            This can be one of `day` (default), `week` or `month`. >
+                let g:dotoo#agenda_views#agenda#span = 'day'
+<
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*
 

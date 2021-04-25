@@ -104,7 +104,7 @@ function! s:adjust_current_date(amount)
   call dotoo#agenda#refresh_view()
 endfunction
 
-let s:current_span = 'day'
+let s:current_span = get(g:, 'dotoo#agenda_views#agenda#span', 'day')
 function! s:change_span()
   let span = dotoo#utils#getchar(join([
         \ '(d) day',
