@@ -214,7 +214,7 @@ function! dotoo#agenda#headline_complete(ArgLead, CmdLine, CursorPos)
   for key in keys(s:agenda_dotoos)
     let _key = fnamemodify(key, ':p:t:r')
     if empty(a:ArgLead) || _key =~# '^'.a:ArgLead[:stridx(a:ArgLead, ':')-1]
-      if _key ==# a:ArgLead
+      if _key =~# '^'.a:ArgLead
         call add(headlines, _key)
       endif
       let dotoo = s:agenda_dotoos[key]
