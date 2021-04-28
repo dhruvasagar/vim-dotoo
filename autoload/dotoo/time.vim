@@ -53,10 +53,11 @@ endfunction
 
 function! s:localtime(...)
   let ts  = a:0 && !empty(a:1) ? a:1 : localtime()
-  let rp = a:0 == 2 && !empty(a:2) ? a:2 : ''
+  let adjustment = a:0 == 2 && !empty(a:2) ? a:2 : ''
+  let rp = adjustment
   let warning = ''
   if s:is_repeat_negative(rp)
-    let warning = rp
+    let warning = adjustment
     let rp = ''
   endif
 
@@ -79,6 +80,7 @@ function! s:localtime(...)
         \, 'second' : +strftime('%S', ts)
         \, 'sepoch' : sepoch
         \, 'repeat' : rp
+        \, 'adjustment': adjustment
         \, 'warning' : warning
         \}
   let datetime.depoch = s:jd(datetime.year, datetime.month, datetime.day)
@@ -279,25 +281,25 @@ endfunction
 
 function! s:time_methods.to_string(...) dict
   let format = a:0 && !empty(a:1) ? a:1 : g:dotoo#time#date_day_format
-  let include_repeat = a:0 == 2 ? a:2 : 1
+  let include_adjustment = a:0 == 2 ? a:2 : 1
   if format ==# g:dotoo#time#date_day_format && strftime(g:dotoo#time#time_format, self.to_seconds()) !=# '00:00'
     let format = g:dotoo#time#datetime_format
   endif
   let str = strftime(format, self.to_seconds())
-  if include_repeat && !empty(self.datetime.repeat)
-    let str .= ' ' . self.datetime.repeat
+  if include_adjustment && !empty(self.datetime.adjustment)
+    let str .= ' ' . self.datetime.adjustment
   endif
   return str
 endfunction
 
 function! s:time_methods.add(other) dict
   let datetime = self.to_seconds() + a:other.to_seconds()
-  return dotoo#time#new(datetime, self.datetime.repeat)
+  return dotoo#time#new(datetime, self.datetime.adjustment)
 endfunction
 
 function! s:time_methods.sub(other) dict
   let datetime = self.to_seconds() - a:other.to_seconds()
-  return dotoo#time#new(datetime, self.datetime.repeat)
+  return dotoo#time#new(datetime, self.datetime.adjustment)
 endfunction
 
 function! s:time_methods.adjust(amount) dict
@@ -339,7 +341,7 @@ function! s:time_methods.adjust(amount) dict
   if ! adjusted
     let datetime = s:localtime(self.datetime.to_seconds() + seconds)
   endif
-  return dotoo#time#new(datetime, self.datetime.repeat)
+  return dotoo#time#new(datetime, self.datetime.adjustment)
 endfunction
 
 function! s:time_methods.next_repeat() dict
