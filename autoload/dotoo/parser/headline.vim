@@ -89,7 +89,7 @@ function! s:headline_methods.is_due(date) dict
   let ddate = self.deadline()
   if a:date.is_today() && self.is_deadline()
     let warning_limit = a:date.adjust(g:dotoo#agenda#warning_days)
-    return ddate.before(warning_limit)
+    return ddate.before(warning_limit) || ddate.warning_date().eq_date(a:date)
   else
     return self.is_due_by(a:date)
   endif

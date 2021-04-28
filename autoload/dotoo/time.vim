@@ -13,7 +13,7 @@ call dotoo#utils#set('dotoo#time#date_day_regex', g:dotoo#time#date_regex . ' ' 
 call dotoo#utils#set('dotoo#time#time_regex', '(\d{2}):(\d{2})')
 call dotoo#utils#set('dotoo#time#datetime_regex', g:dotoo#time#date_day_regex . ' ' . g:dotoo#time#time_regex)
 
-call dotoo#utils#set('dotoo#time#repeatable_regex', '(\+?\d+[hdwmy])')
+call dotoo#utils#set('dotoo#time#repeatable_regex', '([+-]?\d+[hdwmy])')
 call dotoo#utils#set('dotoo#time#repeatable_date_regex', g:dotoo#time#date_day_regex . ' ' . g:dotoo#time#repeatable_regex)
 call dotoo#utils#set('dotoo#time#repeatable_datetime_regex', g:dotoo#time#datetime_regex . ' ' . g:dotoo#time#repeatable_regex)
 
@@ -47,9 +47,18 @@ function! s:datetime_methods.to_seconds() dict
   return self.sepoch
 endfunction
 
+function! s:is_repeat_negative(repeat)
+  return !empty(a:repeat) && str2nr(a:repeat) < 0
+endfunction
+
 function! s:localtime(...)
   let ts  = a:0 && !empty(a:1) ? a:1 : localtime()
   let rp = a:0 == 2 && !empty(a:2) ? a:2 : ''
+  let warning = ''
+  if s:is_repeat_negative(rp)
+    let warning = rp
+    let rp = ''
+  endif
 
   " On some systems, especially windows `strftime('%s', ts)` doesn't work
   let sepoch = +strftime('%s', ts)
@@ -70,6 +79,7 @@ function! s:localtime(...)
         \, 'second' : +strftime('%S', ts)
         \, 'sepoch' : sepoch
         \, 'repeat' : rp
+        \, 'warning' : warning
         \}
   let datetime.depoch = s:jd(datetime.year, datetime.month, datetime.day)
         \ - s:epoch_jd
@@ -183,6 +193,13 @@ endfunction
 
 function! s:time_methods.eq(other) dict
   return self.compare(a:other) == 0
+endfunction
+
+function! s:time_methods.warning_date()
+  if empty(self.datetime.warning)
+    return self
+  endif
+  return self.adjust(self.datetime.warning)
 endfunction
 
 function! s:time_methods.eq_date(other) dict

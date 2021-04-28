@@ -16,6 +16,8 @@ DEADLINE: <2014-08-03 Sun 18:00>
 DEADLINE: <2014-07-28 Mon 14:23>
 * TODO Test Task with Repeatable Deadline
 DEADLINE: [2014-07-28 Mon 14:23 +1m]
+* TODO Test Task with Deadline and warning
+DEADLINE: [2014-07-28 Mon 14:23 -1d]
 * DONE Add documentation
 CLOSED: [2014-07-02 Wed 20:45]
 * DONE Actual headline tree
