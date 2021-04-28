@@ -188,10 +188,10 @@ unlet! s:todo_headings
 syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a[\>\]]\)/
 "[2003-09-16 Tue 12:00] | <2003-09-16 Tue 12:00>
 syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d[\>\]]\)/
-"[2003-09-16 Tue +1m] | <2003-09-16 Tue +1m>
-syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a +\d\+[ymwdhs][\>\]]\)/
-"[2003-09-15 Tue 12:00 +1m] | <2003-09-16 Tue 12:00 +1m>
-syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d +\d\+[ymwdhs][\>\]]\)/
+"[2003-09-16 Tue +1m] | <2003-09-16 Tue +1m> | [2003-09-16 Tue -1m] | <2003-09-16 Tue -1m>
+syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a [+-]\d\+[ymwdhs][\>\]]\)/
+"[2003-09-15 Tue 12:00 +1m] | <2003-09-16 Tue 12:00 +1m> [2003-09-15 Tue 12:00 -1m] | <2003-09-16 Tue 12:00 -1m>
+syn match dotoo_timestamp /\([\<\[]\d\d\d\d-\d\d-\d\d \a\a\a \d\d:\d\d [+-]\d\+[ymwdhs][\>\]]\)/
 "[2003-09-16 Tue]--[2003-09-16 Tue]
 syn match dotoo_timestamp /\(\[\d\d\d\d-\d\d-\d\d \a\a\a\]--\[\d\d\d\d-\d\d-\d\d \a\a\a\]\)/
 "[2003-09-16 Tue 12:00]--[2003-09-16 Tue 12:00]
@@ -223,7 +223,7 @@ hi def link dotoo_comment Comment
 " Ordered Lists:
 " 1. list item
 " 1) list item
-syn match dotoo_list_ordered "^\s*\(\a\|\d\+\)[.)]\(\s\|$\)" nextgroup=dotoo_list_item 
+syn match dotoo_list_ordered "^\s*\(\a\|\d\+\)[.)]\(\s\|$\)" nextgroup=dotoo_list_item
 hi def link dotoo_list_ordered Identifier
 
 " Unordered Lists:
@@ -231,7 +231,7 @@ hi def link dotoo_list_ordered Identifier
 " * list item
 " + list item
 " + and - don't need a whitespace prefix
-syn match dotoo_list_unordered "^\(\s*[-+]\|\s\+\*\)\(\s\|$\)" nextgroup=dotoo_list_item 
+syn match dotoo_list_unordered "^\(\s*[-+]\|\s\+\*\)\(\s\|$\)" nextgroup=dotoo_list_item
 hi def link dotoo_list_unordered Identifier
 
 " Definition Lists:
@@ -242,7 +242,7 @@ hi def link dotoo_list_def PreProc
 "
 " }}}
 " Bullet Lists: {{{
-syntax match dotoo_list_item /.*$/ contained contains=dotoo_subtask_percent,dotoo_subtask_number,dotoo_subtask_percent_100,dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_bold,dotoo_italic,dotoo_underline,dotoo_code,dotoo_verbatim,dotoo_timestamp,dotoo_timestamp_inactive,dotoo_list_def 
+syntax match dotoo_list_item /.*$/ contained contains=dotoo_subtask_percent,dotoo_subtask_number,dotoo_subtask_percent_100,dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_bold,dotoo_italic,dotoo_underline,dotoo_code,dotoo_verbatim,dotoo_timestamp,dotoo_timestamp_inactive,dotoo_list_def
 syntax match dotoo_list_checkbox /\[[ X-]]/ contained
 hi def link dotoo_list_checkbox     PreProc
 
