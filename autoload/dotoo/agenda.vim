@@ -104,7 +104,10 @@ endfunction
 function! s:get_headline_under_cursor() abort
   let csplit = split(getline('.'), ':\s\+')
   let fkey = trim(csplit[0])
-  let htitle = trim(split(csplit[-1], ':')[0])
+  let htitle = escape(trim(split(csplit[-1], ':')[0]), '[]')
+  if htitle =~# "'"
+    let htitle = substitute(htitle, "'", "''", "g")
+  endif
   for dotoos in values(s:agenda_dotoos)
     if dotoos.file !~# '\v'.fkey.'.{-}\.(dotoo|org)$' | continue | endif
     let headlines = dotoos.filter("v:val.todo_title() =~# '".htitle."'")
