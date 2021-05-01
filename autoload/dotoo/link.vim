@@ -60,7 +60,13 @@ function! s:goto_file(link)
 endfunction
 
 function! s:goto_url(link)
-  if a:link =~? '^https\?:\/\/' && exists('g:loaded_netrwPlugin')
+  if a:link =~? '^https\?:\/\/'
+    if !exists('g:loaded_netrwPlugin')
+      echohl WarningMsg
+      echom 'netrw plugin must be loaded in order to open urls.'
+      echohl NONE
+      return 0
+    endif
     call netrw#BrowseX(a:link, netrw#CheckIfRemote())
     return 1
   endif
