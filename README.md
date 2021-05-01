@@ -23,6 +23,7 @@ accurate agenda information and also for faster updates to these files.
    * <kbd>\<C-X\></kbd>: Decrement date under cursor by 1 day, can be preceded with a [count]
    * <kbd>\<C-C\>\<C-C\></kbd>: Normalize a date (fixes day name if incorrect)
    * <kbd>\<Tab></kbd>:  Cycle headline visibility similar to Org mode
+   * <kbd>\<CR></kbd>:  Follow link under cursor
 
    The <kbd>\<C-X\></kbd>, <kbd>\<C-A\></kbd>, and  <kbd>cic</kbd> commands all work with <kbd>.</kbd>
    if you have [repeat.vim](http://github.com/tpope/vim-repeat) installed
