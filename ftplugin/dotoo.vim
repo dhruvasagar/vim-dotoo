@@ -76,6 +76,9 @@ if !g:dotoo_disable_mappings
   if !hasmapto('<Plug>(dotoo-date-decrement)')
     nmap <buffer> <C-X> <Plug>(dotoo-date-decrement)
   endif
+  if !hasmapto('<Plug>(dotoo-link-follow)')
+    nmap <buffer> <CR> <Plug>(dotoo-link-follow)
+  endif
   if !hasmapto('<Plug>(dotoo-date-normalize)')
     nmap <buffer> <C-C><C-C> <Plug>(dotoo-date-normalize)
   endif

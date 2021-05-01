@@ -116,8 +116,8 @@ function! s:get_headline_under_cursor() abort
 endfunction
 
 " Public API {{{1
-function! dotoo#agenda#goto_headline(cmd)
-  let headline = s:get_headline_under_cursor()
+function! dotoo#agenda#goto_headline(cmd, ...)
+  let headline = get(a:, 1, s:get_headline_under_cursor())
   if empty(headline) | return | endif
   if a:cmd ==# 'edit' | quit | split | endif
   exec a:cmd '+'.headline.lnum headline.file
@@ -298,6 +298,25 @@ endfunction
 function! dotoo#agenda#filter_complete(A,L,P)
   let ops = ['file', 'tags', 'todo', 'title', 'content']
   return filter(ops, 'v:val =~? a:A')
+endfunction
+
+function! s:find_headline(filter)
+  for dotoos in values(s:agenda_dotoos)
+    let headlines = dotoos.filter(a:filter)
+    if !empty(headlines) | return headlines[0] | endif
+  endfor
+endfunction
+
+function! dotoo#agenda#find_headline_by_title(title)
+  return s:find_headline("v:val.title =~? '".a:title."'")
+endfunction
+
+function! dotoo#agenda#find_headline_by_property(prop_name, prop_value)
+  return s:find_headline("get(get(v:val, 'properties'), '".a:prop_name."') ==? '".a:prop_value."'")
+endfunction
+
+function! dotoo#agenda#find_headline_by_title_or_content(val)
+  return s:find_headline("v:val.title =~? '".a:val."' || join(v:val.content, ' ') =~? '".a:val."'")
 endfunction
 
 function! dotoo#agenda#load()

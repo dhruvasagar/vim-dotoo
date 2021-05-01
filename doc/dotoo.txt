@@ -43,12 +43,32 @@ GETTING STARTED                                           *dotoo-getting-started
                           with a [count]
               `<C-C><C-C>`: Normalize a date (fixes day name if incorrect)
               `<Tab>`:      Cycle headline visibility similar to Org mode
+              `<CR>`:       Follow link under cursor
 
               They `<C-X>`, `<C-A>` and `cic` commands are repeatable using |.|
 
          A few helpful |:iabbrev| :
               :date:      Enter the current date
               :time:      Enter the current date and time
+
+         Link structure available:
+              * [[LINK][DESCRIPTION]]
+              * [[LINK]]
+         Possible values for LINK:
+              * [[#MY-CUSTOM-ID]] - Finds headline that has `:CUSTOM_ID: MY-CUSTOM-ID` property defined
+              * [[*Go to dentist]] - Finds headline that matches title "Go to dentist" (case insensitive)
+              * [[https://google.com]] - Opens url in browser (requires http(s):// schema and |netrw| plugin to be loaded)
+              * [[file:/path/to/my/file]] - Opens given file path, no matter if it exists or not
+              * [[/path/to/my/existing/file]] - Opens given file path, only if file is readable
+              * [[My link to something]] - At first it tries to find a headline with title or content that
+                matches "dedicated target" `<<My link to something>>`. If nothing is found, it falls back
+                to finding headline by title "My link to something" (both case insensitive)
+
+            For more detailed explanation check these links:
+              * https://orgmode.org/manual/Internal-Links.html#Internal-Links
+              * https://orgmode.org/manual/External-Links.html#External-Links
+
+            Note that only options explained above are supported from org mode manual.
 
                                                             *dotoo-agenda-views*
       2. Agenda Views: You can have a look at the agenda views at anytime using
