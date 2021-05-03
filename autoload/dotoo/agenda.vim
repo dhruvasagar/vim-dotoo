@@ -117,7 +117,10 @@ endfunction
 
 " Public API {{{1
 function! dotoo#agenda#goto_headline(cmd, ...)
-  let headline = get(a:, 1, s:get_headline_under_cursor())
+  let headline = get(a:, 1, {})
+  if empty(headline)
+    let headline = s:get_headline_under_cursor()
+  endif
   if empty(headline) | return | endif
   if a:cmd ==# 'edit' | quit | split | endif
   exec a:cmd '+'.headline.lnum headline.file
@@ -312,7 +315,7 @@ function! dotoo#agenda#find_headline_by_title(title)
 endfunction
 
 function! dotoo#agenda#find_headline_by_property(prop_name, prop_value)
-  return s:find_headline("get(get(v:val, 'properties'), '".a:prop_name."') ==? '".a:prop_value."'")
+  return s:find_headline("get(get(v:val, 'properties', {}), '".a:prop_name."', '') ==? '".a:prop_value."'")
 endfunction
 
 function! dotoo#agenda#find_headline_by_title_or_content(val)
