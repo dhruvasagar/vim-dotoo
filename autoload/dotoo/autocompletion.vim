@@ -53,12 +53,20 @@ function! s:fetch_links(base) abort
   return results
 endfunction
 
+function! s:fetch_tags(base)
+  let base = trim(a:base)
+  let filter = printf("v:val.tags =~? '^%s'", base)
+  let headlines = dotoo#agenda#find_headlines(filter)
+  return map(headlines, 'v:val.tags')
+endfunction
+
 let s:contexts = [
-      \ { 'rgx': '^#+\(\w\+\)\?$', 'list': s:directives },
+      \ { 'rgx': '^#+\?\(\w\+\)\?$', 'list': s:directives },
       \ { 'rgx': '^:\(\w\+\)\?$', 'list': s:properties },
       \ { 'rgx': '\(^\*\+\s\+\)\@<=\(\w\+\)\?$', 'list': s:todo_keywords },
       \ { 'rgx': '\(^\s*\)\@<=-\s*\[\?\s*$', 'list': s:list_items },
       \ { 'rgx': '\(\(^\|\s\+\)\[\[\)\@<=\(\(\*\|#\)\?\(\w\+\)\)\?', 'fetcher': function('s:fetch_links'), 'list': [] },
+      \ { 'rgx': '\(\s\+\)\@<=:\(\(\w\|:\)\+\)\?$', 'fetcher': function('s:fetch_tags'), 'list': [] },
       \ { 'rgx': '^\(\w\+\)\?$', 'list': s:directives + s:properties + s:metadata + s:list_items },
       \ ]
 
@@ -74,9 +82,10 @@ function! dotoo#autocompletion#omni(findstart, base)
     return 0
   endif
 
+  let line = line.a:base
   let results = []
   for context in s:contexts
-    if (!empty(a:base) && a:base =~? context.rgx) || line =~? context.rgx
+    if line =~? context.rgx
       let items = filter(copy(context.list), 'v:val =~? "^".a:base')
       if has_key(context, 'fetcher')
         let items = call(context.fetcher, [a:base])
