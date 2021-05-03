@@ -173,6 +173,15 @@ OPTIONS                                                          *dotoo-options*
                   \ ['PHONE', [':foreground 22', ':weight bold']]
                   \ ]
 <
+                                                  *g:dotoo_begin_src_languages*
+      |g:dotoo_begin_src_languages|
+            List of filetypes that should be highlighted in `#+BLOCK_SRC filetype`
+            code blocks.
+            Example. >
+                let g:dotoo_todo_keyword_faces = ['vim', 'json', 'javascript']
+<
+            Default value: `[]`
+
                                                 *g:dotoo#parser#todo_keywords*
       |g:dotoo#parser#todo_keywords|
             This setting defines various todo keywords to be recognized. A `|`

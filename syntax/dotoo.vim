@@ -19,6 +19,24 @@ if exists('b:current_syntax')
   finish
 endif
 
+
+if !exists('g:dotoo_begin_src_languages')
+  let g:dotoo_begin_src_languages = []
+endif
+let s:valid_begin_src_languages = map(copy(g:dotoo_begin_src_languages), 'matchstr(v:val, "[^.]*")')
+
+let s:included_src_languages = {}
+for s:lang in s:valid_begin_src_languages
+  if has_key(s:included_src_languages, s:lang)
+    continue
+  endif
+  exe printf('syntax include @dotooBlockSrc%s syntax/%s.vim', s:lang, s:lang)
+  unlet! b:current_syntax
+  let s:included_src_languages[s:lang] = 1
+endfor
+unlet! s:lang
+unlet! s:included_src_languages
+
 " FIXME: Always make dotoo_bold syntax define before dotoo_heading syntax
 "        to make sure that dotoo_heading syntax got higher priority(help :syn-priority) than dotoo_bold.
 "        If there is any other good solution, please help fix it.
@@ -289,28 +307,15 @@ hi def link dotoo_subtask_percent String
 hi def link dotoo_subtask_percent_100 Identifier
 hi def link dotoo_subtask_number_all Identifier
 
-" }}}
-" Plugin SyntaxRange: {{{
-" This only works if you have SyntaxRange installed:
-" https://github.com/vim-scripts/SyntaxRange
-
-" BEGIN_SRC
-if exists('g:loaded_SyntaxRange')
-  call SyntaxRange#Include('#+BEGIN_SRC\ vim', '#+END_SRC', 'vim', 'comment')
-  call SyntaxRange#Include('#+BEGIN_SRC\ python', '#+END_SRC', 'python', 'comment')
-  call SyntaxRange#Include('#+BEGIN_SRC\ c', '#+END_SRC', 'c', 'comment')
-  " cpp must be below c, otherwise you get c syntax hl for cpp files
-  call SyntaxRange#Include('#+BEGIN_SRC\ cpp', '#+END_SRC', 'cpp', 'comment')
-  call SyntaxRange#Include('#+BEGIN_SRC\ ruby', '#+END_SRC', 'ruby', 'comment')
-  " call SyntaxRange#Include('#+BEGIN_SRC\ lua', '#+END_SRC', 'lua', 'comment')
-  " call SyntaxRange#Include('#+BEGIN_SRC\ lisp', '#+END_SRC', 'lisp', 'comment')
-
-  " LaTeX
-  call SyntaxRange#Include('\\begin[.*]{.*}', '\\end{.*}', 'tex')
-  call SyntaxRange#Include('\\begin{.*}', '\\end{.*}', 'tex')
-  call SyntaxRange#Include('\\\[', '\\\]', 'tex')
-  call SyntaxRange#Include('\$[^$]', '\$', 'tex')
-endif
-" }}}
+let s:included_src_languages = {}
+for s:lang in s:valid_begin_src_languages
+  if has_key(s:included_src_languages, s:lang)
+    continue
+  endif
+  exe printf('syntax region dotooBlockSrc%s matchgroup=comment start="#+BEGIN_SRC\ %s" end="#+END_SRC" keepend contains=@dotooBlockSrc%s',
+        \ s:lang, s:lang, s:lang
+        \ )
+  let s:included_src_languages[s:lang] = 1
+endfor
 
 let b:current_syntax = 'dotoo'
