@@ -314,6 +314,15 @@ function! dotoo#agenda#find_headline_by_title(title)
   return s:find_headline("v:val.title =~? '".a:title."'")
 endfunction
 
+function! dotoo#agenda#find_headlines(filter)
+  let result = []
+  for dotoos in values(s:agenda_dotoos)
+    let headlines = dotoos.filter(a:filter)
+    call extend(result, headlines)
+  endfor
+  return result
+endfunction
+
 function! dotoo#agenda#find_headline_by_property(prop_name, prop_value)
   return s:find_headline("get(get(v:val, 'properties', {}), '".a:prop_name."', '') ==? '".a:prop_value."'")
 endfunction
