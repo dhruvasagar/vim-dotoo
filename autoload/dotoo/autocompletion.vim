@@ -61,13 +61,13 @@ function! s:fetch_tags(base)
 endfunction
 
 let s:contexts = [
-      \ { 'rgx': '^#+\?\(\w\+\)\?$', 'list': s:directives },
-      \ { 'rgx': '^:\(\w\+\)\?$', 'list': s:properties },
-      \ { 'rgx': '\(^\*\+\s\+\)\@<=\(\w\+\)\?$', 'list': s:todo_keywords },
-      \ { 'rgx': '\(^\s*\)\@<=-\s*\[\?\s*$', 'list': s:list_items },
-      \ { 'rgx': '\(\(^\|\s\+\)\[\[\)\@<=\(\(\*\|#\)\?\(\w\+\)\)\?', 'fetcher': function('s:fetch_links'), 'list': [] },
-      \ { 'rgx': '\(\s\+\)\@<=:\(\(\w\|:\)\+\)\?$', 'fetcher': function('s:fetch_tags'), 'list': [] },
-      \ { 'rgx': '^\(\w\+\)\?$', 'list': s:directives + s:properties + s:metadata + s:list_items },
+      \ { 'rgx': '\v^#\+?(\w+)?$', 'list': s:directives },
+      \ { 'rgx': '\v^:(\w+)?$', 'list': s:properties },
+      \ { 'rgx': '\v(^\*+\s+)@<=(\w+)?$', 'list': s:todo_keywords },
+      \ { 'rgx': '\v(^\s*)@<=-\s*\[?\s*$', 'list': s:list_items },
+      \ { 'rgx': '\v((^|\s+)\[\[)@<=((\*|#)?(\w+))?', 'fetcher': function('s:fetch_links'), 'list': [] },
+      \ { 'rgx': '\v(\s+)@<=:((\w|:)+)?$', 'fetcher': function('s:fetch_tags'), 'list': [] },
+      \ { 'rgx': '\v^(\w+)?$', 'list': s:directives + s:properties + s:metadata + s:list_items },
       \ ]
 
 function! dotoo#autocompletion#omni(findstart, base)
