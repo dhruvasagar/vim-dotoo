@@ -7,6 +7,7 @@ setl commentstring=#\ %s
 setl foldexpr=DotooFoldExpr()
 setl foldmethod=expr
 setl foldtext=getline(v:foldstart)
+setl omnifunc=dotoo#autocompletion#omni
 
 let s:syntax = dotoo#parser#lexer#syntax()
 function! DotooFoldExpr()

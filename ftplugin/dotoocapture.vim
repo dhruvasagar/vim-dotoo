@@ -4,6 +4,7 @@ endif
 let b:did_ftplugin = 1
 
 setl commentstring=#\ %s
+setl omnifunc=dotoo#autocompletion#omni
 
 function! s:RefileAndClose()
   if &modified && confirm("Save changes ?", "&Yes\n&No") != 1
