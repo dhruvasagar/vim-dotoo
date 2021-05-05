@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.12.10
+                               Version 0.12.10.1
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -178,7 +178,7 @@ OPTIONS                                                          *dotoo-options*
             List of filetypes that should be highlighted in `#+BLOCK_SRC filetype`
             code blocks.
             Example. >
-                let g:dotoo_todo_keyword_faces = ['vim', 'json', 'javascript']
+                let g:dotoo_begin_src_languages = ['vim', 'json', 'javascript']
 <
             Default value: `[]`
 
