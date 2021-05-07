@@ -285,9 +285,8 @@ function! dotoo#agenda#filter_tags_complete(A,L,P)
   for key in keys(s:agenda_dotoos)
     let dotoo = s:agenda_dotoos[key]
     let headlines = dotoo.filter('1')
-    let htags = map(headlines, 'v:val.tags')
-    let htags = map(htags, "join(split(v:val,':'),'')")
-    call filter(htags, '!empty(v:val)')
+    let htags = dotoo#utils#flatten(map(headlines, 'split(v:val.tags, ":")'))
+    call filter(htags, '!empty(v:val) && v:val =~? "^".a:A')
     call extend(tags, htags)
   endfor
   return uniq(sort(tags))
