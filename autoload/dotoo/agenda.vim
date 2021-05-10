@@ -193,7 +193,7 @@ function! dotoo#agenda#get_headline_by_title(file_title)
       let filekey .= '.dotoo'
     endif
     let bufname = bufname(filekey)
-    let bufname = empty(bufname) ? bufname(filekey . '.{dotoo,org}') : bufname
+    let bufname = empty(bufname) ? bufname(substitute(filekey, '\.dotoo$', '', '') . '.{dotoo,org}') : bufname
     let dotoo = get(s:agenda_dotoos, bufname, '')
     if !empty(dotoo)
       let headlines = dotoo.filter("v:val.title =~# '" . title . "'")
