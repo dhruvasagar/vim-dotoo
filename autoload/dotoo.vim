@@ -25,9 +25,7 @@ function! dotoo#move_headline(headline, target)
         let target = g:dotoo#capture#refile
       end
     endif
-    silent exe 'noauto split' target
-    call append('$', a:headline.serialize())
-    silent wq
+    call writefile(a:headline.serialize(), target, 'a')
   endif
 endfunction
 

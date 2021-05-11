@@ -189,22 +189,34 @@ function! dotoo#agenda#get_headline_by_title(file_title)
   if a:file_title =~# ':'
     call s:load_agenda_files()
     let [filekey, title] = split(a:file_title, ':')
-    if filekey !~# '\.dotoo$'
-      let filekey .= '.dotoo'
+    let filekey = substitute(filekey, '\.\(dotoo\|org\)$', '', '')
+    let bufname = bufname(filekey . '.{dotoo,org}')
+    let dotoo = ''
+    if !empty(bufname)
+      let dotoo = get(s:agenda_dotoos, bufname, '')
     endif
-    let bufname = bufname(filekey)
-    let bufname = empty(bufname) ? bufname(filekey . '.{dotoo,org}') : bufname
-    let dotoo = get(s:agenda_dotoos, bufname, '')
+    if empty(dotoo)
+      let bufname = get(filter(keys(s:agenda_dotoos), 'fnamemodify(v:val, ":t:r") ==# filekey'), 0, '')
+      if !empty(bufname)
+        let dotoo = get(s:agenda_dotoos, bufname, '')
+      endif
+    endif
     if !empty(dotoo)
       let headlines = dotoo.filter("v:val.title =~# '" . title . "'")
       if !empty(headlines) | return headlines[0] | endif
     endif
   else
     let bufname = bufname(a:file_title . '.{dotoo,org}')
-    if empty(bufname)
-      return a:file_title
+    if !empty(bufname)
+      return bufname
     endif
-    return bufname
+    call s:load_agenda_files()
+    let filekey = substitute(a:file_title, '\.\(dotoo\|org\)$', '', '')
+    let bufname = get(filter(keys(s:agenda_dotoos), 'fnamemodify(v:val, ":t:r") ==# filekey'), 0, '')
+    if !empty(bufname)
+      return bufname
+    endif
+    return a:file_title
   endif
 endfunction
 

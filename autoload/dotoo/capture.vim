@@ -96,9 +96,7 @@ function! dotoo#capture#refile_now() abort
         let btarget = g:dotoo#capture#refile
       endif
     endif
-    silent exec 'noauto edit' target
-    call append('$', headline.serialize())
-    silent write
+    call writefile(target, headline.serialize())
   endif
 endfunction
 
