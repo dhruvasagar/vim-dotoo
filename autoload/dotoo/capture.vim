@@ -96,7 +96,7 @@ function! dotoo#capture#refile_now() abort
         let btarget = g:dotoo#capture#refile
       endif
     endif
-    call writefile(target, headline.serialize())
+    call writefile(target, headline.serialize(), 'a')
   endif
 endfunction
 
