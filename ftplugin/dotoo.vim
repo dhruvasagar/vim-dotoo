@@ -84,7 +84,7 @@ if !g:dotoo_disable_mappings
     nmap <buffer> <C-C><C-C> <Plug>(dotoo-date-normalize)
   endif
   if !hasmapto('<Plug>(dotoo-cycle)')
-    nmap <Tab> <Plug>(dotoo-cycle)
+    nmap <buffer> <Tab> <Plug>(dotoo-cycle)
   endif
 endif
 
