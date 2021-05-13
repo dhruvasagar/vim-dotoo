@@ -47,7 +47,7 @@ function! s:DotooCycle() abort
   endif
 endfunction
 
-nnoremap <silent> <buffer> <Plug>(dotoo-cycle) :<C-U>call <SID>DotooCycle()<CR>
+nnoremap <silent> <Plug>(dotoo-cycle) :<C-U>call <SID>DotooCycle()<CR>
 
 " autocmd! TextChanged,TextChangedI <buffer> call dotoo#parser#parsefile({})
 autocmd! BufWritePost <buffer> call dotoo#parser#parsefile({'force': 1})
