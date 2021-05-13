@@ -47,7 +47,7 @@ function! s:DotooCycle() abort
   endif
 endfunction
 
-nnoremap <silent> <buffer> <Plug>(dotoo-cycle) :<C-U>call <SID>DotooCycle()<CR>
+nnoremap <silent> <Plug>(dotoo-cycle) :<C-U>call <SID>DotooCycle()<CR>
 
 " autocmd! TextChanged,TextChangedI <buffer> call dotoo#parser#parsefile({})
 autocmd! BufWritePost <buffer> call dotoo#parser#parsefile({'force': 1})
@@ -84,7 +84,7 @@ if !g:dotoo_disable_mappings
     nmap <buffer> <C-C><C-C> <Plug>(dotoo-date-normalize)
   endif
   if !hasmapto('<Plug>(dotoo-cycle)')
-    nmap <Tab> <Plug>(dotoo-cycle)
+    nmap <buffer> <Tab> <Plug>(dotoo-cycle)
   endif
 endif
 
