@@ -37,6 +37,8 @@ endfor
 unlet! s:lang
 unlet! s:included_src_languages
 
+syntax spell toplevel
+
 " FIXME: Always make dotoo_bold syntax define before dotoo_heading syntax
 "        to make sure that dotoo_heading syntax got higher priority(help :syn-priority) than dotoo_bold.
 "        If there is any other good solution, please help fix it.
@@ -55,7 +57,7 @@ hi def dotoo_underline term=underline cterm=underline gui=underline
 "" Enable Syntax HL: {{{
 let s:contains = ' contains=dotoo_timestamp,dotoo_subtask_percent,dotoo_subtask_number,dotoo_subtask_percent_100,'.
       \ 'dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_bold,dotoo_italic,dotoo_underline,' .
-      \ 'dotoo_code,dotoo_verbatim'
+      \ 'dotoo_code,dotoo_verbatim,@Spell'
 if g:dotoo_heading_shade_leading_stars == 1
   let s:contains .= ',dotoo_shade_stars'
   syntax match dotoo_shade_stars /^\*\{2,\}/me=e-1 contained
