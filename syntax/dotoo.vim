@@ -234,7 +234,7 @@ syntax match hyperlinkBracketsRight	contained "\]\{2}"     conceal
 hi def link hyperlink Underlined
 " }}}
 " Comments: {{{
-syntax match dotoo_comment /^#.*/
+syntax match dotoo_comment /^#.*/ contains=@Spell
 hi def link dotoo_comment Comment
 
 " }}}
@@ -243,7 +243,7 @@ hi def link dotoo_comment Comment
 " Ordered Lists:
 " 1. list item
 " 1) list item
-syn match dotoo_list_ordered "^\s*\(\a\|\d\+\)[.)]\(\s\|$\)" nextgroup=dotoo_list_item
+syn match dotoo_list_ordered "^\s*\(\a\|\d\+\)[.)]\(\s\|$\)" nextgroup=dotoo_list_item contains=@Spell
 hi def link dotoo_list_ordered Identifier
 
 " Unordered Lists:
@@ -251,18 +251,18 @@ hi def link dotoo_list_ordered Identifier
 " * list item
 " + list item
 " + and - don't need a whitespace prefix
-syn match dotoo_list_unordered "^\(\s*[-+]\|\s\+\*\)\(\s\|$\)" nextgroup=dotoo_list_item
+syn match dotoo_list_unordered "^\(\s*[-+]\|\s\+\*\)\(\s\|$\)" nextgroup=dotoo_list_item contains=@Spell
 hi def link dotoo_list_unordered Identifier
 
 " Definition Lists:
 " - Term :: expl.
 " 1) Term :: expl.
-syntax match dotoo_list_def /.*\s\+::/ contained
+syntax match dotoo_list_def /.*\s\+::/ contained contains=@Spell
 hi def link dotoo_list_def PreProc
 "
 " }}}
 " Bullet Lists: {{{
-syntax match dotoo_list_item /.*$/ contained contains=dotoo_subtask_percent,dotoo_subtask_number,dotoo_subtask_percent_100,dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_bold,dotoo_italic,dotoo_underline,dotoo_code,dotoo_verbatim,dotoo_timestamp,dotoo_timestamp_inactive,dotoo_list_def
+syntax match dotoo_list_item /.*$/ contained contains=dotoo_subtask_percent,dotoo_subtask_number,dotoo_subtask_percent_100,dotoo_subtask_number_all,dotoo_list_checkbox,dotoo_bold,dotoo_italic,dotoo_underline,dotoo_code,dotoo_verbatim,dotoo_timestamp,dotoo_timestamp_inactive,dotoo_list_def,@Spell
 syntax match dotoo_list_checkbox /\[[ X-]]/ contained
 hi def link dotoo_list_checkbox     PreProc
 
@@ -283,18 +283,18 @@ hi def link dotoo_title           Title
 " Note: the non-standard '>' prefix is supported for quotation lines.
 " Note: the '^:.*" rule must be defined before the ':PROPERTIES:' one below.
 " TODO: http://vim.wikia.com/wiki/Different_syntax_highlighting_within_regions_of_a_file
-syntax match  dotoo_verbatim /^\s*>.*/
-syntax match  dotoo_code     /^\s*:.*/
-syntax region dotoo_verbatim start="^\s*#+BEGIN_.*"      end="^\s*#+END_.*"      keepend contains=dotoo_block_delimiter
-syntax region dotoo_code     start="^\s*#+BEGIN_SRC"     end="^\s*#+END_SRC"     keepend contains=dotoo_block_delimiter
-syntax region dotoo_code     start="^\s*#+BEGIN_EXAMPLE" end="^\s*#+END_EXAMPLE" keepend contains=dotoo_block_delimiter
+syntax match  dotoo_verbatim /^\s*>.*/ contains=@Spell
+syntax match  dotoo_code     /^\s*:.*/ contains=@Spell
+syntax region dotoo_verbatim start="^\s*#+BEGIN_.*"      end="^\s*#+END_.*"      keepend contains=dotoo_block_delimiter,@Spell
+syntax region dotoo_code     start="^\s*#+BEGIN_SRC"     end="^\s*#+END_SRC"     keepend contains=dotoo_block_delimiter,@Spell
+syntax region dotoo_code     start="^\s*#+BEGIN_EXAMPLE" end="^\s*#+END_EXAMPLE" keepend contains=dotoo_block_delimiter,@Spell
 hi def link dotoo_code     String
 hi def link dotoo_verbatim String
 " }}}
 " Properties: {{{
-syn region Error matchgroup=dotoo_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=dotoo_property keepend
-syn match dotoo_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=dotoo_property_value
-syn match dotoo_property_value /:\s\zs.*/ contained
+syn region Error matchgroup=dotoo_properties_delimiter start=/^\s*:PROPERTIES:\s*$/ end=/^\s*:END:\s*$/ contains=dotoo_property,@Spell keepend
+syn match dotoo_property /^\s*:[^\t :]\+:\s\+[^\t ]/ contained contains=dotoo_property_value,@Spell
+syn match dotoo_property_value /:\s\zs.*/ contained contains=@Spell
 hi def link dotoo_properties_delimiter PreProc
 hi def link dotoo_property             Statement
 hi def link dotoo_property_value       Constant
