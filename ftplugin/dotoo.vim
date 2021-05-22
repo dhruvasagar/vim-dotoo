@@ -28,7 +28,7 @@ function! DotooFoldExpr()
   endif
 endfunction
 
-function! s:DotooCycle() abort
+function! s:DotooCycle(expand) abort
   if foldclosed('.') == -1
     let cflvl = foldlevel('.')
     normal! zj
@@ -37,9 +37,17 @@ function! s:DotooCycle() abort
     exec "normal! \<C-o>"
     if nflvl > cflvl
       if nfc != -1
-        normal! zxzczO
+        if a:expand
+          normal! zxzczO
+        else
+          normal! zc
+        endif
       else
-        normal! zc
+        if a:expand
+          normal! zc
+        else
+          normal zxzczo
+        endif
       endif
     endif
   else
@@ -47,7 +55,8 @@ function! s:DotooCycle() abort
   endif
 endfunction
 
-nnoremap <silent> <Plug>(dotoo-cycle) :<C-U>call <SID>DotooCycle()<CR>
+nnoremap <silent> <Plug>(dotoo-cycle) :<C-U>call <SID>DotooCycle(1)<CR>
+nnoremap <silent> <Plug>(dotoo-cycle-rev) :<C-U>call <SID>DotooCycle(0)<CR>
 
 " autocmd! TextChanged,TextChangedI <buffer> call dotoo#parser#parsefile({})
 autocmd! BufWritePost <buffer> call dotoo#parser#parsefile({'force': 1})
@@ -85,6 +94,9 @@ if !g:dotoo_disable_mappings
   endif
   if !hasmapto('<Plug>(dotoo-cycle)')
     nmap <buffer> <Tab> <Plug>(dotoo-cycle)
+  endif
+  if !hasmapto('<Plug>(dotoo-cycle-rev)')
+    nmap <buffer> <S-Tab> <Plug>(dotoo-cycle-rev)
   endif
 endif
 
