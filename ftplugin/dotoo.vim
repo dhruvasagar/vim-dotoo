@@ -49,6 +49,8 @@ function! s:DotooCycle(expand) abort
           normal zxzczo
         endif
       endif
+    else
+      normal! zc
     endif
   else
     normal! zxzczo
