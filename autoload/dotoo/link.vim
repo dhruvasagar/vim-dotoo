@@ -45,14 +45,25 @@ function! s:goto_headline_by_dedicated_target(link)
 endfunction
 
 function! s:goto_file(link)
+  let file = a:link
+  let found = 0
+
   if a:link =~# '^file:'
-    let file = substitute(a:link, '^file:', '', '')
-    exe 'edit' file
-    return 1
+    let file = substitute(file, '^file:', '', '')
+    let found = 1
   endif
 
-  if filereadable(a:link)
-    exe 'edit' a:link
+  " relative file
+  if !empty(file) && file =~# '^\.'
+    let file = substitute(file, '^\.', expand('%:p:h'), '')
+  endif
+
+  if filereadable(file)
+    let found = 1
+  endif
+
+  if found ==# 1
+    exe 'edit' file
     return 1
   endif
 

@@ -30,7 +30,7 @@ for s:lang in s:valid_begin_src_languages
   if has_key(s:included_src_languages, s:lang)
     continue
   endif
-  exe printf('syntax include @dotooBlockSrc%s syntax/%s.vim', s:lang, s:lang)
+  exe printf('syntax include @dotoo_code_%s syntax/%s.vim', s:lang, s:lang)
   unlet! b:current_syntax
   let s:included_src_languages[s:lang] = 1
 endfor
@@ -314,7 +314,7 @@ for s:lang in s:valid_begin_src_languages
   if has_key(s:included_src_languages, s:lang)
     continue
   endif
-  exe printf('syntax region dotooBlockSrc%s matchgroup=comment start="#+BEGIN_SRC\ %s" end="#+END_SRC" keepend contains=@dotooBlockSrc%s',
+  exe printf('syntax region dotoo_code_%s matchgroup=comment start="\s*#+BEGIN_SRC\ %s" end="\s*#+END_SRC" keepend contains=@Spell,@dotoo_code,@dotoo_code_%s',
         \ s:lang, s:lang, s:lang
         \ )
   let s:included_src_languages[s:lang] = 1

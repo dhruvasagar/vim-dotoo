@@ -122,7 +122,7 @@ function! dotoo#agenda#goto_headline(cmd, ...)
     let headline = s:get_headline_under_cursor()
   endif
   if empty(headline) | return | endif
-  if a:cmd ==# 'edit' | quit | split | endif
+  if a:cmd ==# 'edit' && &filetype ==# 'dotooagenda' | quit | split | endif
   exec a:cmd '+'.headline.lnum headline.file
   if empty(&filetype) | edit | endif
   normal! zv

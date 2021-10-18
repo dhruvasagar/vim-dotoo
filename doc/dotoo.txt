@@ -175,7 +175,7 @@ OPTIONS                                                          *dotoo-options*
 <
                                                   *g:dotoo_begin_src_languages*
       |g:dotoo_begin_src_languages|
-            List of filetypes that should be highlighted in `#+BLOCK_SRC filetype`
+            List of filetypes that should be highlighted in `#+BEGIN_SRC filetype`
             code blocks.
             Example. >
                 let g:dotoo_begin_src_languages = ['vim', 'json', 'javascript']
