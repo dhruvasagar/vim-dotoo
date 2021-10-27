@@ -12,10 +12,29 @@ function! s:parse_links()
   return result
 endfunction
 
+let s:link_stack = []
+function! s:add_to_link_stack(bufnr)
+  let winid = winnr()
+  let item = {'bufnr': a:bufnr, 'from': extend([bufnr()], getcurpos())}
+  call add(s:link_stack, item)
+endfunction
+
+function! s:pop_from_link_stack()
+  if empty(s:link_stack) | return | endif
+
+  let last_entry = remove(s:link_stack, -1)
+  let bfnr = last_entry.from[0]
+  if bufnr() != bfnr
+    exec 'buffer' bfnr
+  endif
+  call setpos('.', last_entry.from[1:])
+endfunction
+
 function! s:goto_headline(headline)
   if empty(a:headline)
     return 0
   endif
+  call s:add_to_link_stack(bufnr(a:headline.file))
   call dotoo#agenda#goto_headline('edit', a:headline)
   return 1
 endfunction
@@ -60,9 +79,11 @@ function! s:goto_file(link)
 
   if filereadable(file)
     let found = 1
+    call bufload(file) " ensure buffer is loaded
   endif
 
   if found ==# 1
+    call s:add_to_link_stack(bufnr(file))
     exe 'edit' file
     return 1
   endif
@@ -110,4 +131,12 @@ function! dotoo#link#follow(cmd) abort
       break
     endif
   endfor
+endfunction
+
+function! dotoo#link#stack() abort
+  return string(s:link_stack)
+endfunction
+
+function! dotoo#link#back() abort
+  call s:pop_from_link_stack()
 endfunction

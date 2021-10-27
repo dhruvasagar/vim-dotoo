@@ -1,4 +1,4 @@
-# VIM Do Too v0.13.2 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
+# VIM Do Too v0.13.3 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Pre-requisites
@@ -24,6 +24,7 @@ accurate agenda information and also for faster updates to these files.
    * <kbd>\<C-C\>\<C-C\></kbd>: Normalize a date (fixes day name if incorrect)
    * <kbd>\<Tab></kbd>:  Cycle headline visibility similar to Org mode
    * <kbd>\<CR></kbd>:  Follow link under cursor
+   * <kbd>\<BS></kbd>:  Go back to previous document after following a link
 
    The <kbd>\<C-X\></kbd>, <kbd>\<C-A\></kbd>, and  <kbd>cic</kbd> commands all work with <kbd>.</kbd>
    if you have [repeat.vim](http://github.com/tpope/vim-repeat) installed

@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                 Version 0.13.2
+                                 Version 0.13.3
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -44,6 +44,7 @@ GETTING STARTED                                           *dotoo-getting-started
               `<C-C><C-C>`: Normalize a date (fixes day name if incorrect)
               `<Tab>`:      Cycle headline visibility similar to Org mode
               `<CR>`:       Follow link under cursor
+              `<BS>`:       Go back to previous document after following a link
 
               They `<C-X>`, `<C-A>` and `cic` commands are repeatable using |.|
 

@@ -50,6 +50,9 @@ nnoremap <silent> <Plug>(dotoo-capture)
 nnoremap <silent> <Plug>(dotoo-link-follow)
       \ :<C-U>call dotoo#link#follow('edit')<CR>
 
+nnoremap <silent> <Plug>(dotoo-link-back)
+      \ :<C-U>call dotoo#link#back()<CR>
+
 nnoremap <silent> <Plug>(dotoo-date-increment)
       \ :<C-U>call dotoo#date#increment(v:count1)<CR>
 nnoremap <silent> <Plug>(dotoo-date-decrement)
