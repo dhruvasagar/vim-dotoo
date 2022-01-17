@@ -3,7 +3,7 @@ function! dotoo#checkbox#is_headline(line)
 endfunction
 
 function! dotoo#checkbox#is_checkbox(line)
-  return a:line =~ '^\s*[-+*] \[[ -X]\]\(\s\|$\)' && !dotoo#checkbox#is_headline(a:line)
+  return a:line =~ '^\s*[-+*] \[[ -X]\]\(\s\|$\)\v' && !dotoo#checkbox#is_headline(a:line)
 endfunction
 
 function! dotoo#checkbox#is_unchecked_checkbox(line)
