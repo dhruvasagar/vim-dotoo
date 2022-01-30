@@ -13,6 +13,7 @@ function! s:parse_links()
 endfunction
 
 let s:link_stack = []
+let g:link_stack = s:link_stack
 function! s:add_to_link_stack(bufnr)
   let winid = winnr()
   let item = {'bufnr': a:bufnr, 'from': extend([bufnr()], getcurpos())}
@@ -79,7 +80,6 @@ function! s:goto_file(link)
 
   if filereadable(file)
     let found = 1
-    call bufload(file) " ensure buffer is loaded
   endif
 
   if found ==# 1
