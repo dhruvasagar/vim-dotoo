@@ -59,7 +59,8 @@ GETTING STARTED                                           *dotoo-getting-started
               * [[#MY-CUSTOM-ID]] - Finds headline that has `:CUSTOM_ID: MY-CUSTOM-ID` property defined
               * [[*Go to dentist]] - Finds headline that matches title "Go to dentist" (case insensitive)
               * [[https://google.com]] - Opens url in browser (requires http(s):// schema and |netrw| plugin to be loaded)
-              * [[file:/path/to/my/file]] - Opens given file path, no matter if it exists or not
+              * [[file:/path/to/my/file]] - Opens given file path, no matter if it exists or not.
+                File path may be relative to the current file. eg) [[file:./relative/to/file]
               * [[/path/to/my/existing/file]] - Opens given file path, only if file is readable
               * [[My link to something]] - At first it tries to find a headline with title or content that
                 matches "dedicated target" `<<My link to something>>`. If nothing is found, it falls back
