@@ -2,26 +2,65 @@
 #+AUTHOR: Dhruva Sagar
 #+EMAIL: dhruva.sagar@gmail.com
 
-* TODO Support for Checkboxes
+* TODO Rewrite the document parser
+** TODO Improve Parser
+   Refactor and breakdown parser / dotoo functionality properly and maintain
+   them separately to get better testability, separation of concern
+   - Tokenizer
+   - Parser
+   - Serializers
+   - Model (implement crud logic here)
+   - Tests
+** TODO Improve documentation
+   Create a set of dotoo documents to document various aspects of dotoo plugin
+*** TODO Document Dotoo Spec
+*** TODO Document Parser
+    Detailed documentation of AST
+*** TODO Document Features
+    These should be detailed about the functionality, apis, mappings,
+    customisation options
+    - Agenda
+    - Capture
+    - Filetype
+*** TODO Developer Documentation
+    Should be documentation focused on developers, allowing others to easily be
+    able to contribute
+    - Example agenda plugins
+** TODO Decouple Parser, Agenda, Cache
+* TODO More complete org-mode compatibilty
+* TODO Features
+  - Headline manipulations
+    - move headline up / down
+    - increase / decrease headline level
+* TODO Product Roadmap
+Need a high level roadmap (not necessarily a timeline) indicative of the
+direction / goals / feature sets of the plugin that we have / wish to have
+* TODO Write more tests and improve dotoo plugin
+  :LOGBOOK:
+  CLOCK: [2016-03-20 Sun 08:09]--[2016-03-20 Sun 08:10] => 00:01
+  :END:
+* TODO Refactor Syntax
+* DONE Fix repeatable dates handling
+  The change to `to_string` seems to have broken dates handling such as
+  adjusting repeates dates.
+
+  We should address this in `eq_date` and add a separate argument to `to_string`
+  to allow controlling whether repeatable is part of the output or not.
+CLOSED: [2021-03-22 Mon 10:52]
+* DONE Fix capturing
+  Not sure what broke here
+CLOSED: [2021-03-28 Sun]
+* DONE Support for Checkboxes
+CLOSED: [2022-02-11 Fri 10:24]
 * TODO Shortcut for checkboxes completion (count and progress)
 * TODO Shortcut for headline promotions
 * TODO Shortcut for priority changes
-* TODO Agenda clock summary
-* TODO Agenda weekly / monthly views
+* DONE Agenda clock summary
+CLOSED: [2022-02-11 Fri 10:25]
+* DONE Agenda weekly / monthly views
+CLOSED: [2022-02-11 Fri 10:25]
 * TODO Add archiving
 * TODO Add support for anniversaries
-* TODO Improve documentation
-DEADLINE: <2014-08-03 Sun 18:00>
-* TODO Test Task with Deadline
-DEADLINE: <2014-07-28 Mon 14:23>
-* TODO Test Task with Repeatable Deadline
-DEADLINE: [2014-07-28 Mon 14:23 +1m]
-* TODO Test Task with Deadline and warning
-DEADLINE: [2014-07-28 Mon 14:23 -1d]
-* DONE Add documentation
-CLOSED: [2014-07-02 Wed 20:45]
-* DONE Actual headline tree
-CLOSED: [2014-07-02 Wed 20:44]
 * DONE Date manipulations
 CLOSED: [2014-07-01 Tue 17:22]
 * DONE Shortcut to change todo state
