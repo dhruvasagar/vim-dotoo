@@ -1,4 +1,5 @@
-# VIM Do Too v0.13.3.2 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
+# VIM Do Too v0.13.4 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
+
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Pre-requisites
@@ -8,30 +9,33 @@ to keep dotoo files hidden in the background for the purpose of showing
 accurate agenda information and also for faster updates to these files.
 
 ## Getting Started
+
 1. Document Structure: The docment structure is borrowed from emacs'
    Org Mode.
 
    > NOTE : Check out the file `dotoo.dotoo` in this repo as an example
 
    These are the dotoo document mappings :
-   * <kbd>gI</kbd>:      clock-in headline under cursor
-   * <kbd>gO</kbd>:      clock-out headline under cursor
-   * <kbd>gM</kbd>:      move headline under cursor to selected target
-   * <kbd>cit</kbd>:     change TODO of headline under cursor
-   * <kbd>cic</kbd>:     toggle checkbox under cursor
-   * <kbd>\<C-A\></kbd>: Increment date under cursor by 1 day, can be preceded with a [count]
-   * <kbd>\<C-X\></kbd>: Decrement date under cursor by 1 day, can be preceded with a [count]
-   * <kbd>\<C-C\>\<C-C\></kbd>: Normalize a date (fixes day name if incorrect)
-   * <kbd>\<Tab></kbd>:  Cycle headline visibility similar to Org mode
-   * <kbd>\<CR></kbd>:  Follow link under cursor
-   * <kbd>\<BS></kbd>:  Go back to previous document after following a link
 
-   The <kbd>\<C-X\></kbd>, <kbd>\<C-A\></kbd>, and  <kbd>cic</kbd> commands all work with <kbd>.</kbd>
+   - <kbd>gI</kbd>: clock-in headline under cursor
+   - <kbd>gO</kbd>: clock-out headline under cursor
+   - <kbd>gM</kbd>: move headline under cursor to selected target
+   - <kbd>cit</kbd>: change TODO of headline under cursor
+   - <kbd>cic</kbd>: toggle checkbox under cursor
+   - <kbd>\<C-A\></kbd>: Increment date under cursor by 1 day, can be preceded with a [count]
+   - <kbd>\<C-X\></kbd>: Decrement date under cursor by 1 day, can be preceded with a [count]
+   - <kbd>\<C-C\>\<C-C\></kbd>: Normalize a date (fixes day name if incorrect)
+   - <kbd>\<Tab></kbd>: Cycle headline visibility similar to Org mode
+   - <kbd>\<CR></kbd>: Follow link under cursor
+   - <kbd>\<BS></kbd>: Go back to previous document after following a link
+
+   The <kbd>\<C-X\></kbd>, <kbd>\<C-A\></kbd>, and <kbd>cic</kbd> commands all work with <kbd>.</kbd>
    if you have [repeat.vim](http://github.com/tpope/vim-repeat) installed
 
    A few helpful `:iabbrev` :
-   * `:date:` Enters the current date
-   * `:time:` Enters the current date & time
+
+   - `:date:` Enters the current date
+   - `:time:` Enters the current date & time
 
 2. Agenda Views: You can have a look at the agenda views at anytime using the key
    binding <kbd>gA</kbd>, this displays the list of currently registered
@@ -40,32 +44,34 @@ accurate agenda information and also for faster updates to these files.
    setting `g:dotoo#agenda#files` which is a list of file names / file blobs.
 
    These are the agenda view mappings common to all :
-   * <kbd>q</kbd>:     quit agenda buffer
-   * <kbd>r</kbd>:     refresh agenda buffer (force reload / parse agenda files)
-   * <kbd>c</kbd>:     change TODO of headline under cursor
-   * <kbd>u</kbd>:     undo change in file of headline under the cursor
-   * <kbd>s</kbd>:     save all agenda files
-   * <kbd>C</kbd>:     trigger capture menu
-   * <kbd>i</kbd>:     clock-in for headline under cursor
-   * <kbd>o</kbd>:     clock-out for headline under cursor
-   * <kbd>m</kbd>:     Move headline to selected target
-   * <kbd>/</kbd>:     Filter by file, tags or todos
-   * <kbd>\<CR\></kbd>:  Open headline under cursor & close agenda
-   * <kbd>\<C-S\></kbd>: Open headline under cursor in `split`
-   * <kbd>\<C-T\></kbd>: Open headline under cursor in `tab`
-   * <kbd>\<C-V\></kbd>: Open headline under cursor in `vsplit`
-   * <kbd>\<Tab\></kbd>: same as <kbd>\<C-V\></kbd>
+
+   - <kbd>gq</kbd>: quit agenda buffer
+   - <kbd>r</kbd>: refresh agenda buffer (force reload / parse agenda files)
+   - <kbd>c</kbd>: change TODO of headline under cursor
+   - <kbd>u</kbd>: undo change in file of headline under the cursor
+   - <kbd>s</kbd>: save all agenda files
+   - <kbd>C</kbd>: trigger capture menu
+   - <kbd>i</kbd>: clock-in for headline under cursor
+   - <kbd>o</kbd>: clock-out for headline under cursor
+   - <kbd>m</kbd>: Move headline to selected target
+   - <kbd>/</kbd>: Filter by file, tags or todos
+   - <kbd>\<CR\></kbd>: Open headline under cursor & close agenda
+   - <kbd>\<C-S\></kbd>: Open headline under cursor in `split`
+   - <kbd>\<C-T\></kbd>: Open headline under cursor in `tab`
+   - <kbd>\<C-V\></kbd>: Open headline under cursor in `vsplit`
+   - <kbd>\<Tab\></kbd>: same as <kbd>\<C-V\></kbd>
 
    1. Agenda View : This displays all TODOs that are nearing deadline.
       It provides a variety of mappings to manipulate the TODO items
       from the agenda view itself.
 
       These are mappings specific to agenda view:
-      * <kbd>f</kbd>:     go forward by 1 day
-      * <kbd>b</kbd>:     go backward by 1 day
-      * <kbd>.</kbd>:     go to today's date
-      * <kbd>S</kbd>:     Change agenda span to day, week or month
-      * <kbd>R</kbd>:     Report of clocking summary for the current span
+
+      - <kbd>f</kbd>: go forward by 1 day
+      - <kbd>b</kbd>: go backward by 1 day
+      - <kbd>.</kbd>: go to today's date
+      - <kbd>S</kbd>: Change agenda span to day, week or month
+      - <kbd>R</kbd>: Report of clocking summary for the current span
 
    2. TODOs View : This displays all unscheduled TODO items from your agenda
       files.
@@ -78,8 +84,7 @@ accurate agenda information and also for faster updates to these files.
    5. Tagged : This lists all headlines that have tags.
 
    6. Search : This lists all headlines that match an input search
-   term.
-
+      term.
 
 3. Capture: This launches the capture menu that you can use to quickly
    capture TODOs, NOTES etc. This can be invoked using the keybinding
@@ -96,10 +101,10 @@ accurate agenda information and also for faster updates to these files.
 
 1. Agenda Menu - <img src="http://i.imgur.com/17doNZn.png"/>
 2. Agenda View - <img src="http://i.imgur.com/Jstc961.png"/>
-4. Agenda View with Log Summary - <img src="http://i.imgur.com/7sSV5dm.png"/>
-5. Todos View - <img src="http://i.imgur.com/0Jg0Ezs.png"/>
-6. Refile View - <img src="http://i.imgur.com/HoSJkEu.png"/>
-7. Notes View - <img src="http://i.imgur.com/TyEeNWa.png"/>
+3. Agenda View with Log Summary - <img src="http://i.imgur.com/7sSV5dm.png"/>
+4. Todos View - <img src="http://i.imgur.com/0Jg0Ezs.png"/>
+5. Refile View - <img src="http://i.imgur.com/HoSJkEu.png"/>
+6. Notes View - <img src="http://i.imgur.com/TyEeNWa.png"/>
 
 ## Screencast
 

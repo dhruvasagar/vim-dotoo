@@ -4,7 +4,7 @@ endif
 let b:did_ftplugin = 1
 
 if !g:dotoo_disable_mappings
-  nmap <buffer> <nowait> q :<C-U>quit<CR>
+  nmap <buffer> gq :<C-U>quit<CR>
   nmap <buffer> <nowait> C <Plug>(dotoo-capture)
 
   if !hasmapto('<Plug>(dotoo-agenda-refresh)')

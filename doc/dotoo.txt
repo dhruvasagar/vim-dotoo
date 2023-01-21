@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.13.3.2
+                                 Version 0.13.4
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -81,7 +81,7 @@ GETTING STARTED                                           *dotoo-getting-started
          names / file blobs.
 
          These are the agenda view mappings common to all :
-               `q`:     quit agenda buffer
+               `gq`:    quit agenda buffer
                `r`:     refresh agenda buffer (force reload / parse agenda files)
                `c`:     change TODO of headline under cursor
                `u`:     undo change in file of headline under the cursor
