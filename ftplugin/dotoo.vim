@@ -3,6 +3,7 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
+setl foldlevel=1
 setl commentstring=#\ %s
 setl foldexpr=DotooFoldExpr()
 setl foldmethod=expr
@@ -28,32 +29,67 @@ function! DotooFoldExpr()
   endif
 endfunction
 
+let s:local_cycle_state = {}
+
 function! s:DotooCycle(expand) abort
-  if foldclosed('.') == -1
-    let cflvl = foldlevel('.')
-    normal! zj
-    let nflvl = foldlevel('.')
-    let nfc = foldclosed('.')
-    exec "normal! \<C-o>"
-    if nflvl > cflvl
-      if nfc != -1
-        if a:expand
-          normal! zxzczO
+  " fold cycle states :
+  " 0 - folded
+  " 1 - showing children
+  " 2 - showing subtree
+  let file = expand('%:p')
+  let line = line('.')
+
+  if !has_key(s:local_cycle_state, file)
+    let s:local_cycle_state[file] = {}
+  endif
+
+  let cfl = foldlevel('.')
+
+  if cfl == 0
+    if a:expand
+      normal! zr
+    else
+      normal! zm
+    endif
+    return
+  endif
+
+  if !has_key(s:local_cycle_state[file], line)
+    let s:local_cycle_state[file][line] = 0
+    " when fold is open, default it to `showing subtree` state unless a state
+    " has already been set for that line
+    if foldclosed('.') == -1 && !has_key(s:local_cycle_state[file], line)
+      normal! zj
+      if foldlevel('.') > cfl " is a child node
+        if foldclosed('.') == -1 "child node is open
+          let s:local_cycle_state[file][line] = 2
         else
-          normal! zc
-        endif
-      else
-        if a:expand
-          normal! zc
-        else
-          normal zxzczo
+          let s:local_cycle_state[file][line] = 1
         endif
       endif
-    else
-      normal! zc
+      normal! zk
     endif
+  endif
+
+  let cycle_state = s:local_cycle_state[file][line]
+  if a:expand
+    if cycle_state == 0
+      normal! zo
+    elseif cycle_state == 1
+      normal! zczO
+    else
+      normal! zX
+    end
+    let s:local_cycle_state[file][line] = (cycle_state + 1) % 3
   else
-    normal! zxzczo
+    if cycle_state == 0
+      normal! zO
+    elseif cycle_state == 1
+      normal! zX
+    else
+      normal! zx
+    end
+    let s:local_cycle_state[file][line] = (cycle_state - 1) % 3
   endif
 endfunction
 
