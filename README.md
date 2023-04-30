@@ -32,10 +32,11 @@ accurate agenda information and also for faster updates to these files.
    The <kbd>\<C-X\></kbd>, <kbd>\<C-A\></kbd>, and <kbd>cic</kbd> commands all work with <kbd>.</kbd>
    if you have [repeat.vim](http://github.com/tpope/vim-repeat) installed
 
-   A few helpful `:iabbrev` :
+   A few helpful `:iabbrev`:
 
    - `:date:` Enters the current date
-   - `:time:` Enters the current date & time
+   - `:time:` Enters the current time
+   - `:datetime:` Enters the current date & time
 
 2. Agenda Views: You can have a look at the agenda views at anytime using the key
    binding <kbd>gA</kbd>, this displays the list of currently registered

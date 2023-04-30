@@ -99,8 +99,9 @@ nnoremap <silent> <Plug>(dotoo-cycle-rev) :<C-U>call <SID>DotooCycle(0)<CR>
 " autocmd! TextChanged,TextChangedI <buffer> call dotoo#parser#parsefile({})
 autocmd! BufWritePost <buffer> call dotoo#parser#parsefile({'force': 1})
 
+iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#time_format).']'
 iabbrev <expr> <buffer> <silent> :date: '['.strftime(g:dotoo#time#date_day_format).']'
-iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#datetime_format).']'
+iabbrev <expr> <buffer> <silent> :datetime: '['.strftime(g:dotoo#time#datetime_format).']'
 
 if !g:dotoo_disable_mappings
   if !hasmapto('<Plug>(dotoo-clock-start)')

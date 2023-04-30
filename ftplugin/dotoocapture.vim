@@ -20,8 +20,9 @@ augroup BufWrite
   autocmd BufHidden <buffer> call s:RefileAndClose()
 augroup END
 
+iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#time_format).']'
 iabbrev <expr> <buffer> <silent> :date: '['.strftime(g:dotoo#time#date_day_format).']'
-iabbrev <expr> <buffer> <silent> :time: '['.strftime(g:dotoo#time#datetime_format).']'
+iabbrev <expr> <buffer> <silent> :datetime: '['.strftime(g:dotoo#time#datetime_format).']'
 
 if !g:dotoo_disable_mappings
   if !hasmapto('<Plug>(dotoo-checkbox-toggle)')

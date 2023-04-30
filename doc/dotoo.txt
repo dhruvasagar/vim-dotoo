@@ -50,7 +50,8 @@ GETTING STARTED                                           *dotoo-getting-started
 
          A few helpful |:iabbrev| :
               :date:      Enter the current date
-              :time:      Enter the current date and time
+              :time:      Enter the current time
+              :datetime:  Enter the current date and time
 
          Link structure available:
               * [[LINK][DESCRIPTION]]
