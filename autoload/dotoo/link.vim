@@ -1,15 +1,17 @@
 let s:link_regex = '\v\[\[([^\]]*)(\]\[)?([^\]]*)\]\]'
 
+call dotoo#utils#set('dotoo#link#default_path', printf("%s/%s", g:dotoo#home, 'pages'))
+
 function! s:parse_links()
-  let matches = []
   let line = getline('.')
+  let matches = []
   call substitute(line, s:link_regex, '\=add(matches, submatch(0))', 'g')
-  let result = []
+  let links = []
   for m in matches
     let idx = stridx(line, m)
-    call add(result, { 'link': m, 'start': idx, 'end': idx + len(m) })
+    call add(links, { 'link': m, 'start': idx, 'end': idx + len(m) })
   endfor
-  return result
+  return links
 endfunction
 
 let s:link_stack = []
@@ -66,29 +68,24 @@ endfunction
 
 function! s:goto_file(link)
   let file = a:link
-  let found = 0
 
   if a:link =~# '^file:'
     let file = substitute(file, '^file:', '', '')
-    let found = 1
   endif
 
   " relative file
   if !empty(file) && file =~# '^\.'
     let file = substitute(file, '^\.', expand('%:p:h'), '')
+  elseif !empty(g:dotoo#link#default_path)
+    let file = printf("%s/%s", g:dotoo#link#default_path ,file)
+    if !dotoo#utils#is_dotoo_file(file)
+      let file = printf("%s.dotoo", file)
+    endif
   endif
 
-  if filereadable(file)
-    let found = 1
-  endif
-
-  if found ==# 1
-    call s:add_to_link_stack(bufnr(file))
-    exe 'edit' file
-    return 1
-  endif
-
-  return 0
+  call s:add_to_link_stack(bufnr(file))
+  exe 'edit' file
+  return 1
 endfunction
 
 function! s:goto_url(link)

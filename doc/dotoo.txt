@@ -62,10 +62,15 @@ GETTING STARTED                                           *dotoo-getting-started
               * [[https://google.com]] - Opens url in browser (requires http(s):// schema and |netrw| plugin to be loaded)
               * [[file:/path/to/my/file]] - Opens given file path, no matter if it exists or not.
                 File path may be relative to the current file. eg) [[file:./relative/to/file]]
-              * [[/path/to/my/existing/file]] - Opens given file path, only if file is readable
-              * [[My link to something]] - At first it tries to find a headline with title or content that
-                matches "dedicated target" `<<My link to something>>`. If nothing is found, it falls back
-                to finding headline by title "My link to something" (both case insensitive)
+                `NOTE: This format is deprecated in favor of following format`
+              * [[/path/to/my/existing/file]] - Opens given file path
+              * [[My link to something]] - At first it tries to find
+              * a headline with title or content that
+                matches "dedicated target" `<<My link to something>>`. If
+                nothing is found, it falls back to finding headline by title
+                "My link to something" (both case insensitive). If that also
+                fails, it will create a `page` with the title as the name of
+                the file at |g:dotoo#link#default_path|
 
             For more detailed explanation check these links:
               * https://orgmode.org/manual/Internal-Links.html#Internal-Links
@@ -346,6 +351,20 @@ OPTIONS                                                          *dotoo-options*
             This setting defines the default span of the agenda agenda view.
             This can be one of `day` (default), `week` or `month`. >
                 let g:dotoo#agenda_views#agenda#span = 'day'
+<
+                                                                *g:dotoo#home*
+      |g:dotoo#home|
+            This setting defines the home directory for all dotoo files. >
+                let g:dotoo#home = expand('~/Documents/dotoo-files')
+<
+                                                   *g:dotoo#link#default_path*
+      |g:dotoo#link#default_path|
+            This setting defines the default path for files to be created as
+            pages for a wiki.
+
+            Eg.) A link [[My Test]] will create a new file `My Test.dotoo` in
+            the path defined by this setting. >
+                let g:dotoo#link#default_path = printf('%s/%s', g:dotoo#home, 'pages')
 <
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*
