@@ -3,6 +3,8 @@ if exists('g:autoloaded_dotoo')
 endif
 let g:autoloaded_dotoo = 1
 
+call dotoo#utils#set('dotoo#home', expand('~/Documents/dotoo-files'))
+
 " Helper Functions
 function! dotoo#get_headline(...)
   return call('dotoo#parser#headline#get', a:000)
