@@ -1,4 +1,4 @@
-# VIM Do Too v0.14.0 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
+# VIM Do Too v0.14.1 [![CircleCI](https://circleci.com/gh/dhruvasagar/vim-dotoo.svg?style=svg)](https://circleci.com/gh/dhruvasagar/vim-dotoo)
 
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
@@ -86,6 +86,12 @@ accurate agenda information and also for faster updates to these files.
 
    6. Search : This lists all headlines that match an input search
       term.
+
+   7. Wiki : This lists all headlines that have `notes` somewhere in the path,
+      assuming you manage notes in a notes folder that is under the agenda
+      files path. This is better than Notes view since it does not require the
+      presence of `:NOTE:` tag. If you just want to see everything in your
+      knowledge base at a quick glance this is useful.
 
 3. Capture: This launches the capture menu that you can use to quickly
    capture TODOs, NOTES etc. This can be invoked using the keybinding
