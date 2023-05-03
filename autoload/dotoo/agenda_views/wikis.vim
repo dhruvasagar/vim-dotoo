@@ -15,7 +15,7 @@ function! s:build_wikis(dotoo, ...)
     let headlines = s:wiki_headlines[file]
     for headline in headlines
       let wiki = printf('%s %10s: %-70s %s', '',
-            \ fnamemodify(headline.file, ':s?.*\zenotes??'),
+            \ fnamemodify(fnamemodify(headline.file, ':s?.*\zenotes??'), ':r'),
             \ headline.todo_title(),
             \ headline.tags)
       call add(wikis, wiki)
