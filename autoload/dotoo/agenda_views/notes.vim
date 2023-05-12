@@ -19,8 +19,9 @@ function! s:build_notes(dotoos, ...)
   for file in keys(s:notes_deadlines)
     let headlines = s:notes_deadlines[file]
     for headline in headlines
-      let note = printf('%s %10s: %-70s %s', '',
+      let note = printf('%s %10s: %2s %-70s %s', '',
             \ headline.key,
+            \ headline.priority,
             \ headline.todo_title(),
             \ headline.tags)
       call add(notes, note)

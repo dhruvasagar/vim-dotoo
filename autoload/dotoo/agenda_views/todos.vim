@@ -20,8 +20,9 @@ function! s:build_todos(dotoos, ...)
     let key = fnamemodify(file, ':p:t:r')
     let headlines = s:todos_deadlines[file]
     for headline in headlines
-      let todo = printf('%s %10s: %-70s %s', '',
+      let todo = printf('%s %10s: %2s %-70s %s', '',
             \ headline.key,
+            \ headline.priority,
             \ headline.todo_title(),
             \ headline.tags)
       call add(todos, todo)

@@ -18,9 +18,10 @@ function! s:format_headline(headline, date) abort
     let time_ago = a:headline.metadate().time_ago(a:date)
   endif
 
-  return printf('%s %10.10s:' . time_pf . '%-70.70s %s', '',
+  return printf('%s %10.10s:' . time_pf . ' %2s %-70.70s %s', '',
         \ a:headline.key,
         \ time_ago,
+        \ a:headline.priority,
         \ a:headline.todo_title(),
         \ a:headline.tags)
 endfunction

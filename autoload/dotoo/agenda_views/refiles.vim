@@ -20,8 +20,9 @@ function! s:build_refiles(dotoos, ...)
     let key = fnamemodify(file, ':p:t:r')
     let headlines = s:refiles[file]
     for headline in headlines
-      let refile = printf('%s %10s: %-70s %s', '',
+      let refile = printf('%s %10s: %2s %-70s %s', '',
             \ headline.key,
+            \ headline.priority,
             \ headline.todo_title(),
             \ headline.tags)
       call add(refiles, refile)

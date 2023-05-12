@@ -37,8 +37,9 @@ function! s:build_search(dotoos, ...) abort
   for file in keys(s:search_headlines)
     let headlines = s:search_headlines[file]
     for headline in headlines
-      let search_result = printf('%s %10s: %-70s %s', '',
+      let search_result = printf('%s %10s: %2s %-70s %s', '',
             \ headline.key,
+            \ headline.priority,
             \ headline.todo_title(),
             \ headline.tags)
       call add(search_results, search_result)
