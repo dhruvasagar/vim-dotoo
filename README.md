@@ -1,4 +1,4 @@
-# VIM Do Too v0.14.3.0 [![Build](https://github.com/dhruvasagar/vim-dotoo/actions/workflows/ci.yml/badge.svg)(https://github.com/dhruvasagar/vim-dotoo/actions/workflows/ci.yml)
+# VIM Do Too v0.14.3.0 [![Build](https://github.com/dhruvasagar/vim-dotoo/actions/workflows/ci.yml/badge.svg)](https://github.com/dhruvasagar/vim-dotoo/actions/workflows/ci.yml)
 
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
