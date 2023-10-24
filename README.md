@@ -10,7 +10,7 @@ accurate agenda information and also for faster updates to these files.
 
 ## Getting Started
 
-1. Document Structure: The docment structure is borrowed from emacs'
+1. Document Structure: The document structure is borrowed from emacs'
    Org Mode.
 
    > NOTE : Check out the file `dotoo.dotoo` in this repo as an example
