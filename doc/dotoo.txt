@@ -2,9 +2,9 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.14.3.0
+                               Version 0.14.3.1
 
-                Author: Dhruva Sagar (http://dhruvasagar.com)
+                Author: Dhruva Sagar (https://dhruvasagar.dev)
               License: MIT (http://opensource.org/licenses/MIT)
 
 -------------------------------------------------------------------------------
@@ -316,6 +316,7 @@ OPTIONS                                                          *dotoo-options*
 
             For easier customization this allows you to be able to add new or
             override the provided templates easily. >
+                " Override an existing template
                 let g:dotoo#capture#templates = {
                       \ 't': {
                       \   'target': 'refile-personal:Todos'
@@ -340,8 +341,11 @@ OPTIONS                                                          *dotoo-options*
                       \   'lines': ['* eXtra %? :EXTRA:'],
                       \ }
                       \}
+                " Or remove an existing template
+                let g:dotoo#capture#templates = {
+                      \ 't': {}
+                      \}
 <
-
                                                            *g:dotoo_capture_cmd*
       |g:dotoo#capture#cmd|
             This setting defines the capture command to be used for the capture

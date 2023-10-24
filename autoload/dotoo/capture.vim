@@ -22,7 +22,7 @@ call dotoo#utils#set('dotoo#capture#templates', {
       \ 'j': {
       \   'description': 'Journal Entry',
       \   'lines': [
-      \     '* %?'
+      \     '* %(strftime(g:dotoo#time#time_format)) %?'
       \   ],
       \   'target': 'notes/diary/%(strftime(g:dotoo#time#date_format)).dotoo',
       \   'append': 1,
