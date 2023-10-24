@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                                Version 0.14.1.1
+                                Version 0.14.2.1
 
                 Author: Dhruva Sagar (http://dhruvasagar.com)
               License: MIT (http://opensource.org/licenses/MIT)
@@ -340,6 +340,14 @@ OPTIONS                                                          *dotoo-options*
                       \   'lines': ['* eXtra %? :EXTRA:'],
                       \ }
                       \}
+<
+
+                                                           *g:dotoo_capture_cmd*
+      |g:dotoo#capture#cmd|
+            This setting defines the capture command to be used for the capture
+            window. Set this to `edit`, `split`, `vert split`, or `tabe` to open
+            the capture window in same, split, vertical split, or new tab. >
+              let g:dotoo#capture#cmd = 'split'
 <
                                                       *g:dotoo_disable_mappings*
       |g:dotoo_disable_mappings|

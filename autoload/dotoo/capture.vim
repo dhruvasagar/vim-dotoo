@@ -3,6 +3,7 @@ if exists('g:autoloaded_dotoo_capture')
 endif
 let g:autoloaded_dotoo_capture = 1
 
+call dotoo#utils#set('dotoo#capture#cmd', 'split')
 call dotoo#utils#set('dotoo#capture#refile', expand('~/Documents/dotoo-files/refile.dotoo'))
 call dotoo#utils#set('dotoo#capture#templates', {
       \ 't': {
@@ -133,9 +134,9 @@ function! dotoo#capture#capture()
     let clock_start = get(template, 'clock', 0)
     let template_lines = s:capture_template_eval(template_lines)
     if capture_append
-      call s:capture_edit('split', capture_target)
+      call s:capture_edit(g:dotoo#capture#cmd, capture_target)
     else
-      call s:capture_edit('split')
+      call s:capture_edit(g:dotoo#capture#cmd)
     endif
     let dotoo = dotoo#parser#parse({'lines': template_lines, 'force': 1})
     let headline = dotoo.headlines[0]
