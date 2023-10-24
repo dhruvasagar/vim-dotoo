@@ -2,7 +2,7 @@
 -------------------------------------------------------------------------------
 
        DoToo, the awesome TODO management system inspired by Org-Mode.
-                               Version 0.14.3.1
+                               Version 0.14.3.2
 
                 Author: Dhruva Sagar (https://dhruvasagar.dev)
               License: MIT (http://opensource.org/licenses/MIT)

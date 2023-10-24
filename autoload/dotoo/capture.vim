@@ -128,7 +128,7 @@ function! dotoo#capture#capture()
   let selected = s:capture_menu()
   if !empty(selected)
     let template = s:get_selected_template(selected)
-    let template_lines = template.lines
+    let template_lines = deepcopy(template.lines)
     let capture_target = s:get_capture_target(template)
     let capture_append = get(template, 'append', 0)
     let clock_start = get(template, 'clock', 0)
