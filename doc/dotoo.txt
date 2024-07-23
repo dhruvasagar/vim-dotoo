@@ -74,7 +74,7 @@ GETTING STARTED                                           *dotoo-getting-started
                 `<<My link to something>>`. If nothing is found, it falls back to
                 finding headline by title "My link to something" (both case
                 insensitive). If that also fails, it will create a `page` with
-                the title as the name of the file at |g:dotoo#link#default_path|
+                the title as the name of the file at |g:dotoo#link#pages_path|
 
             For more detailed explanation check these links:
               * https://orgmode.org/manual/Internal-Links.html#Internal-Links
@@ -383,19 +383,19 @@ OPTIONS                                                          *dotoo-options*
             This can be one of `day` (default), `week` or `month`. >
                 let g:dotoo#agenda_views#agenda#span = 'day'
 <
-                                                                *g:dotoo#home*
+                                                                  *g:dotoo#home*
       |g:dotoo#home|
             This setting defines the home directory for all dotoo files. >
                 let g:dotoo#home = expand('~/Documents/dotoo-files')
 <
-                                                   *g:dotoo#link#default_path*
-      |g:dotoo#link#default_path|
+                                                       *g:dotoo#link#pages_path*
+      |g:dotoo#link#pages_path|
             This setting defines the default path for files to be created as
             pages for a wiki.
 
             Eg.) A link [[My Test]] will create a new file `My Test.dotoo` in
             the path defined by this setting. >
-                let g:dotoo#link#default_path = printf('%s/%s', g:dotoo#home, 'pages')
+                let g:dotoo#link#pages_path = printf('%s/%s', g:dotoo#home, 'pages')
 <
 -------------------------------------------------------------------------------
 MAPPINGS                                                        *dotoo-mappings*

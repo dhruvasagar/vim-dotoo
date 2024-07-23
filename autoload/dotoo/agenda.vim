@@ -352,6 +352,7 @@ function! dotoo#agenda#load()
   call dotoo#agenda_views#tagged#register()
   call dotoo#agenda_views#search#register()
   call dotoo#agenda_views#wikis#register()
+  call dotoo#agenda_views#pages#register()
 
   " Register Agenda View Plugins
   call dotoo#agenda_views#plugins#log_summary#register()

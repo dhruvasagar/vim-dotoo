@@ -1,6 +1,6 @@
 let s:link_regex = '\v\[\[([^\]]*)(\]\[)?([^\]]*)\]\]'
 
-call dotoo#utils#set('dotoo#link#default_path', printf("%s/%s", g:dotoo#home, 'pages'))
+call dotoo#utils#set('dotoo#link#pages_path', printf("%s/%s", g:dotoo#home, 'pages'))
 
 function! s:parse_links()
   let line = getline('.')
@@ -76,8 +76,8 @@ function! s:goto_file(link)
   " relative file
   if !empty(file) && file =~# '^\.'
     let file = substitute(file, '^\.', expand('%:p:h'), '')
-  elseif !empty(g:dotoo#link#default_path)
-    let file = printf("%s/%s", g:dotoo#link#default_path ,file)
+  elseif !empty(g:dotoo#link#pages_path)
+    let file = printf("%s/%s", g:dotoo#link#pages_path, file)
     if !dotoo#utils#is_dotoo_file(file)
       let file = printf("%s.dotoo", file)
     endif
