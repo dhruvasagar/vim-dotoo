@@ -140,6 +140,9 @@ if !g:dotoo_disable_mappings
   if !hasmapto('<Plug>(dotoo-cycle-rev)')
     nmap <buffer> <S-Tab> <Plug>(dotoo-cycle-rev)
   endif
+  if !hasmapto('<Plug>(dotoo-references-show)')
+    nmap <buffer> gR <Plug>(dotoo-references-show)
+  endif
 endif
 
 command! -buffer -nargs=? DotooAdjustDate call dotoo#date#adjust(<q-args>)

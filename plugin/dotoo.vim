@@ -90,6 +90,9 @@ nnoremap <silent> <Plug>(dotoo-agenda-headline-clock-stop)
 nnoremap <silent> <Plug>(dotoo-agenda-filter)
       \ :<C-U>call dotoo#agenda#filter_agendas()<CR>
 
+nnoremap <silent> <Plug>(dotoo-references-show)
+      \ :<C-U>call dotoo#references#show()<CR>
+
 if !g:dotoo_disable_mappings
   if !hasmapto('<Plug>(dotoo-agenda)')
     nmap gA <Plug>(dotoo-agenda)
