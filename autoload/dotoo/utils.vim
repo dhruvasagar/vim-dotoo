@@ -57,5 +57,5 @@ function! dotoo#utils#change_todo_menu()
 endfunction
 
 function! dotoo#utils#is_dotoo_file(file) abort
-  return fnamemodify(a:file, ':e') =~# '\v^\.(dotoo|org)$'
+  return fnamemodify(a:file, ':e') =~# '\v^(dotoo|org)$'
 endfunction
