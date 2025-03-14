@@ -1,5 +1,9 @@
 # VIM Do Too v0.14.3.2 [![Build](https://github.com/dhruvasagar/vim-dotoo/actions/workflows/ci.yml/badge.svg)](https://github.com/dhruvasagar/vim-dotoo/actions/workflows/ci.yml)
 
+NOTE: I don't have the time to further build / maintain this on my own. I am
+archiving this repository in favor of Emacs Org Mode (much superior and
+reliable) and [nvim-orgmode](https://github.com/nvim-orgmode/orgmode).
+
 An awesome task manager & clocker inspired by org-mode written in pure viml.
 
 ## Pre-requisites
